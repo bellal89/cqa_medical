@@ -25,3 +25,4 @@ obj/
 *.cache
 *.suo
 src/cqa_medical/Files/
+_ReSharper*

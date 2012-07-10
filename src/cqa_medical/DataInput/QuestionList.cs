@@ -14,6 +14,11 @@ namespace cqa_medical.DataInput
 		/// </summary>
 		protected Dictionary<long, Question> questions = new Dictionary<long, Question>();
         
+		public Dictionary<long, Question> GetQuestions()
+		{
+			return questions;
+		}
+
         public void AddQuestion(Question question)
         {
             questions.Add(question.Id, question);
@@ -22,8 +27,15 @@ namespace cqa_medical.DataInput
 		/// <exception cref="KeyNotFoundException">Если это ответ на неизвестный вопрос</exception>
 		public void AddAnswer(Answer answer)
 		{
-			Question question = questions[answer.QuestionId];
-			question.AddAnswer(answer);
+			if (questions.ContainsKey(answer.QuestionId))
+			{
+				Question question = questions[answer.QuestionId];
+				question.AddAnswer(answer);
+			}
+			else
+			{
+				Console.WriteLine(answer.QuestionId);
+			}
 		}
     }
 }
