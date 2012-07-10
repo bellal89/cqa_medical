@@ -9,6 +9,7 @@ namespace cqa_medical
     {
         static void Main(string[] args)
         {
+            
         }
     }
 }
