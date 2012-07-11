@@ -8,20 +8,30 @@ using cqa_medical.DataInput;
 
 namespace cqa_medical.Statistics
 {
-    class AnswerLengthStatisticCreator
+    class Statistics
     {
         private readonly IEnumerable<Question> questions;
-		public AnswerLengthStatisticCreator(IEnumerable<Question> questions)
+        private readonly IEnumerable<Answer> answers;
+
+		public Statistics(QuestionList questionList)
         {
-            this.questions = questions;
+            this.questions = questionList.GetQuestions().Values;
+			this.answers = questions.SelectMany(t => t.GetAnswers());
         }
-        public void SaveResultsToFile(string filename)
-        {
-        	var data = questions.SelectMany(t => t.GetAnswers()).Select(t => t.Text.Length);
+
+		public string AnswerLengthDistibution()
+		{
+			var data = answers.Select(t => t.Text.Length);
 			var statisticGenerator = new DistributionCreator<int>(data);
+			return statisticGenerator.ToString();
+		}
+
+
+    	public void SaveResultsToFile(string filename, string text)
+        {
 			using (var writer = new StreamWriter(new FileStream(filename, FileMode.Create), Encoding.GetEncoding(1251)))
 			{
-				writer.WriteLine(statisticGenerator);	
+				writer.WriteLine(text);	
 			}
         }
     }
@@ -35,8 +45,8 @@ namespace cqa_medical.Statistics
 			var parser = new Parser("../../Files/QuestionsTest.csv", "../../Files/AnswersTest.csv");
 			var questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-
-			new AnswerLengthStatisticCreator(questionList.GetQuestions().Values).SaveResultsToFile("1.txt");
+			var statistics = new Statistics(questionList);
+				statistics.SaveResultsToFile("1.txt", statistics.AnswerLengthDistibution());
 
 		}
 	}
