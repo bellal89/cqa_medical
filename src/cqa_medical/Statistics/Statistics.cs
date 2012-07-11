@@ -10,30 +10,48 @@ namespace cqa_medical.Statistics
 {
     class Statistics
     {
+    	private readonly Dictionary<long, Question> questionDictionary;
         private readonly IEnumerable<Question> questions;
         private readonly IEnumerable<Answer> answers;
 
 		public Statistics(QuestionList questionList)
-        {
-            this.questions = questionList.GetQuestions().Values;
+		{
+			this.questionDictionary = questionList.GetQuestions();
+            this.questions = questionDictionary.Values;
 			this.answers = questions.SelectMany(t => t.GetAnswers());
         }
 
-		public string AnswerLengthDistibution()
+		private string GetDistribution<T>(IEnumerable<T> data)
 		{
-			var data = answers.Select(t => t.Text.Length);
-			var statisticGenerator = new DistributionCreator<int>(data);
+			var statisticGenerator = new DistributionCreator<T>(data);
 			return statisticGenerator.ToString();
 		}
 
-
-    	public void SaveResultsToFile(string filename, string text)
-        {
+		public void SaveResultsToFile(string filename, string text)
+		{
 			using (var writer = new StreamWriter(new FileStream(filename, FileMode.Create), Encoding.GetEncoding(1251)))
 			{
-				writer.WriteLine(text);	
+				writer.WriteLine(text);
 			}
-        }
+		}
+
+		public string AnswerLengthDistibution()
+		{
+			return GetDistribution(answers.Select(t => t.Text.Length));
+		}
+
+    	public string CategoryQuestionsDistribution()
+		{
+			return GetDistribution(questions.Select(q => q.Category));
+		}
+
+		public string CategoryAnswersDistribution()
+		{
+			return GetDistribution(answers.Select(a => questionDictionary[a.QuestionId].Category));
+		}
+
+
+
     }
 
 	[TestFixture]
