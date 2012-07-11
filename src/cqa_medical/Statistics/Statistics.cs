@@ -39,6 +39,30 @@ namespace cqa_medical.Statistics
 		{
 			return GetDistribution(answers.Select(t => t.Text.Length));
 		}
+		public string AnswerAmountDistibution()
+		{
+			return GetDistribution(questions.Select(t => t.GetAnswers().ToArray().Length));
+		}
+		public string AnswerSpeedDistibution()
+		{
+			return GetDistribution(answers.Select(t => t.DateAdded - questionDictionary[t.QuestionId].DateAdded));
+		}
+		public string QuestionLengthDistibution()
+		{
+			return GetDistribution(questions.Select(t => t.Title.Length + t.Text.Length));
+		}
+		public string QuestionActivityInTimeDistibution()
+		{
+			var d = new DateTime(2000, 1, 1);
+			return GetDistribution(questions.Select(t =>(t.DateAdded - d).TotalDays));
+				        	
+		}
+		public string UserActivityInMessagesDistibution()
+		{
+			var statisticGenerator = new DistributionCreator<string>(questions.Select(t => t.AuthorEmail));
+			statisticGenerator.AddData(answers.Select(t => t.AuthorEmail));
+			return statisticGenerator.ToString();
+		}
 
     	public string CategoryQuestionsDistribution()
 		{

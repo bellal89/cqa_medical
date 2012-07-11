@@ -12,6 +12,11 @@ namespace cqa_medical.DataInput
 
 		public DistributionCreator(IEnumerable<T> input)
 		{
+			AddData(input);
+		}
+
+		public void AddData(IEnumerable<T> input)
+		{
 			foreach (T v in input)
 			{
 				if (data.ContainsKey(v))

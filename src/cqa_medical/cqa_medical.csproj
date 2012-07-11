@@ -50,15 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataInput\Answer.cs" />
-    <Compile Include="DataInput\DistributionCreator.cs" />
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />
     <Compile Include="DataInput\Question.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Statistics\AnswerLengthStatisticCreator.cs" />
-    <Compile Include="Statistics\UserActivityStatisticCreator.cs" />
+    <Compile Include="Statistics\DistributionCreator.cs" />
+    <Compile Include="Statistics\Statistics.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Files\AnswersTest.csv" />
