@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 
@@ -97,6 +98,29 @@ namespace cqa_medical.Statistics
 			}
 			return GetDistribution(categories.Select(cat => cat.Item1));
 		}
+
+		private string DeleteHTMLTagsFrom(string s)
+		{
+			return Regex.Replace(s, "<[^>]*?>", string.Empty, RegexOptions.IgnoreCase);
+		}
+		private string[] SplitInWordsAndNormilize(string s)
+		{
+			return Regex.Split(DeleteHTMLTagsFrom(s), @"\W+");
+		}
+
+    	public DistributionCreator<int> AnswerLengthInWordsDistribution()
+		{
+			return GetDistribution(answers
+				.Select(a => SplitInWordsAndNormilize(a.Text)
+				.Where(q => q != "").ToArray().Length));
+		}
+		public DistributionCreator<int> QuestionLengthInWordsDistribution()
+		{
+			return GetDistribution(questions
+				.Select(a => SplitInWordsAndNormilize(a.Text + a.Title)
+				.Where(q => q != "").ToArray().Length));
+		}
+
 		[Statistics]
 		public DistributionCreator<string> CategoryUserQuestionsDistribution()
 		{
@@ -110,6 +134,8 @@ namespace cqa_medical.Statistics
 			return GetDistribution(answers.Select(a => new Tuple<string, string>(questionDictionary[a.QuestionId].Category, a.AuthorEmail))
 										  .Distinct()
 										  .Select(item => item.Item1));
+		}
+
 		}
     }
 
@@ -127,6 +153,22 @@ namespace cqa_medical.Statistics
 			statistics = new Statistics(questionList);
 		}
 
+
+		[Test]
+		public void TestAnswerLengthInWords()
+		{
+			var distibution = statistics.AnswerLengthInWordsDistribution().GetData();
+			Assert.AreEqual(2, distibution[3]);
+			Assert.AreEqual(3, distibution[1]);
+			Assert.AreEqual(2, distibution[12]);
+		}
+
+		[Test]
+		public void TestQuestionLengthInWords()
+		{
+			var distibution = statistics.QuestionLengthInWordsDistribution().GetData();
+			Assert.AreEqual(1, distibution[7]);
+		}
 		[Test]
 		public void TestAnswerLength()
 		{
