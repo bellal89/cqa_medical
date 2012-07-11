@@ -16,15 +16,14 @@ namespace cqa_medical.Statistics
 
 		public Statistics(QuestionList questionList)
 		{
-			this.questionDictionary = questionList.GetQuestions();
-            this.questions = questionDictionary.Values;
-			this.answers = questions.SelectMany(t => t.GetAnswers());
+			questionDictionary = questionList.GetQuestions();
+            questions = questionDictionary.Values;
+			answers = questions.SelectMany(t => t.GetAnswers());
         }
 
-		private string GetDistribution<T>(IEnumerable<T> data)
+		private DistributionCreator<T> GetDistribution<T>(IEnumerable<T> data)
 		{
-			var statisticGenerator = new DistributionCreator<T>(data);
-			return statisticGenerator.ToString();
+			return new DistributionCreator<T>(data);
 		}
 
 		public void SaveResultsToFile(string filename, string text)
@@ -35,61 +34,149 @@ namespace cqa_medical.Statistics
 			}
 		}
 
-		public string AnswerLengthDistibution()
+		public DistributionCreator<int> AnswerLengthDistibution()
 		{
 			return GetDistribution(answers.Select(t => t.Text.Length));
 		}
-		public string AnswerAmountDistibution()
+
+		public DistributionCreator<int> AnswersAmountDistibution()
 		{
 			return GetDistribution(questions.Select(t => t.GetAnswers().ToArray().Length));
 		}
-		public string AnswerSpeedDistibution()
+
+		public DistributionCreator<int> AnswerSpeedDistibution()
 		{
-			return GetDistribution(answers.Select(t => t.DateAdded - questionDictionary[t.QuestionId].DateAdded));
+			return GetDistribution(answers.Select(t => (int)Math.Floor((t.DateAdded - questionDictionary[t.QuestionId].DateAdded).TotalMinutes)));
 		}
-		public string QuestionLengthDistibution()
+
+		public DistributionCreator<int> QuestionLengthDistibution()
 		{
 			return GetDistribution(questions.Select(t => t.Title.Length + t.Text.Length));
 		}
-		public string QuestionActivityInTimeDistibution()
+
+		public DistributionCreator<int> QuestionActivityInTimeDistibution()
 		{
-			var d = new DateTime(2000, 1, 1);
-			return GetDistribution(questions.Select(t =>(t.DateAdded - d).TotalDays));
+			var d = new DateTime(2011, 1, 1);
+			return GetDistribution(questions.Select(t => (int)Math.Floor((t.DateAdded - d).TotalDays)));
 				        	
 		}
-		public string UserActivityInMessagesDistibution()
+
+		public DistributionCreator<string> UserActivityInMessagesDistibution()
 		{
 			var statisticGenerator = new DistributionCreator<string>(questions.Select(t => t.AuthorEmail));
 			statisticGenerator.AddData(answers.Select(t => t.AuthorEmail));
-			return statisticGenerator.ToString();
+			return statisticGenerator;
 		}
 
-    	public string CategoryQuestionsDistribution()
+		public DistributionCreator<string> CategoryQuestionsDistribution()
 		{
 			return GetDistribution(questions.Select(q => q.Category));
 		}
 
-		public string CategoryAnswersDistribution()
+		public DistributionCreator<string> CategoryAnswersDistribution()
 		{
 			return GetDistribution(answers.Select(a => questionDictionary[a.QuestionId].Category));
 		}
 
-
+		public DistributionCreator<string> CategoryUsersDistribution()
+		{
+			var categories = new HashSet<Tuple<string, string>>();
+			foreach (var answer in answers)
+			{
+				var questionAuthor = questionDictionary[answer.QuestionId].AuthorEmail;
+				var questionCategory = questionDictionary[answer.QuestionId].Category;
+				categories.Add(new Tuple<string, string>(questionCategory, questionAuthor));
+				categories.Add(new Tuple<string, string>(questionCategory, answer.AuthorEmail));
+			}
+			return GetDistribution(categories.Select(cat => cat.Item1));
+		}
 
     }
 
 	[TestFixture]
-	 class AnswerLengthStatisticCreatorTest
+	 class StatisticsTest
 	{
-		[Test]
-		public void TestIt()
+		private Statistics statistics;
+
+		[TestFixtureSetUp]
+		public void Init()
 		{
 			var parser = new Parser("../../Files/QuestionsTest.csv", "../../Files/AnswersTest.csv");
 			var questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-			var statistics = new Statistics(questionList);
-				statistics.SaveResultsToFile("1.txt", statistics.AnswerLengthDistibution());
+			statistics = new Statistics(questionList);
+		}
 
+		[Test]
+		public void TestAnswerLength()
+		{
+			var distibution = statistics.AnswerLengthDistibution().GetData();
+			Assert.AreEqual(2, distibution[8]);
+			Assert.AreEqual(1, distibution[13]);
+			Assert.AreEqual(2, distibution[67]);
+		}
+
+		[Test]
+		public void TestAnswersAmount()
+		{
+			var distibution = statistics.AnswersAmountDistibution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(2, distibution[6]);
+			Assert.AreEqual(1, distibution[4]);
+		}
+		
+		[Test]
+		public void TestAnswerSpeed()
+		{
+			var distibution = statistics.AnswerSpeedDistibution().GetData();
+			Assert.AreEqual(12, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(3, distibution[0]);
+			Assert.AreEqual(1, distibution[1]);
+			Assert.AreEqual(2, distibution[2]);
+			Assert.AreEqual(1, distibution[360]);
+		}
+
+		[Test]
+		public void TestQuestionActivity()
+		{
+			var distibution = statistics.QuestionActivityInTimeDistibution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(1, distibution[92]);
+			Assert.AreEqual(2, distibution[353]);
+		}
+		
+		[Test]
+		public void TestUserActivity()
+		{
+			var distibution = statistics.UserActivityInMessagesDistibution().GetData();
+			Assert.AreEqual(19, distibution.Keys.ToArray().Length);
+		}
+
+		[Test]
+		public void TestCategoryQuestions()
+		{
+			var distibution = statistics.CategoryQuestionsDistribution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(1, distibution["illness"]);
+			Assert.AreEqual(2, distibution["health"]);
+		}
+
+		[Test]
+		public void TestCategoryAnswers()
+		{
+			var distibution = statistics.CategoryAnswersDistribution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(4, distibution["illness"]);
+			Assert.AreEqual(12, distibution["health"]);
+		}
+
+		[Test]
+		public void TestCategoryUsers()
+		{
+			var distibution = statistics.CategoryUsersDistribution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(5, distibution["illness"]);
+			Assert.AreEqual(14, distibution["health"]);
 		}
 	}
 }
