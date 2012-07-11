@@ -31,8 +31,8 @@ namespace cqa_medical.DataInput
 				addQuestion(question);
 			}
 
-			var answers = GetValuesFromCSV<Answer>(answersFileName);
-			foreach (var answer in answers)
+			IEnumerable<Answer> answers = GetValuesFromCSV<Answer>(answersFileName);
+			foreach (Answer answer in answers)
 			{
 				addAnswer(answer);
 			}
@@ -45,7 +45,8 @@ namespace cqa_medical.DataInput
 			var f = new FileStream(fileName, FileMode.Open);
 			using (var streamReader = new StreamReader(f, Encoding.GetEncoding(1251)))
 			{
-				var config = new CsvConfiguration {Quote = (char)1 ,Delimiter = ';', HasHeaderRecord = false, UseInvariantCulture = true};
+				var config = new CsvConfiguration
+				             	{Quote = (char) 1, Delimiter = ';', HasHeaderRecord = false, UseInvariantCulture = true};
 				var csvReader = new CsvReader(streamReader, config);
 				List<T> resultsList = csvReader.GetRecords<T>().ToList();
 				return resultsList;
@@ -63,7 +64,7 @@ namespace cqa_medical.DataInput
 			var questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
 			Assert.AreEqual(313101, questionList.GetQuestions().Keys.ToArray().Length);
-			//Assert.IsNotEmpty(questionList.GetQuestions()[55879373].GetAnswers());
+			Assert.IsNotEmpty(questionList.GetQuestions()[55879373].GetAnswers());
 		}
 	}
 }
