@@ -8,7 +8,11 @@ using cqa_medical.DataInput;
 
 namespace cqa_medical.Statistics
 {
-    class Statistics
+	public class StatisticsAttribute : Attribute
+	{
+	}
+
+	class Statistics
     {
     	private readonly Dictionary<long, Question> questionDictionary;
         private readonly IEnumerable<Question> questions;
@@ -26,58 +30,61 @@ namespace cqa_medical.Statistics
 			return new DistributionCreator<T>(data);
 		}
 
-		public void SaveResultsToFile(string filename, string text)
-		{
-			using (var writer = new StreamWriter(new FileStream(filename, FileMode.Create), Encoding.GetEncoding(1251)))
-			{
-				writer.WriteLine(text);
-			}
-		}
-
+		[Statistics]
 		public DistributionCreator<int> AnswerLengthDistibution()
 		{
 			return GetDistribution(answers.Select(t => t.Text.Length));
 		}
 
+		[Statistics]
 		public DistributionCreator<int> AnswersAmountDistibution()
 		{
 			return GetDistribution(questions.Select(t => t.GetAnswers().ToArray().Length));
 		}
-
+		[Statistics]
 		public DistributionCreator<int> AnswerSpeedDistibution()
 		{
 			return GetDistribution(answers.Select(t => (int)Math.Floor((t.DateAdded - questionDictionary[t.QuestionId].DateAdded).TotalMinutes)));
 		}
-
+		[Statistics]
 		public DistributionCreator<int> QuestionLengthDistibution()
 		{
 			return GetDistribution(questions.Select(t => t.Title.Length + t.Text.Length));
 		}
-
-		public DistributionCreator<int> QuestionActivityInTimeDistibution()
+		[Statistics]
+		public DistributionCreator<int> QuestionActivityInDaysDistibution()
 		{
 			var d = new DateTime(2011, 1, 1);
 			return GetDistribution(questions.Select(t => (int)Math.Floor((t.DateAdded - d).TotalDays)));
-				        	
 		}
-
+		[Statistics]
+		public DistributionCreator<string> QuestionActivityInDaysByWeekDistibution()
+		{
+			return GetDistribution(questions.Select(t => t.DateAdded.DayOfWeek.ToString()));
+		}
+		[Statistics]
+		public DistributionCreator<int> QuestionActivityInHoursByDayDistibution()
+		{
+			return GetDistribution(questions.Select(t => t.DateAdded.Hour));
+		}
+		[Statistics]
 		public DistributionCreator<string> UserActivityInMessagesDistibution()
 		{
 			var statisticGenerator = new DistributionCreator<string>(questions.Select(t => t.AuthorEmail));
 			statisticGenerator.AddData(answers.Select(t => t.AuthorEmail));
 			return statisticGenerator;
 		}
-
+		[Statistics]
 		public DistributionCreator<string> CategoryQuestionsDistribution()
 		{
 			return GetDistribution(questions.Select(q => q.Category));
 		}
-
+		[Statistics]
 		public DistributionCreator<string> CategoryAnswersDistribution()
 		{
 			return GetDistribution(answers.Select(a => questionDictionary[a.QuestionId].Category));
 		}
-
+		[Statistics]
 		public DistributionCreator<string> CategoryUsersDistribution()
 		{
 			var categories = new HashSet<Tuple<string, string>>();
@@ -90,7 +97,20 @@ namespace cqa_medical.Statistics
 			}
 			return GetDistribution(categories.Select(cat => cat.Item1));
 		}
-
+		[Statistics]
+		public DistributionCreator<string> CategoryUserQuestionsDistribution()
+		{
+			return GetDistribution(questions.Select(q => new Tuple<string, string>(q.Category, q.AuthorEmail))
+											.Distinct()
+											.Select(item => item.Item1));
+		}
+		[Statistics]
+		public DistributionCreator<string> CategoryUserAnswersDistribution()
+		{
+			return GetDistribution(answers.Select(a => new Tuple<string, string>(questionDictionary[a.QuestionId].Category, a.AuthorEmail))
+										  .Distinct()
+										  .Select(item => item.Item1));
+		}
     }
 
 	[TestFixture]
@@ -139,17 +159,35 @@ namespace cqa_medical.Statistics
 		[Test]
 		public void TestQuestionActivity()
 		{
-			var distibution = statistics.QuestionActivityInTimeDistibution().GetData();
+			var distibution = statistics.QuestionActivityInDaysDistibution().GetData();
 			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
 			Assert.AreEqual(1, distibution[92]);
 			Assert.AreEqual(2, distibution[353]);
 		}
-		
+
+		[Test]
+		public void TestQuestionActivityInDaysByWeek()
+		{
+			var distibution = statistics.QuestionActivityInDaysByWeekDistibution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(1, distibution["Sunday"]);
+			Assert.AreEqual(2, distibution["Tuesday"]);
+		}
+
+		[Test]
+		public void TestQuestionActivityInHoursByDay()
+		{
+			var distibution = statistics.QuestionActivityInHoursByDayDistibution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(2, distibution[11]);
+			Assert.AreEqual(1, distibution[22]);
+		}
+
 		[Test]
 		public void TestUserActivity()
 		{
 			var distibution = statistics.UserActivityInMessagesDistibution().GetData();
-			Assert.AreEqual(19, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(18, distibution.Keys.ToArray().Length);
 		}
 
 		[Test]
@@ -176,7 +214,25 @@ namespace cqa_medical.Statistics
 			var distibution = statistics.CategoryUsersDistribution().GetData();
 			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
 			Assert.AreEqual(5, distibution["illness"]);
-			Assert.AreEqual(14, distibution["health"]);
+			Assert.AreEqual(13, distibution["health"]);
+		}
+
+		[Test]
+		public void TestCategoryUserQuestions()
+		{
+			var distibution = statistics.CategoryUserQuestionsDistribution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(1, distibution["illness"]);
+			Assert.AreEqual(1, distibution["health"]);
+		}
+
+		[Test]
+		public void TestCategoryUserAnswers()
+		{
+			var distibution = statistics.CategoryUserAnswersDistribution().GetData();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(4, distibution["illness"]);
+			Assert.AreEqual(12, distibution["health"]);
 		}
 	}
 }
