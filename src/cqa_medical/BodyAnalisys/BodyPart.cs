@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.BodyAnalisys
 {

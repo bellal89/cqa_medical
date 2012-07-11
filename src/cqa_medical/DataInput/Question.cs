@@ -5,13 +5,15 @@ using CsvHelper.Configuration;
 
 namespace cqa_medical.DataInput
 {
+	
 	/// <summary>
 	/// Формат файла с вопросами:
 	/// Номер вопроса;Адрес автора;Кпд;Баллов;Дата добавления;Дата закрытия;Подкатегория;Сумма оценок;Всего оценок;Кто выбрал лучшим;Текст вопроса;Описание;Теги 
 	///  </summary>
+	[Serializable]
 	public class Question 
 	{
-
+		[NonSerialized]
 		private static readonly CultureInfo Culture = new CultureInfo("ru")
 		{
 			NumberFormat = { NumberDecimalDigits = 4, NumberDecimalSeparator = "." },

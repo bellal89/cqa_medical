@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using cqa_medical.DataInput;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.Statistics
 {
@@ -32,12 +32,12 @@ namespace cqa_medical.Statistics
 		public void TestGetWeekFromRange()
 		{
 			var now = new DateTime(2011, 9, 26, 1, 2, 3);
-			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(1)));
-			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(2)));
-			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(3)));
-			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(4)));
-			Assert.AreEqual(now.AddDays(6), Statistics.GetWeek(now.AddDays(7)));
-			Assert.AreEqual(now.AddDays(6), Statistics.GetWeek(now.AddDays(8)));
+			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(1)));
+			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(2)));
+			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(3)));
+			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(4)));
+			Assert.AreEqual(now.AddDays(6), Utilits.GetWeek(now.AddDays(7)));
+			Assert.AreEqual(now.AddDays(6), Utilits.GetWeek(now.AddDays(8)));
 		}
 
 		[Test]

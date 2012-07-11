@@ -11,8 +11,7 @@ using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
-using cqa_medical.Statistics;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 
 namespace cqa_medical.Statistics
@@ -35,10 +34,7 @@ namespace cqa_medical.Statistics
 			answers = questionList.GetAllAnswers().ToArray();
 		}
 		
-		public static DateTime GetWeek(DateTime now)
-		{
-			return now.AddDays(-(int) now.DayOfWeek);
-		}
+	
 
 		private SortedDictionary<T, int> GetDistribution<T>(IEnumerable<T> data)
 		{
@@ -52,9 +48,10 @@ namespace cqa_medical.Statistics
 			                                  	.Where(a => a.DateAdded >= FirstDate)
 			                                  	.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
 												//.Select(q => GetWeek(q.DateAdded).ToShortDateString()));
-			return Utilits.Utilits.DistributionQuotient(enumerator, denumerator);
+			return Utilits.DistributionQuotient(enumerator, denumerator);
 		}
 
+		#region SimpleStatistics
 		[Statistics]
 		public SortedDictionary<int, int> AnswerLengthDistibution()
 		{
@@ -64,7 +61,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<int, int> AnswersAmountDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.GetAnswers().ToArray().Length));
+			return GetDistribution(questions.Select(t => t.GetAnswers().Count));
 		}
 
 		[Statistics]
@@ -208,16 +205,16 @@ namespace cqa_medical.Statistics
 		{
 			return GetDistribution(answers.GroupBy(a => a.AuthorEmail, (email, qs) => qs.Count()));
 		}
+		#endregion
 
 		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords)
 		{
 			return GetDistribution(questions
 			                       	.Where(a => a.DateAdded >= FirstDate)
 			                       	.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
-			                       	.Select(q => GetWeek(q.DateAdded).ToShortDateString()));
+									.Select(q => Utilits.GetWeek(q.DateAdded).ToShortDateString()));
 		}
 
-		[Statistics]
 		public SortedDictionary<DateTime, int> WordIntensityDistributionInDays(IEnumerable<string> expectedWords)
 		{
 			var keyWords = expectedWords.Select(Program.DefaultMyStemmer.Stem);
@@ -242,7 +239,7 @@ namespace cqa_medical.Statistics
 		{
 			var numerator = GetDistribution(symptom.Ids.Select(id => questionList.GetQuestion(id).DateAdded.AddDays(-(int)questionList.GetQuestion(id).DateAdded.DayOfWeek).ToShortDateString()));
 			var denominator = GetDistribution(questions.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
-			return Utilits.Utilits.DistributionQuotient(numerator, denominator);
+			return UtilitsNamespace.Utilits.DistributionQuotient(numerator, denominator);
 		}
 
 		public Dictionary<string, double> AverageTopicProbabilityDistributionInDays(int topicNumber, string docIdsFile,  string topicsFile)
@@ -285,6 +282,19 @@ namespace cqa_medical.Statistics
 			var denominator = GetDistribution(questions.Select(q => q.DateAdded.ToShortDateString()));
 			return Utilits.Utilits.DistributionQuotient(numerator, denominator);
 		}
+		public static double GetAverage(IDictionary<int, int> distribution)
+		{
+			return distribution.Keys.Select(k => k*distribution[k]).Sum()/(double) distribution.Values.Sum();
+		}
+
+		public SortedDictionary<DateTime, int> WordIntensity(IEnumerable<string> expectedWords)
+		{
+			return GetDistribution(questions
+									.Where(a => a.DateAdded >= FirstDate)
+									.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
+									.Select(q => Utilits.GetWeek(q.DateAdded)));
+		}
+
 	}
 
 
@@ -326,10 +336,24 @@ namespace cqa_medical.Statistics
 		}
 
 		[Test, Explicit]
+		public void AverageThread()
+		{
+			Console.WriteLine("AverageThreadLength: {0}", Statistics.GetAverage(statistics.AnswersAmountDistibution()));
+			Console.WriteLine("AverageAnswerLength in symbols: {0}", Statistics.GetAverage(statistics.AnswerLengthDistibution()));
+			Console.WriteLine("AverageAnswerLength in words: {0}", Statistics.GetAverage(statistics.AnswerLengthInWordsDistribution()));
+			Console.WriteLine("AverageQuestionLength in symbols: {0}", Statistics.GetAverage(statistics.QuestionLengthDistibution()));
+			Console.WriteLine("AverageQuesitonLength in words: {0}", Statistics.GetAverage(statistics.QuestionLengthInWordsDistribution()));
+		}
+		[Test, Explicit]
+		public void AverageAnswerLength()
+		{
+			
+		}
+		[Test, Explicit]
 		public void SymptomsOverTimeDistribution()
 		{
 			const int numberOfSyptoms = 10;
-			var symptoms = Symptoms.GetDefault().OrderByDescending(s => s.Ids.Count).Take(numberOfSyptoms);
+			var symptoms = Symptoms.GetDefaultIndex().OrderByDescending(s => s.Ids.Count).Take(numberOfSyptoms);
 			foreach (var symptom in symptoms)
 			{
 				var data = statistics.SymptomIntensityDistributionInDays(symptom);
@@ -346,7 +370,7 @@ namespace cqa_medical.Statistics
 				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
 				.Where(m => m.GetCustomAttributes(typeof (StatisticsAttribute), true).Any()).ToList();
 
-			var rawMethod = typeof (Utilits.Utilits).GetMethod("ToStringNormal");
+			var rawMethod = typeof (UtilitsNamespace.Utilits).GetMethod("ToStringNormal");
 			foreach (var info in infos)
 			{
 				Console.WriteLine("calculating " + info.Name);
@@ -363,12 +387,16 @@ namespace cqa_medical.Statistics
 			var words = new[] {"сердце", "ишемический", "инсульт", "инфаркт", "нитроглицерин", "валидол", "корвалол", "миокард"};
 
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", words));
-			var data = statistics.WordIntensityDistributionInDays(words).ToDictionary(item => item.Key, item => item.Value + 700).ToStringNormal();
+			var data = statistics.WordIntensityDistributionInDays(words).ToDictionary(item => item.Key, item => item.Value);
+			var formattedData = data.SumUpToDays().ToStringComparable();
+//			var formattedData = data.ToStringNormal();
 			File.WriteAllText(
-				Program.StatisticsDirectory + "WordIntensityDistributionInDays700_" + String.Join("_", words) + ".txt", data);
+				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", formattedData);
+
+			Console.WriteLine(new OctavePlot("2.png", data.Keys.ToArray(), data.Values.Select(k => (double)k).ToArray()).DrawPlot());
 		}
 
-		[Test, Explicit, TestCaseSource("divideCases")]
+		[Test, Explicit, TestCaseSource("DivideCases")]
 		public void WordQuotientDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
@@ -377,15 +405,19 @@ namespace cqa_medical.Statistics
 				Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
 
-		[Test, Explicit, TestCaseSource("divideCases")]
+		[Test, Explicit, TestCaseSource("DivideCases")]
 		public void WordIntensityDistributionInWeeks(string[] expectedWords)
 		{
+			var cul = CultureInfo.InvariantCulture;
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
-			var data = statistics.WordIntensityDistributionInWeeks(expectedWords).ToStringNormal();
+			var data = statistics.WordIntensity(expectedWords);
+//			var formattedData = data.ToStringNormal();
+
+			var foramttedData = string.Join(Environment.NewLine, data.SumUpToDays().ToStringComparable());
 			File.WriteAllText(
-				Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
+				Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", foramttedData);
 		}
-		public static object[] divideCases = new object[]
+		public static object[] DivideCases = new object[]
 		                                      	{
 		                                      		new object[] {new[] {"грипп", "ОРВИ"}}
 		                                      	};

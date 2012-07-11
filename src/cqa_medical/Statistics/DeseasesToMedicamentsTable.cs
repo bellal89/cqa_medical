@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using cqa_medical.BodyAnalisys;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.Statistics
 {
@@ -31,8 +31,8 @@ namespace cqa_medical.Statistics
 
 		public void AddToMedicalGuide(string desease, string medicament, int howMany = 1)
 		{
-			if (howMany > 100 || howMany < 50) return;
-				MedicalGuide.Add(Tuple.Create(desease, medicament), howMany);
+			if (howMany < 50 ) return;
+			MedicalGuide.Add(Tuple.Create(desease, medicament), howMany);
 		}
 
 		public override string ToString()
@@ -43,13 +43,13 @@ namespace cqa_medical.Statistics
 		[TestFixture]
 		public class TestTable
 		{
-			[Test, Explicit]
-			public void Test()
+			[Test, Explicit("Таблица")]
+			public void GetTables()
 			{
 				const int minAmount = 50;
-				var medicaments = Medicaments.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
-				var deseases = Deseases.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
-				var symptoms = Symptoms.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
+				var medicaments = Medicaments.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
+				var deseases = Deseases.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
+				var symptoms = Symptoms.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
 				var q = new DeseasesToMedicamentsTable(deseases, medicaments);
 				File.WriteAllText("../../Files/deseases-medicaments.txt", q.ToString());
 				var w = new DeseasesToMedicamentsTable(symptoms, medicaments);

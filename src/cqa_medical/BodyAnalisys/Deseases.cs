@@ -3,66 +3,115 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.BodyAnalisys
 {
 	public class Deseases
 	{
-		public HashSet<string> DeseasesList;
-		private readonly IStemmer stemmer;
+		public HashSet<string> DeseasesList { get; private set; }
 
-		public Deseases(IStemmer stemmer)
+		private Deseases(IStemmer stemmer, IEnumerable<string> deseases)
 		{
-			this.stemmer = stemmer;
-			DeseasesList = new HashSet<string>(GetDeseasesFromDeseasesTxtFile());
+			DeseasesList = new HashSet<string>(CleanDeseases(stemmer, deseases));
+		}
+		public static Deseases GetFromDeseasesTxtFile(IStemmer stemmer)
+		{
+			return new Deseases(stemmer, GetCandidatesFromDeseasesTxtFile(stemmer).ToList());
 		}
 
-		// очень завязан на файл Deseases.txt
-		public IOrderedEnumerable<string> GetDeseasesFromDeseasesTxtFile()
+		public static Deseases GetFromLazarevaManual(IStemmer stemmer)
 		{
-			var tabulationParser = new TabulationParser(stemmer);
+			return new Deseases(stemmer, GetCandidatesFromLazarevaManual().ToList());
+		}
+		public static Deseases GetFromInternet(IStemmer stemmer)
+		{
+			return new Deseases(stemmer, GetIndexFromInternetMedicalDictionary(stemmer).ToList());
+		}
+		public static Deseases GetFullDeseases(IStemmer stemmer)
+		{
+			return new Deseases(
+				stemmer,
+				GetCandidatesFromDeseasesTxtFile(stemmer)
+					.Concat(GetCandidatesFromLazarevaManual()).ToList());
+		}
+
+		private static IEnumerable<string> CleanDeseases(IStemmer stemmer, IEnumerable<string> candidateDeseases)
+		{
+			const string notDeseasesFileName = "../../BodyAnalisys/notDeseases.txt";
+			var nonDeseasesWords = File.ReadAllLines(notDeseasesFileName);
+			var notDeseases = new HashSet<string>(nonDeseasesWords.Select(stemmer.Stem).Concat(nonDeseasesWords));
+			var russianWordRedex = new Regex(@"[^йцукенгшшщзхъфывапролджэячсмитьбю]");
+			var nonAdjectiveWordRegex = new Regex(@"(ый|ой|ая|ий|ого)$");
+			var laboratoryMethodWordRegex = new Regex(@"(скопия|графия|лечение)$");
+
+			var deseases = candidateDeseases
+				.Select(stemmer.Stem)
+				.Where(t => !(
+								t.Length < 3 ||
+								russianWordRedex.IsMatch(t) ||
+								nonAdjectiveWordRegex.IsMatch(t) ||
+								laboratoryMethodWordRegex.IsMatch(t) ||
+								notDeseases.Contains(t)
+							 ));
+			return deseases.Distinct();
+		}
+
+
+		// очень завязан на файл Deseases.txt
+		private static IEnumerable<string> GetCandidatesFromDeseasesTxtFile(IStemmer stemmer)
+		{
+			var tabulationParser = new TabulationParser();
 			var neededWords =
 				tabulationParser.ParseFromFile(Program.DeseasesFileName)
 					.Skip(998)
 					.Take(711)
 					.Where(t => t.IndicatorAmount == 1)
 					.ToList();
+			var splittedWords = neededWords.SelectMany(s => s.Words.TakeWhile(r => r != "--")).ToArray();
 
-			var splittedWords = neededWords.SelectMany(s => s.StemmedWords.TakeWhile(r => r != "--")).ToArray();
-			const string notDeseasesFileName = "BodyAnalisys/notDeseases.txt";
-			var q = splittedWords.Where(t => !(
-			                                  	t.Length < 3 ||
-			                                  	Regex.IsMatch(t, @"[^йцукенгшшщзхъфывапролджэячсмитьбю]") ||
-			                                  	Regex.IsMatch(t, @"(ый|ой|ая|ий)$") ||
-			                                  	File.ReadAllLines(notDeseasesFileName).Contains(t)
-			                                  )
-				).ToArray();
-			return q.Distinct().OrderBy(s => s);
+			return splittedWords.OrderBy(s => s);
 		}
-		public static IEnumerable<string> GetDeseasesFromLazarevaManual()
+		private static IEnumerable<string> GetCandidatesFromLazarevaManual()
 		{
-			var regexp = new Regex(@"(?<x>[\w ]+?)\r\n\1");
 			var text = File.ReadAllText(Program.LazarevaManualFileName);
+			var regexp = new Regex(@"(?<x>[\w ]+?)\r\n\1");
 			var matches = regexp.Matches(text);
 			for (int i = 0; i < matches.Count; i++)
-			{ 
-				yield return matches[i].Groups["x"].Value;
+			{
+				var deseaseString = matches[i].Groups["x"].Value;
+				yield return deseaseString;
+			}
+		}
+		private static IEnumerable<string> GetIndexFromInternetMedicalDictionary(IStemmer stemmer)
+		{
+			// not working yet
+			// проблема с русскими буквами
+			var urlName = "http://www.neuronet.ru/bibliot/bme/menu.html";
+			//			var urlName = "http://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%A1%D0%BF%D0%B8%D1%81%D0%BA%D0%B8:%D0%9C%D0%B5%D0%B4%D0%B8%D1%86%D0%B8%D0%BD%D0%B0";
+			//			var urlName = "http://www.med-spravochnik.ru/bolezni/index.php";
+			//			var urlName = "http://www.vidal.ru/patsientam/spisok-boleznei-po-alfavitu/";
+
+			var response = WebRequest.Create(urlName).GetResponse();
+			using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+			{
+				var text = sr.ReadToEnd();
+				Console.Write(text);
+				File.WriteAllText("1.html", text);
 			}
 
+			return null;
 		}
-
+		
 		public IEnumerable<InvertedIndexUnit> GetIndex(IEnumerable<Tuple<long, string>> idTextList)
 		{
 			var deseasesToIds = new Dictionary<string, HashSet<long>>();
 			foreach (var idAndText in idTextList)
 			{
-				var words = idAndText.Item2.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+				var words = idAndText.Item2.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 				foreach (var word in words.Where(word => DeseasesList.Contains(word)))
 				{
 					if (!deseasesToIds.ContainsKey(word))
@@ -74,41 +123,19 @@ namespace cqa_medical.BodyAnalisys
 
 		}
 
-		public IEnumerable<string> GetIndexFromQuestionList(QuestionList ql)
-		{
-			var des = new Deseases(Program.DefaultMyStemmer);
-			return des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)))
-				.Select(q => q.Word + " " + String.Join(" ", q.Ids));
-		}
-
-		public static IEnumerable<string> GetIndexFromInternetMedicalDictionary()
-		{
-			// not working yet
-			var urlName = "http://www.vidal.ru/patsientam/spisok-boleznei-po-alfavitu/";
-			var r = WebRequest.Create(urlName);
-
-			var resp = r.GetResponse();
-			using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
-			{
-				var text = sr.ReadToEnd();
-				Console.Write(text);
-				File.AppendAllText("1.html", text);
-			}
-
-			return null;
-		}
-
-		public static IEnumerable<InvertedIndexUnit> GetDefault()
+		public static IEnumerable<InvertedIndexUnit> GetDefaultIndex()
 		{
 			return DataActualityChecker.Check(
 				new Lazy<InvertedIndexUnit[]>(
 					() =>
 						{
 							var ql = Program.DefaultQuestionList;
-							var des = new Deseases(Program.DefaultMyStemmer);
+							var des = GetFullDeseases(Program.DefaultMyStemmer);
 							return des.GetIndex(ql
 							                    	.GetAllQuestions()
-							                    	.Select(t => Tuple.Create(t.Id, t.WholeText)))
+							                    	.Select(t => Tuple.Create(t.Id, t.WholeText))
+								)
+								.OrderByDescending(k => k.Ids.Count)
 								.ToArray();
 						}),
 				InvertedIndexUnit.FormatStringWrite,
@@ -120,41 +147,44 @@ namespace cqa_medical.BodyAnalisys
 	}
 
 	[TestFixture]
-	public class GetDeseases
+	public class GetDeseasesClass
 	{
 		[Test, Explicit]
-		public void GetRight()
+		public void GetDeseases()
 		{
-			var q  = Deseases.GetDefault().OrderByDescending(qw => qw.Ids.Count());
-			File.WriteAllLines("rtyy.txt", q.Select(s=> s.Word +"\t" +s.Ids.Count()));
+			var q  = Deseases.GetFullDeseases(Program.DefaultMyStemmer).DeseasesList.OrderBy(s => s);
+			File.WriteAllLines("deseases.txt", q);
 		}
 		[Test, Explicit]
-		public void Get()
+		public void GetFromDeseasesTxt()
 		{
 			var ql = Program.DefaultQuestionList;
-			var des = new Deseases(Program.DefaultMyStemmer);
+			var des = Deseases.GetFromDeseasesTxtFile(Program.DefaultMyStemmer);
 			var deseasesIndex =
 				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)));
-			File.WriteAllLines("DeseasesIndex.txt", deseasesIndex.Select(s => s.ToString()));
+			var result = deseasesIndex.OrderByDescending(qw => qw.Ids.Count());
+			File.WriteAllLines("DeseasesIndex_FromDeseasesTxt.txt", result.Select(s => s.ToStringCount("\t")));
 		}
-		[Test]
-		public void GetTest()
-		{
-			var ql = Program.TestDefaultQuestionList;
-			var des = new Deseases(Program.DefaultMyStemmer);
-			var deseasesIndex = des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).Select(q => q.Word + "_" + String.Join("+", q.Ids)).ToArray();
-			Console.WriteLine(String.Join("\n", deseasesIndex));
-			Assert.AreEqual(1, deseasesIndex.Length);
-		}
-		[Test]
+		[Test,Explicit]
 		public void GetFromLazarevaManual()
 		{
-			Console.WriteLine(String.Join("\n", Deseases.GetDeseasesFromLazarevaManual().ToArray()));
+			var ql = Program.DefaultQuestionList;
+			var des = Deseases.GetFromLazarevaManual(Program.DefaultMyStemmer);
+			var ans = des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).ToArray();
+			var result = ans.OrderByDescending(qw => qw.Ids.Count());
+			File.WriteAllLines("DeseasesIndex_FromLazarevaManual.txt", result.Select(s =>s.ToStringCount("\t")));
 		}
+
 		[Test]
 		public void TestGetIndexFromInternetMedicalDictionary()
 		{
-			Deseases.GetIndexFromInternetMedicalDictionary();
+			var des = Deseases.GetFromInternet(Program.DefaultMyStemmer);
+		}
+		[Test]
+		public void JustNothing()
+		{
+			var q = File.ReadAllLines(@"C:\Users\kriskk\Documents\GitHub\cqa_medical\src\cqa_medical\BodyAnalisys\notDeseases.txt");
+			File.WriteAllLines(@"C:\Users\kriskk\Documents\GitHub\cqa_medical\src\cqa_medical\BodyAnalisys\notDeseases.txt", q.Distinct());
 		}
 	}
 }

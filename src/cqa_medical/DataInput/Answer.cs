@@ -9,8 +9,10 @@ namespace cqa_medical.DataInput
 	/// Номер ответа;Номер вопроса;Лучший?;Кто выбрал лучшим;Адрес автора;Кпд;Баллов;Дата добавления;Сумма оценок;Всего оценок;Текст ответа;источник; 
 	/// </summary>
 
+	[Serializable]
 	public class Answer
     {
+		[NonSerialized]
 		private static readonly CultureInfo Culture = new CultureInfo("ru")
 		{
 			NumberFormat = { NumberDecimalDigits = 4, NumberDecimalSeparator = "." },

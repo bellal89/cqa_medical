@@ -55,6 +55,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -75,14 +76,17 @@
     <Compile Include="SpellChecker\TrigramIndex.cs" />
     <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
-    <Compile Include="Utilits\DataActualityChecker.cs" />
-    <Compile Include="Utilits\InvertedIndexUnit.cs" />
+    <Compile Include="UtilitsNamespace\DataActualityChecker.cs" />
+    <Compile Include="UtilitsNamespace\DataPool.cs" />
+    <Compile Include="UtilitsNamespace\InvertedIndexUnit.cs" />
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
-    <Compile Include="Utilits\GismeteoHTMLParser.cs" />
-    <Compile Include="Utilits\InferFormatLDAGenerator.cs" />
-    <Compile Include="Utilits\TabulationParser.cs" />
+    <Compile Include="UtilitsNamespace\InferFormatLDAGenerator.cs" />
+    <Compile Include="UtilitsNamespace\GismeteoHTMLParser.cs" />
+    <Compile Include="UtilitsNamespace\OctaveController.cs" />
+    <Compile Include="UtilitsNamespace\OctavePlot.cs" />
+    <Compile Include="UtilitsNamespace\TabulationParser.cs" />
     <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />
     <Compile Include="DataInput\Question.cs" />
@@ -93,10 +97,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statistics\DeseasesToMedicamentsTable.cs" />
-    <Compile Include="Utilits\DistributionCreator.cs" />
+    <Compile Include="UtilitsNamespace\DistributionCreator.cs" />
     <Compile Include="Statistics\Statistics.cs" />
-    <Compile Include="Utilits\MailUserPageDownloader.cs" />
-    <Compile Include="Utilits\Utilits.cs" />
+    <Compile Include="UtilitsNamespace\MailUserPageDownloader.cs" />
+    <Compile Include="UtilitsNamespace\Utilits.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -128,9 +132,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BodyAnalisys\notDeseases.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="BodyAnalisys\notDeseases.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
