@@ -32,10 +32,6 @@ namespace cqa_medical.DataInput
 				Question question = questions[answer.QuestionId];
 				question.AddAnswer(answer);
 			}
-			else
-			{
-				Console.WriteLine(answer.QuestionId);
-			}
 		}
     }
 }

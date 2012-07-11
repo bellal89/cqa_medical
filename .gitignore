@@ -25,4 +25,5 @@ obj/
 *.cache
 *.suo
 src/cqa_medical/Files/
+src/cqa_medical/StatOutput/
 _ReSharper*
