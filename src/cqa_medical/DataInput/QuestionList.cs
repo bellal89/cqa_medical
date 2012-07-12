@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -32,6 +33,13 @@ namespace cqa_medical.DataInput
 				Question question = questions[answer.QuestionId];
 				question.AddAnswer(answer);
 			}
+		}
+
+		public void SaveTextToFile(string questionsFile, string answersFile)
+		{
+			var q =  questions.Values;
+			var answers = q.SelectMany(t => t.GetAnswers());
+			File.WriteAllText(questionsFile, String.Join("\n", questions.Values));
 		}
     }
 }

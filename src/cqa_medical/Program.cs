@@ -22,14 +22,19 @@ namespace cqa_medical
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
 			var statistics = new Statistics.Statistics(questionList);
 
-        	IEnumerable<MethodInfo> infos = statistics.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.GetCustomAttributes(typeof(StatisticsAttribute), true).Any());
+			//IEnumerable<MethodInfo> infos = statistics.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.GetCustomAttributes(typeof(StatisticsAttribute), true).Any());
 
-        	foreach (var info in infos)
-        	{
-        		Console.WriteLine(info.Name);
-        		var data = info.Invoke(statistics, new object[0]).ToString();
-				File.WriteAllText(statisticsDirectory + info.Name + ".txt", data);
-        	}
+			//foreach (var info in infos)
+			//{
+			//    Console.WriteLine(info.Name);
+			//    var data = info.Invoke(statistics, new object[0]).ToString();
+			//    File.WriteAllText(statisticsDirectory + info.Name + ".txt", data);
+			//}
+
+			//File.WriteAllText(statisticsDirectory + "AnswerActivityInDaysDistibution.txt",
+			//                  statistics.AnswerActivityInDaysDistibution().ToString());
+
+
         }
     }
 
