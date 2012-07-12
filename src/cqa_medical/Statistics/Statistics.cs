@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
-using cqa_medical.Statistics;
 
 namespace cqa_medical.Statistics
 {
@@ -27,13 +24,10 @@ namespace cqa_medical.Statistics
 			answers = questions.SelectMany(t => t.GetAnswers());
         }
 		
-		public static string DeleteHTMLTagsFrom(string s)
-		{
-			return Regex.Replace(s, "<[^>]*?>", string.Empty, RegexOptions.IgnoreCase);
-		}
+		
 		private IEnumerable<string> SplitInWordsAndNormalize(string s)
 		{
-			return Regex.Split(DeleteHTMLTagsFrom(s), @"\W+");
+			return Regex.Split(s.StripHTMLTags(), @"\W+");
 		}
 
 		private DistributionCreator<T> GetDistribution<T>(IEnumerable<T> data)

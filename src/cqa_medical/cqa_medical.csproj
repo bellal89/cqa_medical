@@ -59,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statistics\DistributionCreator.cs" />
     <Compile Include="Statistics\Statistics.cs" />
+    <Compile Include="Utilits.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Files\AnswersTest.csv" />
