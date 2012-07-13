@@ -14,8 +14,8 @@ namespace cqa_medical
     {
         static void Main(string[] args)
         {
-			const string questionsFileName = "../../Files/QuestionsTest.csv";
-			const string answersFileName = "../../Files/AnswersTest.csv";
+			const string questionsFileName = "../../Files/qst_25.csv";
+			const string answersFileName = "../../Files/ans_25.csv";
 			const string statisticsDirectory = "../../StatOutput/";
 			var questionList = new QuestionList();
 
@@ -38,7 +38,7 @@ namespace cqa_medical
         	var statistics = new Statistics.Statistics(questionList);
 
         	//IEnumerable<MethodInfo> infos = statistics.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.GetCustomAttributes(typeof(StatisticsAttribute), true).Any());
-
+			
         	//foreach (var info in infos)
         	//{
         	//    Console.WriteLine(info.Name);
@@ -49,9 +49,17 @@ namespace cqa_medical
 			var sortedDict = statistics.UserActivityInMessagesDistibution().OrderByDescending(entry => entry.Value).Select(
 								entry => new KeyValuePair<string, int>(entry.Key, entry.Value));
 			File.WriteAllText(statisticsDirectory + "UserActivityInMessagesDistibution.txt", String.Join("\n", sortedDict.Select(pair => pair.Key + "\t" + pair.Value)));
-        	var rawData = questionList.GetAllQuestions().Select(r => r.Text + r.Title);
-			
+
+
+			Console.WriteLine("Parsing Completed");
+			var rawData = questionList.GetAllQuestions().Select(r => r.Text + r.Title);
+
         	Console.WriteLine( MyStem.Run(rawData.Select(t => t.StripHTMLTags())));
+        	int i = 0;
+			foreach (var q in MyStem.Run(rawData.Select(t => t.StripHTMLTags())))
+        	{
+        		Console.WriteLine(q + "  " + i++);
+        	}
         }
     }
 

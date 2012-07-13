@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 
 namespace cqa_medical.DataInput.MyStem
 {
@@ -44,7 +45,7 @@ namespace cqa_medical.DataInput.MyStem
 			var wordVariants = stringInMyStemFormat.Split('|');
 			foreach(var s in wordVariants)
 			{
-				if (s.EndsWith("?")) // присутствие ? в конце строки значит, что MyStem не знает этого слова и сгенерировал его алгоритмами
+				if (s[s.Length-1] == '?') // присутствие ? в конце строки значит, что MyStem не знает этого слова и сгенерировал его алгоритмами
 				{
 					Words.Add(new MyStemWord(s.Substring(0, s.Length - 1), false));
 				}
@@ -61,4 +62,13 @@ namespace cqa_medical.DataInput.MyStem
 			return Word;
 		}
 	}
+
+	[TestFixture]
+	internal class MyStemUnitTest
+	{
+		//[Test]
+		//public void 
+
+	}
+
 }

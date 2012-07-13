@@ -67,7 +67,7 @@ namespace cqa_medical.Statistics
 		[Test]
 		public void TestQuestionsDictionary()
 		{
-			var text = String.Join(" ", questionList.GetQuestions().Values.Select(q => q.Title + " " + q.Text));
+			var text = String.Join(" ", questionList.GetAllQuestions().Select(q => q.Title + " " + q.Text));
 			var freqs = new TextFrequencies(text);
 			
 //			Assert.AreEqual(2, freqs.GetOneWordDictionary()["что"]);

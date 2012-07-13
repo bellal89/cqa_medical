@@ -14,14 +14,23 @@ namespace cqa_medical
 {
 	class MyStem
 	{
-		public static string Run(IEnumerable<string> strings)
+		public static IEnumerable<string> Run(IEnumerable<string> strings)
 		{
-			var dataString = String.Join("\n", strings);
-			var mystemAnswer = UseStem(dataString).Select(t => t.Word).ToArray();
-			return String.Join(" ",mystemAnswer);
+
+			foreach (var s in strings)
+			{
+				// надо сбуферизовать штук 1000
+				var mystemAnswer = UseStem(s).Select(t => t.Word);
+
+				yield return String.Join(" ", mystemAnswer);
+			}
+
+			//var dataString = String.Join("\n", strings);
+			//var mystemAnswer = UseStem(dataString).Select(t => t.Word).ToArray();
+			//return String.Join(" ",mystemAnswer);
 		}
 
-		public static MyStemUnit[] UseStem(string s)
+		public static  MyStemUnit[] UseStem(string s)
 		{
 			using( var process = new Process())
 			{
