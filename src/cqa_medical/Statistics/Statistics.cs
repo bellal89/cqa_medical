@@ -25,9 +25,9 @@ namespace cqa_medical.Statistics
         }
 		
 		
-		private IEnumerable<string> SplitInWordsAndNormalize(string s)
+		private IEnumerable<string> SplitInWordsAndStripHTML(string s)
 		{
-			return Regex.Split(s.StripHTMLTags(), @"\W+");
+			return s.StripHTMLTags().SplitInWords();
 		}
 
 		private DistributionCreator<T> GetDistribution<T>(IEnumerable<T> data)
@@ -107,14 +107,14 @@ namespace cqa_medical.Statistics
     	public DistributionCreator<int> AnswerLengthInWordsDistribution()
 		{
 			return GetDistribution(answers
-				.Select(a => SplitInWordsAndNormalize(a.Text)
+				.Select(a => SplitInWordsAndStripHTML(a.Text)
 				.Where(q => q != "").ToArray().Length));
 		}
 		[Statistics]
 		public DistributionCreator<int> QuestionLengthInWordsDistribution()
 		{
 			return GetDistribution(questions
-				.Select(a => SplitInWordsAndNormalize(a.Text + a.Title)
+				.Select(a => SplitInWordsAndStripHTML(a.Text + a.Title)
 				.Where(q => q != "").ToArray().Length));
 		}
 		[Statistics]

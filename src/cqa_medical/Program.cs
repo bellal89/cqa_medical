@@ -13,8 +13,8 @@ namespace cqa_medical
     {
         static void Main(string[] args)
         {
-			const string questionsFileName = "../../Files/qst_25.csv";
-			const string answersFileName = "../../Files/ans_25.csv";
+			const string questionsFileName = "../../Files/QuestionsTest.csv";
+			const string answersFileName = "../../Files/AnswersTest.csv";
 			const string statisticsDirectory = "../../StatOutput/";
 			var questionList = new QuestionList();
 
@@ -35,6 +35,9 @@ namespace cqa_medical
 			//                  statistics.AnswerActivityInDaysDistibution().ToString());
 
 
+        	var rawData = questionList.GetAllQuestions().Select(r => r.Text + r.Title);
+			
+        	Console.WriteLine( MyStem.Run(rawData.Select(t => t.StripHTMLTags())));
         }
     }
 
