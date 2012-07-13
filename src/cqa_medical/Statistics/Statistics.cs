@@ -13,15 +13,15 @@ namespace cqa_medical.Statistics
 
 	class Statistics
     {
-		private readonly Dictionary<long, Question> questionDictionary;
+		private readonly QuestionList questionList;
 		private readonly IEnumerable<Question> questions;
         private readonly IEnumerable<Answer> answers;
 
 		public Statistics(QuestionList questionList)
 		{
-			questionDictionary = questionList.GetQuestions();
-            questions = questionDictionary.Values;
-			answers = questions.SelectMany(t => t.GetAnswers());
+			this.questionList = questionList;
+            questions = questionList.GetAllQuestions();
+			answers = questionList.GetAllAnswers();
         }
 		
 		
@@ -47,7 +47,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public DistributionCreator<int> AnswerSpeedDistibution()
 		{
-			return GetDistribution(answers.Select(t => (int)Math.Floor((t.DateAdded - questionDictionary[t.QuestionId].DateAdded).TotalMinutes)));
+			return GetDistribution(answers.Select(t => (int)Math.Floor((t.DateAdded - questionList.GetQuestion(t.QuestionId).DateAdded).TotalMinutes)));
 		}
 		[Statistics]
 		public DistributionCreator<int> QuestionLengthDistibution()
@@ -89,7 +89,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public DistributionCreator<string> CategoryAnswersDistribution()
 		{
-			return GetDistribution(answers.Select(a => questionDictionary[a.QuestionId].Category));
+			return GetDistribution(answers.Select(a => questionList.GetQuestion(a.QuestionId).Category));
 		}
 		[Statistics]
 		public DistributionCreator<string> CategoryUsersDistribution()
@@ -97,10 +97,9 @@ namespace cqa_medical.Statistics
 			var categories = new HashSet<Tuple<string, string>>();
 			foreach (var answer in answers)
 			{
-				var questionAuthor = questionDictionary[answer.QuestionId].AuthorEmail;
-				var questionCategory = questionDictionary[answer.QuestionId].Category;
-				categories.Add(new Tuple<string, string>(questionCategory, questionAuthor));
-				categories.Add(new Tuple<string, string>(questionCategory, answer.AuthorEmail));
+				var question = questionList.GetQuestion(answer.QuestionId);
+				categories.Add(new Tuple<string, string>(question.Category, question.AuthorEmail));
+				categories.Add(new Tuple<string, string>(question.Category, answer.AuthorEmail));
 			}
 			return GetDistribution(categories.Select(cat => cat.Item1));
 		}
@@ -128,7 +127,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public DistributionCreator<string> CategoryUserAnswersDistribution()
 		{
-			return GetDistribution(answers.Select(a => new Tuple<string, string>(questionDictionary[a.QuestionId].Category, a.AuthorEmail))
+			return GetDistribution(answers.Select(a => new Tuple<string, string>(questionList.GetQuestion(a.QuestionId).Category, a.AuthorEmail))
 										  .Distinct()
 										  .Select(item => item.Item1));
 		}

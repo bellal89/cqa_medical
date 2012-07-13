@@ -63,8 +63,8 @@ namespace cqa_medical.DataInput
 			var parser = new Parser("../../Files/qst_25.csv", "../../Files/ans_25.csv");
 			var questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-			Assert.AreEqual(313101, questionList.GetQuestions().Keys.ToArray().Length);
-			Assert.IsNotEmpty(questionList.GetQuestions()[55879373].GetAnswers());
+			Assert.AreEqual(313101, questionList.GetAllQuestions().ToArray().Length);
+			Assert.IsNotEmpty(questionList.GetQuestion(55879373).GetAnswers());
 		}
 	}
 }

@@ -11,35 +11,43 @@ namespace cqa_medical.DataInput
     {
 
 		/// <summary>
-		/// Change 'questions' signature to Dictionary question[id] => Question
+		/// Change 'questionList' signature to Dictionary questionList[id] => Question
 		/// </summary>
-		protected Dictionary<long, Question> questions = new Dictionary<long, Question>();
+		private readonly Dictionary<long, Question> questionList = new Dictionary<long, Question>();
         
-		public Dictionary<long, Question> GetQuestions()
+		public IEnumerable<Question> GetAllQuestions()
 		{
-			return questions;
+			return questionList.Values;
+		}
+		public IEnumerable<Answer> GetAllAnswers()
+		{
+			return GetAllQuestions().SelectMany(t => t.GetAnswers());
+		}
+		public Question GetQuestion(long id)
+		{
+			return questionList[id];
 		}
 
         public void AddQuestion(Question question)
         {
-            questions.Add(question.Id, question);
+            questionList.Add(question.Id, question);
         }
 
 		/// <exception cref="KeyNotFoundException">Если это ответ на неизвестный вопрос</exception>
 		public void AddAnswer(Answer answer)
 		{
-			if (questions.ContainsKey(answer.QuestionId))
+			if (questionList.ContainsKey(answer.QuestionId))
 			{
-				Question question = questions[answer.QuestionId];
+				Question question = questionList[answer.QuestionId];
 				question.AddAnswer(answer);
 			}
 		}
 
 		public void SaveTextToFile(string questionsFile, string answersFile)
 		{
-			var q =  questions.Values;
+			var q =  questionList.Values;
 			var answers = q.SelectMany(t => t.GetAnswers());
-			File.WriteAllText(questionsFile, String.Join("\n", questions.Values));
+			File.WriteAllText(questionsFile, String.Join("\n", questionList.Values));
 		}
     }
 }
