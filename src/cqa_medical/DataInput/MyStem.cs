@@ -18,15 +18,6 @@ namespace cqa_medical
 				text.Add(q.Item1, q.Item2.StripHTMLTags());
 			}
 		}
-
-		public string UseStem(string s)
-		{
-			var process = Process.Start(@"..\..\Files\mystem.exe", "-lc AnswersTest.csv");
-			if (process == null)
-				throw new Exception("Cannot invoke MyStem");
-			var reader = process.StandardOutput;
-		}
-
 		// сейчас надо взять текст из наших данных да еще и в одной строке и применить к нему MyStem
 	}
 }

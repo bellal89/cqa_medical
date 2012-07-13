@@ -30,19 +30,6 @@ namespace cqa_medical.DataInput
 		{
 			return data;
 		}
-
-		public override string ToString()
-		{
-			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + "\t" + data[k].ToString(CultureInfo.InvariantCulture)).ToArray());
-		}
-
-		public string ToStringInverted()
-		{
-			return string.Join(Environment.NewLine, data.Keys.Select(k => data[k].ToString(CultureInfo.InvariantCulture) + "\t" + k.ToString()).ToArray());
-		}
-
-
-
 	}
 
 
