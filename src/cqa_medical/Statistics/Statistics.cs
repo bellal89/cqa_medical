@@ -13,21 +13,21 @@ namespace cqa_medical.Statistics
 
 	class Statistics
     {
-		private readonly Dictionary<long, Question> questionDictionary;
+		private readonly QuestionList questionList;
 		private readonly IEnumerable<Question> questions;
         private readonly IEnumerable<Answer> answers;
 
 		public Statistics(QuestionList questionList)
 		{
-			questionDictionary = questionList.GetQuestions();
-            questions = questionDictionary.Values;
-			answers = questions.SelectMany(t => t.GetAnswers());
+			this.questionList = questionList;
+            questions = questionList.GetAllQuestions();
+			answers = questionList.GetAllAnswers();
         }
 		
 		
-		private IEnumerable<string> SplitInWordsAndNormalize(string s)
+		private IEnumerable<string> SplitInWordsAndStripHTML(string s)
 		{
-			return Regex.Split(s.StripHTMLTags(), @"\W+");
+			return s.StripHTMLTags().SplitInWords();
 		}
 
 		private SortedDictionary<T, int> GetDistribution<T>(IEnumerable<T> data)
@@ -47,7 +47,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<int, int> AnswerSpeedDistibution()
 		{
-			return GetDistribution(answers.Select(t => (int)Math.Floor((t.DateAdded - questionDictionary[t.QuestionId].DateAdded).TotalMinutes)));
+			return GetDistribution(answers.Select(t => (int)Math.Floor((t.DateAdded - questionList.GetQuestion(t.QuestionId).DateAdded).TotalMinutes)));
 		}
 		[Statistics]
 		public SortedDictionary<int, int> QuestionLengthDistibution()
@@ -99,7 +99,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<string, int> CategoryAnswersDistribution()
 		{
-			return GetDistribution(answers.Select(a => questionDictionary[a.QuestionId].Category));
+			return GetDistribution(answers.Select(a => questionList.GetQuestion(a.QuestionId).Category));
 		}
 		[Statistics]
 		public SortedDictionary<string, int> CategoryUsersDistribution()
@@ -107,10 +107,9 @@ namespace cqa_medical.Statistics
 			var categories = new HashSet<Tuple<string, string>>();
 			foreach (var answer in answers)
 			{
-				var questionAuthor = questionDictionary[answer.QuestionId].AuthorEmail;
-				var questionCategory = questionDictionary[answer.QuestionId].Category;
-				categories.Add(new Tuple<string, string>(questionCategory, questionAuthor));
-				categories.Add(new Tuple<string, string>(questionCategory, answer.AuthorEmail));
+				var question = questionList.GetQuestion(answer.QuestionId);
+				categories.Add(new Tuple<string, string>(question.Category, question.AuthorEmail));
+				categories.Add(new Tuple<string, string>(question.Category, answer.AuthorEmail));
 			}
 			return GetDistribution(categories.Select(cat => cat.Item1));
 		}
@@ -118,14 +117,14 @@ namespace cqa_medical.Statistics
     	public SortedDictionary<int, int> AnswerLengthInWordsDistribution()
 		{
 			return GetDistribution(answers
-				.Select(a => SplitInWordsAndNormalize(a.Text)
+				.Select(a => SplitInWordsAndStripHTML(a.Text)
 				.Where(q => q != "").ToArray().Length));
 		}
 		[Statistics]
 		public SortedDictionary<int, int> QuestionLengthInWordsDistribution()
 		{
 			return GetDistribution(questions
-				.Select(a => SplitInWordsAndNormalize(a.Text + a.Title)
+				.Select(a => SplitInWordsAndStripHTML(a.Text + a.Title)
 				.Where(q => q != "").ToArray().Length));
 		}
 		[Statistics]
@@ -138,7 +137,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<string, int> CategoryUserAnswersDistribution()
 		{
-			return GetDistribution(answers.Select(a => new Tuple<string, string>(questionDictionary[a.QuestionId].Category, a.AuthorEmail))
+			return GetDistribution(answers.Select(a => new Tuple<string, string>(questionList.GetQuestion(a.QuestionId).Category, a.AuthorEmail))
 										  .Distinct()
 										  .Select(item => item.Item1));
 		}

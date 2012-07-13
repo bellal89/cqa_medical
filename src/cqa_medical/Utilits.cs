@@ -12,6 +12,10 @@ namespace cqa_medical
 		{
 			return Regex.Replace(s, "<[^>]*?>", string.Empty, RegexOptions.IgnoreCase);
 		}
+		public static IEnumerable<string> SplitInWords(this string s)
+		{
+			return Regex.Split(s, @"\W+");
+		}
 
 		public static TValue GetOrDefault<TKey, TValue> (this SortedDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
 		{

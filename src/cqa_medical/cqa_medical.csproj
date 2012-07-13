@@ -52,10 +52,11 @@
   <ItemGroup>
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\IParser.cs" />
+    <Compile Include="DataInput\MyStem\MyStemUnit.cs" />
     <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />
     <Compile Include="DataInput\Question.cs" />
-    <Compile Include="DataInput\MyStem.cs" />
+    <Compile Include="DataInput\MyStem\MyStem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statistics\TextFrequencies.cs" />
@@ -70,6 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Files\QuestionsTest.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DataInput\MyStem\mystem.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
