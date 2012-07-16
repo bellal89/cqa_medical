@@ -52,18 +52,4 @@ namespace cqa_medical
 			}
 		}
 	}
-
-	//[TestFixture]
-	//internal class MyStemTest
-	//{
-	//    [Test]
-	//    public void TestMyStem()
-	//    {
-			// необходимо научиться кодировать строчки нормально
-	//            //  var rawString = Encoding.GetEncoding("cpp866").GetString(reader.());
-	//        var s = MyStem.UseStem(Encoding.GetEncoding("cpp866")..GetString("Что в моей внешности тебе не нравится?"));
-	//        Assert.AreEqual("мой", s[2].Word);
-	//    }
-
-	//}
 }
