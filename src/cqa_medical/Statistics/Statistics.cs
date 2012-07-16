@@ -156,6 +156,19 @@ namespace cqa_medical.Statistics
 				userName => userName,
 				userName => Tuple.Create(questionsActivity.GetOrDefault(userName, 0), answersActivity.GetOrDefault(userName, 0)));
 		}
+
+		[Statistics]
+		public SortedDictionary<int, int> QuestionsAmountPerUserDistribution()
+		{
+			return GetDistribution(questions.GroupBy(q => q.AuthorEmail, (email, qs) => qs.Count()));
+		}
+
+		[Statistics]
+		public SortedDictionary<int, int> AnswersAmountPerUserDistribution()
+		{
+			return GetDistribution(answers.GroupBy(a => a.AuthorEmail, (email, qs) => qs.Count()));
+		}
+
 	}
 
 
@@ -306,5 +319,22 @@ namespace cqa_medical.Statistics
 			Assert.AreEqual(Tuple.Create(2, 3), distibution["zaya2802@mail.ru"]);
 		}
 
+		[Test]
+		public void TestQuestionsPerUser()
+		{
+			var distibution = statistics.QuestionsAmountPerUserDistribution();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(1, distibution[1]);
+			Assert.AreEqual(1, distibution[2]);
+		}
+
+		[Test]
+		public void TestAnswersPerUser()
+		{
+			var distibution = statistics.AnswersAmountPerUserDistribution();
+			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			Assert.AreEqual(13, distibution[1]);
+			Assert.AreEqual(1, distibution[3]);
+		}
 	}
 }
