@@ -52,21 +52,4 @@ namespace cqa_medical
 			}
 		}
 	}
-	
-	//var rawData = questionList.GetAllQuestions().Select(r => r.Title + r.Text);
-	//        String[] noHTMLData = rawData.Select(t => t.StripHTMLTags()).ToArray();
-	//        int currentLineNumber = 0;
-	//        using (var dataFile = new StreamWriter("DictionaryQuestions.txt", false, Encoding.GetEncoding(866)))
-	//        {
-	//            foreach (string q in MyStem.Run(rawData.Select(t => t.StripHTMLTags())).ToArray())
-	//            {
-	//                dataFile.WriteLine(q);
-	//                ++currentLineNumber;
-	//                if (currentLineNumber % 500 == 0)
-	//                {
-	//                    Console.WriteLine(currentLineNumber);
-	//                    dataFile.Flush();
-	//                }
-	//            }
-	//        }
 }

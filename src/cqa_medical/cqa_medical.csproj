@@ -57,6 +57,10 @@
     <Compile Include="DataInput\QuestionList.cs" />
     <Compile Include="DataInput\Question.cs" />
     <Compile Include="DataInput\MyStem\MyStem.cs" />
+    <Compile Include="DataInput\SnowBallStemmer\Among.cs" />
+    <Compile Include="DataInput\SnowBallStemmer\IStemmer.cs" />
+    <Compile Include="DataInput\SnowBallStemmer\RussianStemmer.cs" />
+    <Compile Include="DataInput\SnowBallStemmer\StemmerOperations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statistics\TextFrequencies.cs" />
@@ -75,6 +79,7 @@
   <ItemGroup>
     <Content Include="DataInput\MyStem\mystem.exe" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
