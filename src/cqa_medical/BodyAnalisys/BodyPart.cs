@@ -10,7 +10,7 @@ namespace cqa_medical.BodyAnalisys
 		public readonly string[] Names;
 		private List<BodyPart> subParts = new List<BodyPart>();
 
-		public int QuestionsCount { get; set; }
+		private int questionsCount = 0;
 
 		public readonly BodyPart Parent;
 
@@ -37,8 +37,13 @@ namespace cqa_medical.BodyAnalisys
 
 		public void Inc()
 		{
-			QuestionsCount++;
+			questionsCount++;
 			Parent.Inc();
+		}
+
+		public int GetQuestionsCount()
+		{
+			return questionsCount;
 		}
 
 	}
