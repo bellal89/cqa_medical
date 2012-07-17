@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Iveonik.Stemmers;
 
 namespace cqa_medical
 {
@@ -31,6 +32,15 @@ namespace cqa_medical
 		{
 			return string.Join(Environment.NewLine, data.Keys.Select(k => data[k].ToString() + "\t" + k.ToString()).ToArray());
 		}
+
+
+		public static string[] GetStemmedStrings(RussianStemmer stemmer, String text)
+		{
+			var noHTMLWords = text.StripHTMLTags().SplitInWords();
+			String[] words = noHTMLWords.Select(stemmer.Stem).ToArray();
+			return words;
+		} 
+
 
 	}
 }
