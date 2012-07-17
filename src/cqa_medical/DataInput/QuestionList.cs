@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Iveonik.Stemmers;
+using cqa_medical;
 
 namespace cqa_medical.DataInput
 {
@@ -47,12 +48,6 @@ namespace cqa_medical.DataInput
 		}
 
 
-		private static string[] GetStemmedStrings(RussianStemmer stemmer, String text)
-		{
-			var noHTMLWords = text.StripHTMLTags().SplitInWords();
-			String[] words = noHTMLWords.Select(stemmer.Stem).ToArray();
-			return words;
-		}
 
 		/// <summary>
 		/// Use SnowballStemmer to modify text of messages
@@ -66,15 +61,15 @@ namespace cqa_medical.DataInput
 			start = DateTime.Now;
 			foreach (var question in GetAllQuestions())
 			{
-				question.Text = String.Join(" ", GetStemmedStrings(stemmer, question.Text));
-				question.Title = String.Join(" ", GetStemmedStrings(stemmer, question.Title));
+				question.Text = String.Join(" ", Utilits.GetStemmedStrings(stemmer, question.Text));
+				question.Title = String.Join(" ", Utilits.GetStemmedStrings(stemmer, question.Title));
 			}
 			Console.WriteLine(String.Format("Questions Completed in {0}", (DateTime.Now - start).TotalSeconds));
 
 			start = DateTime.Now;
 			foreach (var answer in GetAllAnswers())
 			{
-				answer.Text = String.Join(" ", GetStemmedStrings(stemmer, answer.Text));
+				answer.Text = String.Join(" ", Utilits.GetStemmedStrings(stemmer, answer.Text));
 			}
 			Console.WriteLine(String.Format("Answers Completed in {0}", (DateTime.Now - start).TotalSeconds));
 		}
