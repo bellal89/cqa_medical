@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using cqa_medical.DataInput;
+using cqa_medical.Statistics;
 
 namespace cqa_medical
 {
@@ -21,6 +24,16 @@ namespace cqa_medical
 
 			Console.WriteLine(String.Format("Parsing Completed in {0}", (DateTime.Now - start).TotalSeconds));
         	questionList.StemIt();
+			
+			var text = String.Join(" ", questionList.GetAllQuestions().Select(q => q.Title + " " + q.Text));
+        	var freqs = new TextFrequencies(text);
+        	var oneWordDictionary = freqs.GetOneWordDictionary().OrderByDescending(item => item.Value);
+        	File.WriteAllText(statisticsDirectory + "QuestionsOneWordFreqs.txt", String.Join("\n", oneWordDictionary.Select(item => item.Key + "\t" + item.Value)));
+
+			text = String.Join(" ", questionList.GetAllAnswers().Select(q => q.Text));
+			freqs = new TextFrequencies(text);
+			oneWordDictionary = freqs.GetOneWordDictionary().OrderByDescending(item => item.Value);
+			File.WriteAllText(statisticsDirectory + "AnswersOneWordFreqs.txt", String.Join("\n", oneWordDictionary.Select(item => item.Key + "\t" + item.Value)));
         }
     }
 }
