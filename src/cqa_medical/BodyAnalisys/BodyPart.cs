@@ -42,15 +42,48 @@ namespace cqa_medical.BodyAnalisys
 			return q;
 		}
 
+		private string GetTabulation(BodyPart from, BodyPart q)
+		{
+			string s = "";
+			BodyPart temp = q;
+			while (temp != from && temp.Parent != null)
+			{
+				temp = temp.Parent;
+				s += "\t";
+			}
+			return s;
+		}
+
+		public string ToString(BodyPart q)
+		{
+			var result = String.Join(" ", Names) + "\t" + questionsCount + "\n";
+			return result + String.Join("",subParts.Select(part => GetTabulation(part, q) + part.ToString(part)));
+		}
+
+		private string ToInternalString(string result)
+		{
+			result += String.Join(" ", Names) + "\t" + questionsCount + "\n";
+			foreach (var part in subParts)
+			{
+				return "\t" + part.ToInternalString(result);
+			}
+			return result;
+		}
+
 		public override string ToString()
 		{
 			return String.Join(" ", Names);
+		}
+		public  string ToExelString()
+		{
+			var result = String.Join(" ", Names) + "\t" + questionsCount + "\n";
+			return result + String.Join("", subParts.Select(part => part.ToExelString()));
 		}
 
 		public void Inc()
 		{
 			questionsCount++;
-			Parent.Inc();
+			if (Parent != null) Parent.Inc();
 		}
 
 		public int GetQuestionsCount()
@@ -90,6 +123,28 @@ namespace cqa_medical.BodyAnalisys
 
 			}
 			return human;
+		}
+
+		public Dictionary<string, BodyPart> GetDictionary()
+		{
+			return getDict(new Dictionary<string, BodyPart>(), this);
+		}
+
+		private Dictionary<string, BodyPart> getDict(Dictionary<string, BodyPart> dict, BodyPart part)
+		{
+			foreach (var name in part.Names)
+			{
+				dict.Add(name, part);
+			}
+			if (part.GetSubParts().Count == 0)
+			{
+				return dict;
+			}
+			foreach (var bodyPart in part.GetSubParts())
+			{
+				getDict(dict, bodyPart);
+			}
+			return dict;
 		}
 	}
 }

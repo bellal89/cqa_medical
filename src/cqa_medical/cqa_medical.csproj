@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BodyAnalisys\BodyCalculator.cs" />
     <Compile Include="BodyAnalisys\BodyPart.cs" />
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\IParser.cs" />

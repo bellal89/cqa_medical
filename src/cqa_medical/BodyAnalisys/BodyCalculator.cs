@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,35 +25,34 @@ namespace cqa_medical.BodyAnalisys
 			return body;
 		}
 
-		private Dictionary<string, BodyPart> getDict(Dictionary<string, BodyPart> dict, BodyPart part)
-		{
-			foreach (var name in part.Names)
-			{
-				dict.Add(name, part);
-			}
-			if (part.GetSubParts().Count == 0)
-			{
-				return dict;
-			}
-			foreach (var bodyPart in part.GetSubParts())
-			{
-				getDict(dict, bodyPart);
-			}
-			return dict;
-		}
-
 		public void CalculateQuestionDistribution()
 		{
-			var bodyDict = getDict(new Dictionary<string, BodyPart>(), body);
+			var notBodyQuestions = new List<long>();
+			var bodyDict = body.GetDictionary();
 			foreach (var question in questions.GetAllQuestions())
 			{
-				var words = Regex.Split(question.Title + " " + question.Text, @"\W+");
+				var text = question.Title + " " + question.Text;
+				var words = Regex.Split(text, @"\W+");
 
-				foreach (var word in words.Where(bodyDict.ContainsKey).Distinct())
+				var bodyWords = words.Where(bodyDict.ContainsKey).Distinct();
+				if (!bodyWords.Any())
+				{
+					notBodyQuestions.Add(question.Id);
+				}
+				foreach (var word in bodyWords)
 				{
 					bodyDict[word].Inc();
 				}
 			}
+
+			Console.WriteLine((0.0 + notBodyQuestions.Count) / questions.GetAllQuestions().Count());
+
+			File.WriteAllText("NotBody.txt", String.Join("\n\n", notBodyQuestions.Select(id =>
+			                                                         	{
+			                                                         		var q = questions.GetQuestion(id);
+			                                                         		return q.Title + "\n" + q.Text;
+																		})));
+			Console.ReadKey();
 		}
 		
 	}
@@ -66,13 +66,15 @@ namespace cqa_medical.BodyAnalisys
 			var parser = new Parser("../../Files/QuestionsTest.csv", "../../Files/AnswersTest.csv");
 			var questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
+			questionList.StemIt();
 
-			
+			var body = BodyPart.GetBodyPartsFromFile("../../Files/BodyParts.txt");
 
-//			var calc = new BodyCalculator(questionList, body);
-//
-//			calc.CalculateQuestionDistribution();
-//			calc.GetBody();
+			var calc = new BodyCalculator(questionList, body);
+
+			calc.CalculateQuestionDistribution();
+			var newBody = calc.GetBody();
+			Console.WriteLine(newBody.ToString(newBody));
 		}
 	}
 }

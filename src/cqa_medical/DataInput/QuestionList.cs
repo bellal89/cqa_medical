@@ -53,7 +53,7 @@ namespace cqa_medical.DataInput
 		/// Use SnowballStemmer to modify text of messages
 		/// </summary>
 		/// <returns>QuestionList</returns>
-		public void StemIt()
+		public QuestionList StemIt()
 		{
 			var stemmer = new RussianStemmer();
 			DateTime start;
@@ -64,14 +64,15 @@ namespace cqa_medical.DataInput
 				question.Text = String.Join(" ", Utilits.GetStemmedStrings(stemmer, question.Text));
 				question.Title = String.Join(" ", Utilits.GetStemmedStrings(stemmer, question.Title));
 			}
-			Console.WriteLine(String.Format("Questions Completed in {0}", (DateTime.Now - start).TotalSeconds));
+			Console.WriteLine(String.Format("Questions Stemming Completed in {0}", (DateTime.Now - start).TotalSeconds));
 
 			start = DateTime.Now;
 			foreach (var answer in GetAllAnswers())
 			{
 				answer.Text = String.Join(" ", Utilits.GetStemmedStrings(stemmer, answer.Text));
 			}
-			Console.WriteLine(String.Format("Answers Completed in {0}", (DateTime.Now - start).TotalSeconds));
+			Console.WriteLine(String.Format("Answers Stemming Completed in {0}", (DateTime.Now - start).TotalSeconds));
+			return this;
 		}
 	}
 }

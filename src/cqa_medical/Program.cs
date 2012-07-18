@@ -9,7 +9,7 @@ namespace cqa_medical
 {
     class Program
     {
-		private static void ParseAndStem()
+		private static QuestionList ParseAndStem()
 		{
 			const string questionsFileName = "../../Files/qst_25.csv";
 			const string answersFileName = "../../Files/ans_25.csv";
@@ -23,23 +23,19 @@ namespace cqa_medical
 
 
 			Console.WriteLine(String.Format("Parsing Completed in {0}", (DateTime.Now - start).TotalSeconds));
-			questionList.StemIt();
+			return questionList.StemIt();
 		}
 
 
         static void Main(string[] args)
         {
-        	var q = BodyPart.GetBodyPartsFromFile(@"..\..\Files\BodyParts.txt");
-			
-			var text = String.Join(" ", questionList.GetAllQuestions().Select(q => q.Title + " " + q.Text));
-        	var freqs = new TextFrequencies(text);
-        	var oneWordDictionary = freqs.GetOneWordDictionary().OrderByDescending(item => item.Value);
-        	File.WriteAllText(statisticsDirectory + "QuestionsOneWordFreqs.txt", String.Join("\n", oneWordDictionary.Select(item => item.Key + "\t" + item.Value)));
-
-			text = String.Join(" ", questionList.GetAllAnswers().Select(q => q.Text));
-			freqs = new TextFrequencies(text);
-			oneWordDictionary = freqs.GetOneWordDictionary().OrderByDescending(item => item.Value);
-			File.WriteAllText(statisticsDirectory + "AnswersOneWordFreqs.txt", String.Join("\n", oneWordDictionary.Select(item => item.Key + "\t" + item.Value)));
+        	var questionList = ParseAndStem();
+        	var body = BodyPart.GetBodyPartsFromFile(@"..\..\Files\BodyParts.txt");
+			var calc = new BodyCalculator(questionList, body);
+			calc.CalculateQuestionDistribution();
+			var newBody = calc.GetBody();
+			File.WriteAllText("1.txt", newBody.ToExelString());
+			File.WriteAllText("2.txt", newBody.ToString(newBody));
         }
 
     	
