@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using cqa_medical.DataInput;
 using cqa_medical.Statistics;
 using cqa_medical.BodyAnalisys;
@@ -34,8 +35,8 @@ namespace cqa_medical
 			var calc = new BodyCalculator(questionList, body);
 			calc.CalculateQuestionDistribution();
 			var newBody = calc.GetBody();
-			File.WriteAllText("1.txt", newBody.ToExelString());
-			File.WriteAllText("2.txt", newBody.ToString(newBody));
+			File.WriteAllText("1.txt", newBody.ToExelString(), Encoding.UTF8);
+			File.WriteAllText("2.txt", newBody.ToString(newBody, questionList.GetAllQuestions().Count()), Encoding.UTF8);
         }
 
     	

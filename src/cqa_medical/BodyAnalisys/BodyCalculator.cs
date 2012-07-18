@@ -74,7 +74,7 @@ namespace cqa_medical.BodyAnalisys
 
 			calc.CalculateQuestionDistribution();
 			var newBody = calc.GetBody();
-			Console.WriteLine(newBody.ToString(newBody));
+			Console.WriteLine(newBody.ToString(newBody, questionList.GetAllQuestions().Count()));
 		}
 	}
 }

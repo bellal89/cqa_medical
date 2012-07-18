@@ -54,10 +54,10 @@ namespace cqa_medical.BodyAnalisys
 			return s;
 		}
 
-		public string ToString(BodyPart q)
+		public string ToString(BodyPart q, int allQuestionsCount)
 		{
-			var result = String.Join(" ", Names) + "\t" + questionsCount + "\n";
-			return result + String.Join("",subParts.Select(part => GetTabulation(part, q) + part.ToString(part)));
+			var result = String.Join(" ", Names) + "\t" + questionsCount +  "\t" + Math.Round((decimal)questionsCount * 100 / allQuestionsCount, 2) + "%\n";
+			return result + String.Join("",subParts.Select(part => GetTabulation(part, q) + part.ToString(part, allQuestionsCount)));
 		}
 
 		private string ToInternalString(string result)
