@@ -41,7 +41,7 @@ namespace cqa_medical.BodyAnalisys
 				}
 				foreach (var word in bodyWords)
 				{
-					bodyDict[word].Inc();
+					bodyDict[word].Inc(question.Id);
 				}
 			}
 
@@ -52,7 +52,6 @@ namespace cqa_medical.BodyAnalisys
 			                                                         		var q = questions.GetQuestion(id);
 			                                                         		return q.Title + "\n" + q.Text;
 																		})));
-			Console.ReadKey();
 		}
 		
 	}
@@ -74,7 +73,7 @@ namespace cqa_medical.BodyAnalisys
 
 			calc.CalculateQuestionDistribution();
 			var newBody = calc.GetBody();
-			Console.WriteLine(newBody.ToString(newBody, questionList.GetAllQuestions().Count()));
+			Console.WriteLine(newBody.ToString(questionList.GetAllQuestions().Count()));
 		}
 	}
 }

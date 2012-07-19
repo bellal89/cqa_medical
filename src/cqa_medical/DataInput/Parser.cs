@@ -34,7 +34,7 @@ namespace cqa_medical.DataInput
 			IEnumerable<Answer> answers = GetValuesFromCSV<Answer>(answersFileName);
 			foreach (Answer answer in answers)
 			{
-				addAnswer(answer);
+			    addAnswer(answer);
 			}
 		}
 

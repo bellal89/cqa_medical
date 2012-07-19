@@ -35,8 +35,9 @@ namespace cqa_medical
 			var calc = new BodyCalculator(questionList, body);
 			calc.CalculateQuestionDistribution();
 			var newBody = calc.GetBody();
-			File.WriteAllText("1.txt", newBody.ToExelString(), Encoding.UTF8);
-			File.WriteAllText("2.txt", newBody.ToString(newBody, questionList.GetAllQuestions().Count()), Encoding.UTF8);
+        	var allQuestionsCount = questionList.GetAllQuestions().Count();
+        	File.WriteAllText("1.txt", newBody.ToExcelString(allQuestionsCount), Encoding.UTF8);
+			File.WriteAllText("2.txt", newBody.ToString(allQuestionsCount), Encoding.UTF8);
         }
 
     	

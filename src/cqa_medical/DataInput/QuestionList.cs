@@ -69,7 +69,7 @@ namespace cqa_medical.DataInput
 			start = DateTime.Now;
 			foreach (var answer in GetAllAnswers())
 			{
-				answer.Text = String.Join(" ", Utilits.GetStemmedStrings(stemmer, answer.Text));
+			    answer.Text = String.Join(" ", Utilits.GetStemmedStrings(stemmer, answer.Text));
 			}
 			Console.WriteLine(String.Format("Answers Stemming Completed in {0}", (DateTime.Now - start).TotalSeconds));
 			return this;

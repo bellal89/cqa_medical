@@ -11,6 +11,7 @@ namespace cqa_medical.BodyAnalisys
 		private List<BodyPart> subParts = new List<BodyPart>();
 
 		private int questionsCount = 0;
+		private long lastId = 0;
 
 		public readonly BodyPart Parent;
 
@@ -42,48 +43,22 @@ namespace cqa_medical.BodyAnalisys
 			return q;
 		}
 
-		private string GetTabulation(BodyPart from, BodyPart q)
+		public void SetLastId(long id)
 		{
-			string s = "";
-			BodyPart temp = q;
-			while (temp != from && temp.Parent != null)
-			{
-				temp = temp.Parent;
-				s += "\t";
-			}
-			return s;
+			lastId = id;
 		}
 
-		public string ToString(BodyPart q, int allQuestionsCount)
+		public bool LastIdEquals(long id)
 		{
-			var result = String.Join(" ", Names) + "\t" + questionsCount +  "\t" + Math.Round((decimal)questionsCount * 100 / allQuestionsCount, 2) + "%\n";
-			return result + String.Join("",subParts.Select(part => GetTabulation(part, q) + part.ToString(part, allQuestionsCount)));
+			return lastId == id;
 		}
 
-		private string ToInternalString(string result)
+		public void Inc(long id)
 		{
-			result += String.Join(" ", Names) + "\t" + questionsCount + "\n";
-			foreach (var part in subParts)
-			{
-				return "\t" + part.ToInternalString(result);
-			}
-			return result;
-		}
-
-		public override string ToString()
-		{
-			return String.Join(" ", Names);
-		}
-		public  string ToExelString()
-		{
-			var result = String.Join(" ", Names) + "\t" + questionsCount + "\n";
-			return result + String.Join("", subParts.Select(part => part.ToExelString()));
-		}
-
-		public void Inc()
-		{
+			if (LastIdEquals(id)) return;
+			SetLastId(id);
 			questionsCount++;
-			if (Parent != null) Parent.Inc();
+			if (Parent != null) Parent.Inc(id);
 		}
 
 		public int GetQuestionsCount()
@@ -145,6 +120,37 @@ namespace cqa_medical.BodyAnalisys
 				getDict(dict, bodyPart);
 			}
 			return dict;
+		}
+
+		public override string ToString()
+		{
+			return String.Join(" ", Names);
+		}
+
+		private string GetPartString(int allQuestionsCount)
+		{
+			return String.Join(" ", Names) + "\t" + questionsCount + "\t" + Math.Round((decimal)questionsCount * 100 / allQuestionsCount, 2) + "%";
+		}
+
+		public string ToString(int allQuestionsCount)
+		{
+			return ToInternalString("", allQuestionsCount);
+		}
+
+		private string ToInternalString(string tabs, int allQuestionsCount)
+		{
+			var result = tabs + GetPartString(allQuestionsCount) + "\n";
+			if (subParts.Any())
+			{
+				return subParts.Aggregate(result, (current, part) => current + part.ToInternalString(tabs + "\t", allQuestionsCount));
+			}
+			return result;
+		}
+
+		public string ToExcelString(int allQuestionsCount)
+		{
+			var result = GetPartString(allQuestionsCount) + "\n";
+			return result + String.Join("", subParts.Select(part => part.ToExcelString(allQuestionsCount)));
 		}
 	}
 }
