@@ -49,7 +49,14 @@ namespace cqa_medical
         {
 			var questionList = Parse();
 			var statistics = new Statistics.Statistics(questionList);
-			File.WriteAllText("FluDistributionInWeeks.txt", statistics.FluDistributionInWeeks().ToStringNormal());
+			File.WriteAllText(
+				"WordIntensityDistributionInWeeks.txt",
+				statistics.WordIntensityDistributionInWeeks(new string[]{"грипп", "ОРВИ"}).ToStringNormal()
+			);
+			File.WriteAllText(
+				"WordQuotientDistributionInWeeks.txt",
+				statistics.WordQuotientDistributionInWeeks(new string[] { "грипп", "ОРВИ" }).ToStringNormal()
+			);
         }
 
     	

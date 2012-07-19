@@ -197,18 +197,42 @@ namespace cqa_medical.Statistics
 		}
 
 		[Statistics]
-		public SortedDictionary<string, int> FluDistributionInWeeks()
+		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords )
 		{
+			var words = expectedWords.Select(s => s.ToLower());
 			return GetDistribution(questions
-									.Where(a => a.DateAdded >= firstDate)
+			                       	.Where(a => a.DateAdded >= firstDate)
 			                       	.Where(q =>
-			                       	       SplitInWordsAndStripHTML(q.Title + " " + q.Text).Any(t => t == "грипп")
+			                       	       SplitInWordsAndStripHTML(q.Title + " " + q.Text).Any(t => words.Any(z => z == t))
 			                       	       ||
-			                       	       q.GetAnswers().Any(a => SplitInWordsAndStripHTML(a.Text).Any(t => t == "грипп")))
-									.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+			                       	       q.GetAnswers()
+												.Any(a => SplitInWordsAndStripHTML(a.Text)
+													.Select(w => w.ToLower())
+													.Any(textWord => words.Any(expectedWord => expectedWord == textWord))))
+			                       	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
 		}
 
-		
+
+		[Statistics]
+		public SortedDictionary<string, double> WordQuotientDistributionInWeeks(IEnumerable<string> expectedWords)
+		{
+			var enumerator = WordIntensityDistributionInWeeks(expectedWords);
+			var denumerator = GetDistribution(questions
+									.Where(a => a.DateAdded >= firstDate)
+									.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+			return DistributientQuotient(enumerator, denumerator);
+		}
+
+
+		public SortedDictionary<TKey, double> DistributientQuotient<TKey>(SortedDictionary<TKey, int> numerator, SortedDictionary<TKey, int> denominator)
+		{
+			var result = new SortedDictionary<TKey, double>();
+			foreach (var w in numerator.Where(w => denominator.ContainsKey(w.Key)))
+				result.Add(w.Key, (double)w.Value / (double)denominator[w.Key]);
+			return result;
+		}
+
+
 
 	}
 
