@@ -10,34 +10,46 @@ namespace cqa_medical
 {
     class Program
     {
+
+		const string StatisticsDirectory = "../../StatOutput/";
+		const string QuestionsFileName = "../../Files/qst_25.csv";
+		const string AnswersFileName = "../../Files/ans_25.csv";
+
 		private static QuestionList ParseAndStem()
 		{
-			const string questionsFileName = "../../Files/qst_25.csv";
-			const string answersFileName = "../../Files/ans_25.csv";
-			const string statisticsDirectory = "../../StatOutput/";
-			var questionList = new QuestionList();
-			DateTime start;
-
-			start = DateTime.Now;
-			var parser = new Parser(questionsFileName, answersFileName);
-			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-
-
-			Console.WriteLine(String.Format("Parsing Completed in {0}", (DateTime.Now - start).TotalSeconds));
+			var questionList = Parse();
 			return questionList.StemIt();
 		}
 
+    	private static QuestionList Parse()
+    	{
+    		var questionList = new QuestionList();
 
-        static void Main(string[] args)
-        {
-        	var questionList = ParseAndStem();
-        	var body = BodyPart.GetBodyPartsFromFile(@"..\..\Files\BodyParts.txt");
+    		var start = DateTime.Now;
+    		var parser = new Parser(QuestionsFileName, AnswersFileName);
+    		parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
+
+			Console.WriteLine(String.Format("Parsing Completed in {0}", (DateTime.Now - start).TotalSeconds));
+    		return questionList;
+    	}
+
+    	private static void BodyPartsWork()
+		{
+			var questionList = ParseAndStem();
+			var body = BodyPart.GetBodyPartsFromFile(@"..\..\Files\BodyParts.txt");
 			var calc = new BodyCalculator(questionList, body);
 			calc.CalculateQuestionDistribution();
 			var newBody = calc.GetBody();
-        	var allQuestionsCount = questionList.GetAllQuestions().Count();
-        	File.WriteAllText("1.txt", newBody.ToExcelString(allQuestionsCount), Encoding.UTF8);
+			var allQuestionsCount = questionList.GetAllQuestions().Count();
+			File.WriteAllText("1.txt", newBody.ToExcelString(allQuestionsCount), Encoding.UTF8);
 			File.WriteAllText("2.txt", newBody.ToString(allQuestionsCount), Encoding.UTF8);
+		}
+
+        static void Main(string[] args)
+        {
+			var questionList = Parse();
+			var statistics = new Statistics.Statistics(questionList);
+			File.WriteAllText("FluDistributionInWeeks.txt", statistics.FluDistributionInWeeks().ToStringNormal());
         }
 
     	
