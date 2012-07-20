@@ -228,7 +228,7 @@ namespace cqa_medical.Statistics
 		{
 			var result = new SortedDictionary<TKey, double>();
 			foreach (var w in numerator.Where(w => denominator.ContainsKey(w.Key)))
-				result.Add(w.Key, (double)w.Value / (double)denominator[w.Key]);
+				result.Add(w.Key, (double)w.Value / denominator[w.Key]);
 			return result;
 		}
 
