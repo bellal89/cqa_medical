@@ -47,16 +47,17 @@ namespace cqa_medical
 
         static void Main(string[] args)
         {
-			var questionList = Parse();
-			var statistics = new Statistics.Statistics(questionList);
-			File.WriteAllText(
-				"WordIntensityDistributionInWeeks.txt",
-				statistics.WordIntensityDistributionInWeeks(new string[]{"грипп", "ОРВИ"}).ToStringNormal()
-			);
-			File.WriteAllText(
-				"WordQuotientDistributionInWeeks.txt",
-				statistics.WordQuotientDistributionInWeeks(new string[] { "грипп", "ОРВИ" }).ToStringNormal()
-			);
+			BodyPartsWork();
+//			var questionList = Parse();
+//			var statistics = new Statistics.Statistics(questionList);
+//			File.WriteAllText(
+//				"WordIntensityDistributionInWeeks.txt",
+//				statistics.WordIntensityDistributionInWeeks(new string[]{"грипп", "ОРВИ"}).ToStringNormal()
+//			);
+//			File.WriteAllText(
+//				"WordQuotientDistributionInWeeks.txt",
+//				statistics.WordQuotientDistributionInWeeks(new string[] { "грипп", "ОРВИ" }).ToStringNormal()
+//			);
         }
 
     	

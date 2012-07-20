@@ -28,7 +28,7 @@ namespace cqa_medical.Statistics
 
 		private IEnumerable<string> SplitInWordsAndStripHTML(string s)
 		{
-			return s.StripHTMLTags().SplitInWords();
+			return s.StripHTMLTags().SplitIntoWords();
 		}
 		static public DateTime GetWeekFromRange(DateTime now)
 		{

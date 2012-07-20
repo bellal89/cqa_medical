@@ -54,6 +54,7 @@
     <Compile Include="BodyAnalisys\BodyPart.cs" />
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\IParser.cs" />
+    <Compile Include="DataInput\MyStem\MyStemProcessor.cs" />
     <Compile Include="DataInput\MyStem\MyStemUnit.cs" />
     <Compile Include="BodyAnalisys\TabulationParser.cs" />
     <Compile Include="DataInput\Parser.cs" />

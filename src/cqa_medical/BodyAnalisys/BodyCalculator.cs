@@ -52,6 +52,7 @@ namespace cqa_medical.BodyAnalisys
 			                                                         		var q = questions.GetQuestion(id);
 			                                                         		return q.Title + "\n" + q.Text;
 																		})));
+			Console.ReadKey();
 		}
 		
 	}

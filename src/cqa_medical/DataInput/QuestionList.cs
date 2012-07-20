@@ -47,8 +47,6 @@ namespace cqa_medical.DataInput
 			}
 		}
 
-
-
 		/// <summary>
 		/// Use SnowballStemmer to modify text of messages
 		/// </summary>

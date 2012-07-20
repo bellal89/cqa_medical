@@ -13,7 +13,7 @@ namespace cqa_medical
 		{
 			return Regex.Replace(s, "<[^>]*?>", string.Empty, RegexOptions.IgnoreCase);
 		}
-		public static IEnumerable<string> SplitInWords(this string s)
+		public static IEnumerable<string> SplitIntoWords(this string s)
 		{
 			return Regex.Split(s, @"\W+");
 		}
@@ -36,7 +36,7 @@ namespace cqa_medical
 
 		public static string[] GetStemmedStrings(RussianStemmer stemmer, String text)
 		{
-			var noHTMLWords = text.StripHTMLTags().SplitInWords();
+			var noHTMLWords = text.StripHTMLTags().SplitIntoWords();
 			String[] words = noHTMLWords.Select(stemmer.Stem).ToArray();
 			return words;
 		} 
