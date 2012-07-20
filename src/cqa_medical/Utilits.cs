@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Iveonik.Stemmers;
+using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical
 {
@@ -34,13 +35,11 @@ namespace cqa_medical
 		}
 
 
-		public static string[] GetStemmedStrings(RussianStemmer stemmer, String text)
+		public static string[] GetStemmedStrings(IStemmer stemmer, string text)
 		{
 			var noHTMLWords = text.StripHTMLTags().SplitIntoWords();
-			String[] words = noHTMLWords.Select(stemmer.Stem).ToArray();
+			var words = noHTMLWords.Select(stemmer.Stem).ToArray();
 			return words;
-		} 
-
-
+		}
 	}
 }

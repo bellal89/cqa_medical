@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using cqa_medical.DataInput.Stemmers;
 
 namespace Iveonik.Stemmers
 {

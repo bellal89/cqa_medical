@@ -54,13 +54,12 @@
     <Compile Include="BodyAnalisys\BodyPart.cs" />
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\IParser.cs" />
+    <Compile Include="DataInput\MyStem\MyStem.cs" />
     <Compile Include="DataInput\MyStem\MyStemProcessor.cs" />
-    <Compile Include="DataInput\MyStem\MyStemUnit.cs" />
     <Compile Include="BodyAnalisys\TabulationParser.cs" />
     <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />
     <Compile Include="DataInput\Question.cs" />
-    <Compile Include="DataInput\MyStem\MyStem.cs" />
     <Compile Include="DataInput\SnowBallStemmer\Among.cs" />
     <Compile Include="DataInput\SnowBallStemmer\IStemmer.cs" />
     <Compile Include="DataInput\SnowBallStemmer\RussianStemmer.cs" />

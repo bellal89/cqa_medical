@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Iveonik.Stemmers;
+using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.BodyAnalisys
 {

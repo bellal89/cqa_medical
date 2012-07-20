@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
 
-namespace cqa_medical.DataInput.MyStem
+namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
 	class MyStemProcessor
 	{
 		public readonly string FileName;
 
 		/// <summary>
-		///  It processes MyStem.exe output files.
+		///  It processes MyStemmer.exe output files.
 		///  Format of the outpit file returns after following call string:
 		///  <example>mystem.exe -in -e cp1251 input.txt output.txt</example>
 		/// </summary>
-		/// <param name="fileName">MyStem output file name.</param>
+		/// <param name="fileName">MyStemmer output file name.</param>
 		public MyStemProcessor(string fileName)
 		{
 			FileName = fileName;
