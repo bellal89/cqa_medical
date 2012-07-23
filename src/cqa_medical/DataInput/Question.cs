@@ -51,7 +51,9 @@ namespace cqa_medical.DataInput
 		[CsvField(Index = 12)]
 		public string Tags { get; set; }
 
-		private List<Answer> answers = new List<Answer>();
+		public string WholeText { get {return Title + " " + Text; } }
+
+		private readonly List<Answer> answers = new List<Answer>();
 
 		public List<Answer> GetAnswers()
 		{

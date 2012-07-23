@@ -61,7 +61,7 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public void TestCalculation()
 		{
-			var parser = new Parser("../../Files/QuestionsTest.csv", "../../Files/AnswersTest.csv");
+			var parser = new Parser(Program.TestQuestionsFileName, Program.TestAnswersFileName);
 			var questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
 			questionList.StemIt();
