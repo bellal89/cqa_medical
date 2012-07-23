@@ -78,12 +78,8 @@
     <Compile Include="Utilits.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Files\AnswersTest.csv" />
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Files\QuestionsTest.csv" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="AGRAMTABLib">

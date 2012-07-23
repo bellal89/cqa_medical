@@ -14,8 +14,8 @@ namespace cqa_medical
 		public const string QuestionsFileName = "../../Files/qst_25.csv";
 		public const string AnswersFileName = "../../Files/ans_25.csv";
 
-		public const string TestQuestionsFileName = "../../Files/QuestionsTest.csv";
-		public const string TestAnswersFileName = "../../Files/AnswersTest.csv";
+		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
+		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
 
 		public static QuestionList ParseAndStem()
 		{
