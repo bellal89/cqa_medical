@@ -1,4 +1,7 @@
-﻿namespace cqa_medical.DataInput.Stemmers.AOTLemmatizer
+﻿using System;
+using NUnit.Framework;
+
+namespace cqa_medical.DataInput.Stemmers.AOTLemmatizer
 {
 	class AOTLemmatizer : IStemmer
 	{
