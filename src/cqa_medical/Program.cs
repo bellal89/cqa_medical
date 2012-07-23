@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.BodyAnalisys;
 
@@ -48,5 +49,6 @@ namespace cqa_medical
 			File.WriteAllText("2.txt", newBody.ToString(allQuestionsCount), Encoding.UTF8);
 		}
 
+    	
     }
 }

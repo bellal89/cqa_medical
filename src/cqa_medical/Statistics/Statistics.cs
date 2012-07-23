@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
+using cqa_medical.DataInput.Stemmers;
+using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
+using cqa_medical.DataInput.Stemmers.MyStemmer;
 
 namespace cqa_medical.Statistics
 {
@@ -17,7 +21,7 @@ namespace cqa_medical.Statistics
 		private readonly QuestionList questionList;
 		private readonly Question[] questions;
 		private readonly Answer[] answers;
-		static public readonly DateTime FirstDate = new DateTime(2011, 9, 26);
+		public static readonly DateTime FirstDate = new DateTime(2011, 9, 26);
 
 		public Statistics(QuestionList questionList)
 		{
@@ -27,10 +31,10 @@ namespace cqa_medical.Statistics
 		}
 
 
-		
-		static public DateTime GetWeekFromRange(DateTime now)
+
+		public static DateTime GetWeekFromRange(DateTime now)
 		{
-			return FirstDate.AddDays(7 * Math.Floor((now - FirstDate).TotalDays / 7.0));
+			return FirstDate.AddDays(7*Math.Floor((now - FirstDate).TotalDays/7.0));
 		}
 
 		private SortedDictionary<T, int> GetDistribution<T>(IEnumerable<T> data)
@@ -42,8 +46,8 @@ namespace cqa_medical.Statistics
 		{
 			var enumerator = WordIntensityDistributionInWeeks(expectedWords);
 			var denumerator = GetDistribution(questions
-									.Where(a => a.DateAdded >= FirstDate)
-									.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+			                                  	.Where(a => a.DateAdded >= FirstDate)
+			                                  	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
 			return Utilits.DistributientQuotient(enumerator, denumerator);
 		}
 
@@ -146,7 +150,7 @@ namespace cqa_medical.Statistics
 		public SortedDictionary<int, int> AnswerLengthInWordsDistribution()
 		{
 			return GetDistribution(answers
-									.Select(a => a.Text.SplitInWordsAndStripHTML().ToArray().Length));
+			                       	.Select(a => a.Text.SplitInWordsAndStripHTML().ToArray().Length));
 		}
 
 		[Statistics]
@@ -201,7 +205,7 @@ namespace cqa_medical.Statistics
 			return GetDistribution(answers.GroupBy(a => a.AuthorEmail, (email, qs) => qs.Count()));
 		}
 
-		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords )
+		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords)
 		{
 			var words = expectedWords.Select(s => s.ToLower());
 			return GetDistribution(questions
@@ -210,17 +214,26 @@ namespace cqa_medical.Statistics
 			                       	       q.WholeText.SplitInWordsAndStripHTML().Any(t => words.Any(z => z == t))
 			                       	       ||
 			                       	       q.GetAnswers()
-												.Any(a => a.Text.SplitInWordsAndStripHTML()
-													.Select(w => w.ToLower())
-													.Any(textWord => words.Any(expectedWord => expectedWord == textWord))))
+			                       	       	.Any(a => a.Text.SplitInWordsAndStripHTML()
+			                       	       	          	.Select(w => w.ToLower())
+			                       	       	          	.Any(textWord => words.Any(expectedWord => expectedWord == textWord))))
 			                       	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+		}
+
+		public SortedDictionary<string, int> WordFrequency(IStemmer stemmer)
+		{
+			var statisticGenerator =
+				new DistributionCreator<string>(
+					questions.SelectMany(t => t.WholeText.SplitInWordsAndStripHTML()).Select(stemmer.Stem));
+			statisticGenerator.AddData(answers.SelectMany(t => t.Text.SplitInWordsAndStripHTML()).Select(stemmer.Stem));
+			return statisticGenerator.GetData();
 		}
 	}
 
 
 
 	[TestFixture]
-	 class StatisticsTest
+	internal class StatisticsTest
 	{
 		private Statistics statistics;
 
@@ -242,6 +255,7 @@ namespace cqa_medical.Statistics
 			Assert.AreEqual(3, distibution[1]);
 			Assert.AreEqual(2, distibution[12]);
 		}
+
 		[Test]
 		public void TestGetWeekFromRange()
 		{
@@ -260,6 +274,7 @@ namespace cqa_medical.Statistics
 			Console.WriteLine(distibution.ToStringNormal());
 			Assert.AreEqual(1, distibution[8]);
 		}
+
 		[Test]
 		public void TestAnswerLength()
 		{
@@ -277,7 +292,7 @@ namespace cqa_medical.Statistics
 			Assert.AreEqual(2, distibution[6]);
 			Assert.AreEqual(1, distibution[4]);
 		}
-		
+
 		[Test]
 		public void TestAnswerSpeed()
 		{
@@ -400,6 +415,7 @@ namespace cqa_medical.Statistics
 	internal class GetDistributions
 	{
 		private static Statistics statistics;
+
 		[TestFixtureSetUp]
 		public void DistributionInit()
 		{
@@ -415,13 +431,13 @@ namespace cqa_medical.Statistics
 				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
 				.Where(m => m.GetCustomAttributes(typeof (StatisticsAttribute), true).Any()).ToList();
 
-			var rawMethod = typeof(Utilits).GetMethod("ToStringNormal");
+			var rawMethod = typeof (Utilits).GetMethod("ToStringNormal");
 			foreach (var info in infos)
 			{
 				Console.WriteLine("calculating " + info.Name);
 				var data = info.Invoke(statistics, new object[0]);
 				var genericMethod = rawMethod.MakeGenericMethod(data.GetType().GetGenericArguments());
-				var outString = genericMethod.Invoke(null, new []{data});			
+				var outString = genericMethod.Invoke(null, new[] {data});
 				File.WriteAllText(Program.StatisticsDirectory + info.Name + ".txt", (string) outString);
 			}
 		}
@@ -432,17 +448,39 @@ namespace cqa_medical.Statistics
 		{
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
 			var data = statistics.WordQuotientDistributionInWeeks(expectedWords).ToStringNormal();
-			File.WriteAllText(Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
+			File.WriteAllText(
+				Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
+
 		[Test, TestCaseSource("DivideCases")]
 		public void WordIntensityDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
 			var data = statistics.WordIntensityDistributionInWeeks(expectedWords).ToStringNormal();
-			File.WriteAllText(Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
+			File.WriteAllText(
+				Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
-		private static object[] DivideCases = new object[]{
-				new object[] { new string[] {"грипп", "ОРВИ"} }
-			};
+
+		private static object[] divideCases = new object[]
+		                                      	{
+		                                      		new object[] {new[] {"грипп", "ОРВИ"}}
+		                                      	};
+
+		[Test]
+		public void WordFrequency()
+		{
+			foreach (var stemmer in StemmerCases)
+			{
+				Console.WriteLine("calculating WordFrequency_" + stemmer);
+				var data = statistics.WordFrequency(stemmer).ToStringNormal();
+				File.WriteAllText(
+					Program.StatisticsDirectory + "WordFrequency_" + stemmer + ".txt", data);
+			}
+		}
+		private static readonly IStemmer[] StemmerCases = {
+		                                      		new RussianStemmer(),
+													new MyStemmer(null), //TODO
+ 													new AOTLemmatizer() 
+		                                      	};
 	}
 }

@@ -17,9 +17,9 @@ namespace cqa_medical.DataInput
 			answersFileName = _answersFileName;
 		}
 
-		public string questionsFileName { get; set; }
+		private string questionsFileName { get; set; }
 
-		public string answersFileName { get; set; }
+		private string answersFileName { get; set; }
 
 		#region IParser Members
 

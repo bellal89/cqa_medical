@@ -21,12 +21,7 @@ namespace cqa_medical.DataInput.Stemmers.AOTLemmatizer
 			LEMMATIZERLib.IParadigmCollection piParadigmCollection = lemmatizerRu.CreateParadigmCollectionFromForm(word, 1, 1);
 			if (piParadigmCollection.Count == 0) 
 				return word;
-			Console.WriteLine(piParadigmCollection[0].Norm);
-			Console.WriteLine(piParadigmCollection[0].SrcNorm);
-			Console.WriteLine(piParadigmCollection[0].SrcAncode);
-			Console.WriteLine(piParadigmCollection[0].TypeAncode);
-			Console.WriteLine(piParadigmCollection[0].Ancode[0]);
-			return piParadigmCollection[0].Norm;
+			return piParadigmCollection[0].Norm.ToLower();
 		}
 	}
 	
@@ -37,7 +32,7 @@ namespace cqa_medical.DataInput.Stemmers.AOTLemmatizer
 		public void Test()
 		{
 			var lemmatizer = new AOTLemmatizer();
-			lemmatizer.Stem("дороге");
+			Assert.AreEqual("дорога", lemmatizer.Stem("дороге"));
 		}
 	}
 

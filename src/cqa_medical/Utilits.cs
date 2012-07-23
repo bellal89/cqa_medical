@@ -21,7 +21,7 @@ namespace cqa_medical
 		}
 		public static IEnumerable<string> SplitInWordsAndStripHTML(this string s)
 		{
-			return s.StripHTMLTags().SplitIntoWords();
+			return s.ToLower().StripHTMLTags().SplitIntoWords();
 		}
 
 		public static TValue GetOrDefault<TKey, TValue>(this SortedDictionary<TKey, TValue> dict, TKey key,
@@ -43,7 +43,7 @@ namespace cqa_medical
 
 		public static string[] GetStemmedWords(IStemmer stemmer, string text)
 		{
-			var noHTMLWords = text.StripHTMLTags().SplitIntoWords();
+			var noHTMLWords = text.SplitInWordsAndStripHTML();
 			var words = noHTMLWords.Select(stemmer.Stem).ToArray();
 			return words;
 		}

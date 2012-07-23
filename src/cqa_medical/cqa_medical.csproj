@@ -72,7 +72,6 @@
     <Compile Include="DataInput\Stemmers\SnowBallStemmer\StemmerOperations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Statistics\TextFrequencies.cs" />
     <Compile Include="Statistics\DistributionCreator.cs" />
     <Compile Include="Statistics\Statistics.cs" />
     <Compile Include="Utilits.cs" />
