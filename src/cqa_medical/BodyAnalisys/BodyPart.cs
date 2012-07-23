@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Iveonik.Stemmers;
 
 namespace cqa_medical.BodyAnalisys
 {
@@ -68,7 +69,8 @@ namespace cqa_medical.BodyAnalisys
 
 		public static BodyPart GetBodyPartsFromFile(String filename)
 		{
-			var data = TabulationParser.ParseFromFile(filename);
+			var tabParser = new TabulationParser(new RussianStemmer());
+			var data = tabParser.ParseFromFile(filename);
 			var first = data.First();
 			if (first.IndicatorAmount != 0)
 				throw new Exception("Wrong incapsulation in " + filename);

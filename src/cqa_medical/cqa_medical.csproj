@@ -53,6 +53,7 @@
     <Compile Include="BodyAnalisys\BodyCalculator.cs" />
     <Compile Include="BodyAnalisys\BodyPart.cs" />
     <Compile Include="DataInput\Answer.cs" />
+    <Compile Include="DataInput\DeseasesParser.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
