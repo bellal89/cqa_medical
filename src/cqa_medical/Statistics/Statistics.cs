@@ -479,7 +479,7 @@ namespace cqa_medical.Statistics
 		}
 		private static readonly IStemmer[] StemmerCases = {
 		                                      		new RussianStemmer(),
-													new MyStemmer(null), //TODO
+													//new MyStemmer(null), //TODO
  													new AOTLemmatizer() 
 		                                      	};
 	}
