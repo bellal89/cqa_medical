@@ -35,7 +35,7 @@ namespace cqa_medical
 		}
 
 
-		public static string[] GetStemmedStrings(IStemmer stemmer, string text)
+		public static string[] GetStemmedWords(IStemmer stemmer, string text)
 		{
 			var noHTMLWords = text.StripHTMLTags().SplitIntoWords();
 			var words = noHTMLWords.Select(stemmer.Stem).ToArray();

@@ -17,7 +17,7 @@ namespace cqa_medical.BodyAnalisys
 		{
 			this.stemmer = stemmer;
 			this.questionList = questionList;
-			bodyParts = body.GetDictionary();
+			bodyParts = body.ToDictionary();
 		}
 	}
 }

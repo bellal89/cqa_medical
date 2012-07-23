@@ -6,12 +6,12 @@ using NUnit.Framework;
 
 namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
-	class MyStemmer : IStemmer
+	class Vocabulary
 	{
+		private readonly Dictionary<string, StemInfo> wordToWordInfo = new Dictionary<string, StemInfo>();
 		private readonly string[] fileNames;
-		private readonly Dictionary<string, MystemWordInfo> wordInfos = new Dictionary<string, MystemWordInfo>();
 
-		public MyStemmer(params string[] fileNames)
+		public Vocabulary(params string[] fileNames)
 		{
 			this.fileNames = fileNames;
 		}
@@ -21,42 +21,59 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			foreach (var parts in fileNames
 				.Select(File.ReadAllLines)
 				.SelectMany(lines => lines
-					.Select(line => line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries))
-					.Where(parts => parts.Length > 2 && !wordInfos.ContainsKey(parts[0]))))
+					.Select(line => line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries))
+					.Where(parts => parts.Length > 2 && !wordToWordInfo.ContainsKey(parts[0]))))
 			{
-				wordInfos.Add(parts[0], new MystemWordInfo(parts[1], parts[2]));
+				wordToWordInfo.Add(parts[0], new StemInfo(parts[1], parts[2]));
 			}
 		}
-
-		public string Stem(string s)
+		public IEnumerable<string> GetPartOfSpeech(string partOfSpeech, string text)
 		{
-			return String.Join(" ", s.SplitIntoWords().Select(w => wordInfos.ContainsKey(w) ? wordInfos[w].Word : w.ToLower()));
+			return text.SplitIntoWords().Select(GetPartOfSpeech).Where(p => p == partOfSpeech);
 		}
 
-		public IEnumerable<string> GetPartOfSpeach (string partOfSpeach, string s)
+		public string GetPartOfSpeech(string word)
 		{
-			return s.SplitIntoWords().Select(GetPartOfSpeach).Where(p => p == partOfSpeach);
+			return wordToWordInfo.ContainsKey(word) ? wordToWordInfo[word].PartOfSpeach : null;
 		}
 
-		public string GetPartOfSpeach(string word)
+		public Dictionary<string, StemInfo> GetWordInfos()
 		{
-			return wordInfos.ContainsKey(word) ? wordInfos[word].PartOfSpeach : null;
+			return wordToWordInfo;
 		}
 
-		public Dictionary<string, MystemWordInfo> GetWordInfos()
+		public StemInfo FindWordInfo(string word)
 		{
-			return wordInfos;
+			StemInfo wordInfo;
+			if (wordToWordInfo.TryGetValue(word, out wordInfo)) return wordInfo;
+			return null;
+		}
+	}
+	
+	class MyStemmer : IStemmer
+	{
+		private readonly Vocabulary vocabulary;
+
+		public MyStemmer(Vocabulary vocabulary)
+		{
+			this.vocabulary = vocabulary;
+		}
+
+		public string Stem(string word)
+		{
+			var wordInfo = vocabulary.FindWordInfo(word);
+			return wordInfo != null ? wordInfo.Stem : word.ToLower();
 		}
 	}
 
-	internal class MystemWordInfo
+	internal class StemInfo
 	{
-		public string Word { get; set; }
+		public string Stem { get; set; }
 		public string PartOfSpeach { get; set; }
 
-		public MystemWordInfo(string stemmedWord, string partOfSpeach)
+		public StemInfo(string stemmedWord, string partOfSpeach)
 		{
-			Word = stemmedWord;
+			Stem = stemmedWord;
 			PartOfSpeach = partOfSpeach;
 		}
 	}
@@ -67,9 +84,9 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		[Test]
 		public void TestDictionaryLoading()
 		{
-			var stemmer = new MyStemmer("../../Files/qst_stemmed.txt", "../../Files/ans_stemmed2.txt");
-			stemmer.InitDictionary();
-			Console.WriteLine(stemmer.GetWordInfos().Count);
+			var vocabulary = new Vocabulary("../../Files/qst_stemmed.txt", "../../Files/ans_stemmed2.txt");
+			var stemmer = new MyStemmer(vocabulary);
+			Console.WriteLine(vocabulary.GetWordInfos().Count);
 		}
 	}
 }

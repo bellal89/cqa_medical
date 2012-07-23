@@ -2,6 +2,6 @@
 {
     public interface IStemmer
     {
-        string Stem(string s);
+		string Stem(string word);
     }
 }

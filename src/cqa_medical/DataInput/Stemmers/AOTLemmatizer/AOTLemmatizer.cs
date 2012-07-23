@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.DataInput.AOTLemmatizer
@@ -20,15 +21,29 @@ namespace cqa_medical.DataInput.AOTLemmatizer
 			lemmatizerRu.LoadDictionariesRegistry();
 		}
 
-		public string Stem(string s)
+		public string Stem(string word)
 		{
-			LEMMATIZERLib.IParadigmCollection piParadigmCollection = lemmatizerRu.CreateParadigmCollectionFromForm(s, 0, 0);
+			LEMMATIZERLib.IParadigmCollection piParadigmCollection = lemmatizerRu.CreateParadigmCollectionFromForm(word, 1, 1);
 			if (piParadigmCollection.Count == 0) 
-				return s;
+				return word;
+			Console.WriteLine(piParadigmCollection[0].Norm);
+			Console.WriteLine(piParadigmCollection[0].SrcNorm);
+			Console.WriteLine(piParadigmCollection[0].SrcAncode);
+			Console.WriteLine(piParadigmCollection[0].TypeAncode);
+			Console.WriteLine(piParadigmCollection[0].Ancode[0]);
 			return piParadigmCollection[0].Norm;
 		}
-
-
-
 	}
+	
+	[TestFixture]
+	public class AOTLemmatizer_Test
+	{
+		[Test]
+		public void Test()
+		{
+			var lemmatizer = new AOTLemmatizer();
+			lemmatizer.Stem("дороге");
+		}
+	}
+
 }

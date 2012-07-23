@@ -16,8 +16,8 @@ namespace cqa_medical.BodyAnalisys
 
 		public IEnumerable<TabulationParserUnit> ParseFromFile(String filename)
 		{
-			var text = File.ReadAllText(filename);
-			return Parse(text.Split('\n','\r').Select(s => s.TrimEnd()).Where(s => s != ""));
+			string[] text = File.ReadAllLines(filename);
+			return Parse(text.Select(s => s.TrimEnd()).Where(s => s != ""));
 		}
 		private IEnumerable<TabulationParserUnit> Parse(IEnumerable<string> strings)
 		{
@@ -27,17 +27,17 @@ namespace cqa_medical.BodyAnalisys
 
 	internal class TabulationParserUnit
 	{
-		public IEnumerable<String> Strings { get; private set; }
-		public IEnumerable<String> StemmedStrings { get { return Strings.Select(TabulationParser.Stemmer.Stem); }}
+		public IEnumerable<string> Words { get; private set; }
+		public IEnumerable<string> StemmedWords { get { return Words.Select(TabulationParser.Stemmer.Stem); }}
 		public int IndicatorAmount { get; private set; }
 
-		public TabulationParserUnit(String text)
+		public TabulationParserUnit(string text)
 		{
 			IndicatorAmount = 0;
 			while (text[IndicatorAmount] == '\t')
 				IndicatorAmount++;
 			text = text.Substring(IndicatorAmount);
-			Strings = text.Split(' ');
+			Words = text.Split(' ');
 		}
 	}
 

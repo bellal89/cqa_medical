@@ -871,9 +871,9 @@ namespace Iveonik.Stemmers
             return true;
         }
 
-        public string Stem(string s)
+        public string Stem(string word)
         {
-            this.setCurrent(s.ToLowerInvariant());
+            this.setCurrent(word.ToLowerInvariant());
             this.CanStem();
             return this.getCurrent();
         }

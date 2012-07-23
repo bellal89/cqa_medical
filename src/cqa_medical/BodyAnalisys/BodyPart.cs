@@ -70,19 +70,19 @@ namespace cqa_medical.BodyAnalisys
 		public static BodyPart GetBodyPartsFromFile(String filename)
 		{
 			var tabParser = new TabulationParser(new RussianStemmer());
-			var data = tabParser.ParseFromFile(filename);
+			var data = tabParser.ParseFromFile(filename).ToList();
 			var first = data.First();
 			if (first.IndicatorAmount != 0)
 				throw new Exception("Wrong incapsulation in " + filename);
 
-			var human = new BodyPart(null, first.StemmedStrings.ToArray());
+			var human = new BodyPart(null, first.StemmedWords.ToArray());
 			var current = human;
 			int currentTabs = first.IndicatorAmount;
 			foreach (var q in data.Skip(1))
 			{
 				if (q.IndicatorAmount > currentTabs)
 				{
-					current = current.AddSubPartAndReturnItUsing( q.StemmedStrings);
+					current = current.AddSubPartAndReturnItUsing( q.StemmedWords);
 					currentTabs = q.IndicatorAmount;
 				}
 				else if (q.IndicatorAmount < currentTabs)
@@ -90,19 +90,19 @@ namespace cqa_medical.BodyAnalisys
 					int numberIterations = currentTabs - q.IndicatorAmount;
 					for (int i = 0; i < numberIterations; ++i )
 						current = current.Parent;
-					current = current.Parent.AddSubPartAndReturnItUsing( q.StemmedStrings);
+					current = current.Parent.AddSubPartAndReturnItUsing( q.StemmedWords);
 					currentTabs = q.IndicatorAmount;
 				}
 				else 
 				{
-					current = current.Parent.AddSubPartAndReturnItUsing(q.StemmedStrings);
+					current = current.Parent.AddSubPartAndReturnItUsing(q.StemmedWords);
 				}
 
 			}
 			return human;
 		}
 
-		public Dictionary<string, BodyPart> GetDictionary()
+		public Dictionary<string, BodyPart> ToDictionary()
 		{
 			return getDict(new Dictionary<string, BodyPart>(), this);
 		}

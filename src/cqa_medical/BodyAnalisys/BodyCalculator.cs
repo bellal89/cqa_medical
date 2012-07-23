@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -28,13 +27,13 @@ namespace cqa_medical.BodyAnalisys
 		public void CalculateQuestionDistribution()
 		{
 			var notBodyQuestions = new List<long>();
-			var bodyDict = body.GetDictionary();
+			var bodyDict = body.ToDictionary();
 			foreach (var question in questions.GetAllQuestions())
 			{
 				var text = question.Title + " " + question.Text;
 				var words = Regex.Split(text, @"\W+");
 
-				var bodyWords = words.Where(bodyDict.ContainsKey).Distinct();
+				var bodyWords = words.Where(bodyDict.ContainsKey).Distinct().ToList();
 				if (!bodyWords.Any())
 				{
 					notBodyQuestions.Add(question.Id);
@@ -52,7 +51,6 @@ namespace cqa_medical.BodyAnalisys
 			                                                         		var q = questions.GetQuestion(id);
 			                                                         		return q.Title + "\n" + q.Text;
 																		})));
-			Console.ReadKey();
 		}
 		
 	}
