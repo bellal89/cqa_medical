@@ -53,6 +53,7 @@
     <Compile Include="BodyAnalisys\BodyCalculator.cs" />
     <Compile Include="BodyAnalisys\BodyPart.cs" />
     <Compile Include="DataInput\Answer.cs" />
+    <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemProcessor.cs" />
@@ -80,9 +81,28 @@
     <EmbeddedResource Include="Files\QuestionsTest.csv" />
   </ItemGroup>
   <ItemGroup>
+    <COMReference Include="AGRAMTABLib">
+      <Guid>{ECD62F71-19B6-11D3-A77A-2679A7000000}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="LEMMATIZERLib">
+      <Guid>{CA8CF90E-FBB6-11D2-9C98-00105A68BAF2}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="DataInput\Stemmers\MyStemmer\mystem.exe" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

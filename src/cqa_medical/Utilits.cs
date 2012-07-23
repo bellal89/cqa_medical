@@ -16,7 +16,7 @@ namespace cqa_medical
 		}
 		public static IEnumerable<string> SplitIntoWords(this string s)
 		{
-			return Regex.Split(s, @"\W+");
+			return Regex.Split(s, @"\W+").Where(t => t != "");
 		}
 
 		public static TValue GetOrDefault<TKey, TValue> (this SortedDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
