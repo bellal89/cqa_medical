@@ -27,10 +27,7 @@ namespace cqa_medical.Statistics
 		}
 
 
-		private IEnumerable<string> SplitInWordsAndStripHTML(string s)
-		{
-			return s.StripHTMLTags().SplitIntoWords();
-		}
+		
 		static public DateTime GetWeekFromRange(DateTime now)
 		{
 			return FirstDate.AddDays(7 * Math.Floor((now - FirstDate).TotalDays / 7.0));
@@ -73,7 +70,7 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<int, int> QuestionLengthDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.Title.Length + t.Text.Length));
+			return GetDistribution(questions.Select(t => t.WholeText.Length));
 		}
 
 		[Statistics]
@@ -149,16 +146,14 @@ namespace cqa_medical.Statistics
 		public SortedDictionary<int, int> AnswerLengthInWordsDistribution()
 		{
 			return GetDistribution(answers
-			                       	.Select(a => SplitInWordsAndStripHTML(a.Text)
-			                       	             	.Where(q => q != "").ToArray().Length));
+									.Select(a => a.Text.SplitInWordsAndStripHTML().ToArray().Length));
 		}
 
 		[Statistics]
 		public SortedDictionary<int, int> QuestionLengthInWordsDistribution()
 		{
 			return GetDistribution(questions
-			                       	.Select(a => SplitInWordsAndStripHTML(a.Text + a.Title)
-			                       	             	.Where(q => q != "").ToArray().Length));
+			                       	.Select(a => a.WholeText.SplitInWordsAndStripHTML().ToArray().Length));
 		}
 
 		[Statistics]
@@ -212,10 +207,10 @@ namespace cqa_medical.Statistics
 			return GetDistribution(questions
 			                       	.Where(a => a.DateAdded >= FirstDate)
 			                       	.Where(q =>
-			                       	       SplitInWordsAndStripHTML(q.Title + " " + q.Text).Any(t => words.Any(z => z == t))
+			                       	       q.WholeText.SplitInWordsAndStripHTML().Any(t => words.Any(z => z == t))
 			                       	       ||
 			                       	       q.GetAnswers()
-												.Any(a => SplitInWordsAndStripHTML(a.Text)
+												.Any(a => a.Text.SplitInWordsAndStripHTML()
 													.Select(w => w.ToLower())
 													.Any(textWord => words.Any(expectedWord => expectedWord == textWord))))
 			                       	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));

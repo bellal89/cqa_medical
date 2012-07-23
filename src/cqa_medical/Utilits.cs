@@ -19,6 +19,10 @@ namespace cqa_medical
 		{
 			return Regex.Split(s, @"\W+").Where(t => t != "");
 		}
+		public static IEnumerable<string> SplitInWordsAndStripHTML(this string s)
+		{
+			return s.StripHTMLTags().SplitIntoWords();
+		}
 
 		public static TValue GetOrDefault<TKey, TValue>(this SortedDictionary<TKey, TValue> dict, TKey key,
 		                                                TValue defaultValue)

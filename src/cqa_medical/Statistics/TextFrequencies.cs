@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -14,7 +13,7 @@ namespace cqa_medical.Statistics
 
 		public TextFrequencies(string text)
 		{
-			words = Regex.Split(text.ToLower().StripHTMLTags(), @"\W+").Where(w => w != "").ToArray();
+			words = text.ToLower().StripHTMLTags().SplitIntoWords().ToArray();
 		}
 
 		public Dictionary<string, int> GetOneWordDictionary()
@@ -59,7 +58,7 @@ namespace cqa_medical.Statistics
 		[TestFixtureSetUp]
 		public void Init()
 		{
-			var parser = new Parser("../../Files/qst_25.csv", "../../Files/ans_25.csv");
+			var parser = new Parser(Program.QuestionsFileName, Program.AnswersFileName);
 			questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
 		}

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Iveonik.Stemmers;
-using cqa_medical;
 
 namespace cqa_medical.DataInput
 {
@@ -54,9 +50,8 @@ namespace cqa_medical.DataInput
 		public QuestionList StemIt()
 		{
 			var stemmer = new RussianStemmer();
-			DateTime start;
 
-			start = DateTime.Now;
+			DateTime start = DateTime.Now;
 			foreach (var question in GetAllQuestions())
 			{
 				question.Text = String.Join(" ", Utilits.GetStemmedWords(stemmer, question.Text));
