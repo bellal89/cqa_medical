@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using cqa_medical.DataInput.Stemmers;
-
-namespace cqa_medical.DataInput.AOTLemmatizer
+﻿namespace cqa_medical.DataInput.Stemmers.AOTLemmatizer
 {
 	class AOTLemmatizer : IStemmer
 	{
