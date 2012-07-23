@@ -206,7 +206,6 @@ namespace cqa_medical.Statistics
 			return GetDistribution(answers.GroupBy(a => a.AuthorEmail, (email, qs) => qs.Count()));
 		}
 
-		[Statistics]
 		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords )
 		{
 			var words = expectedWords.Select(s => s.ToLower());
@@ -409,7 +408,7 @@ namespace cqa_medical.Statistics
 	[TestFixture]
 	internal class GetDistributions
 	{
-		private Statistics statistics;
+		private static Statistics statistics;
 		[TestFixtureSetUp]
 		public void DistributionInit()
 		{
@@ -440,6 +439,13 @@ namespace cqa_medical.Statistics
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
 			var data = statistics.WordQuotientDistributionInWeeks(expectedWords).ToString();
 			File.WriteAllText(Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
+		}
+		[Test, TestCaseSource("DivideCases")]
+		public void WordIntensityDistributionInWeeks(string[] expectedWords)
+		{
+			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
+			var data = statistics.WordIntensityDistributionInWeeks(expectedWords).ToString();
+			File.WriteAllText(Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
 		private static object[] DivideCases = new object[]{
 				new object[] { new string[] {"грипп", "ОРВИ"} }
