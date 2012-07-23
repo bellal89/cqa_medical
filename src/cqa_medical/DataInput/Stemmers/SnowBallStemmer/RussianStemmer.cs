@@ -877,7 +877,5 @@ namespace Iveonik.Stemmers
             this.CanStem();
             return this.getCurrent();
         }
-
-
     }
 }

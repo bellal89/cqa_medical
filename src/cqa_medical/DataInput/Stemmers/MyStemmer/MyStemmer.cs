@@ -28,9 +28,14 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			}
 		}
 
-		public string Stem(string word)
+		public string Stem(string s)
 		{
-			return wordInfos.ContainsKey(word) ? wordInfos[word].Word : word;
+			return String.Join(" ", s.SplitIntoWords().Select(w => wordInfos.ContainsKey(w) ? wordInfos[w].Word : w.ToLower()));
+		}
+
+		public IEnumerable<string> GetPartOfSpeach (string partOfSpeach, string s)
+		{
+			return s.SplitIntoWords().Select(GetPartOfSpeach).Where(p => p == partOfSpeach);
 		}
 
 		public string GetPartOfSpeach(string word)
