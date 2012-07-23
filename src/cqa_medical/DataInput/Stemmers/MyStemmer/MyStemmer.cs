@@ -8,7 +8,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
 	class Vocabulary
 	{
-		private readonly Dictionary<string, StemInfo> wordToWordInfo = new Dictionary<string, StemInfo>();
+		private readonly Dictionary<string, StemInfo> wordToStemInfo = new Dictionary<string, StemInfo>();
 		private readonly string[] fileNames;
 
 		public Vocabulary(params string[] fileNames)
@@ -16,17 +16,6 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			this.fileNames = fileNames;
 		}
 
-		public void InitDictionary()
-		{
-			foreach (var parts in fileNames
-				.Select(File.ReadAllLines)
-				.SelectMany(lines => lines
-					.Select(line => line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries))
-					.Where(parts => parts.Length > 2 && !wordToWordInfo.ContainsKey(parts[0]))))
-			{
-				wordToWordInfo.Add(parts[0], new StemInfo(parts[1], parts[2]));
-			}
-		}
 		public IEnumerable<string> GetPartOfSpeech(string partOfSpeech, string text)
 		{
 			return text.SplitIntoWords().Select(GetPartOfSpeech).Where(p => p == partOfSpeech);
@@ -34,19 +23,18 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 
 		public string GetPartOfSpeech(string word)
 		{
-			return wordToWordInfo.ContainsKey(word) ? wordToWordInfo[word].PartOfSpeach : null;
+			return wordToStemInfo.ContainsKey(word) ? wordToStemInfo[word].PartOfSpeach : null;
 		}
 
 		public Dictionary<string, StemInfo> GetWordInfos()
 		{
-			return wordToWordInfo;
+			return wordToStemInfo;
 		}
 
 		public StemInfo FindWordInfo(string word)
 		{
 			StemInfo wordInfo;
-			if (wordToWordInfo.TryGetValue(word, out wordInfo)) return wordInfo;
-			return null;
+			return wordToStemInfo.TryGetValue(word, out wordInfo) ? wordInfo : null;
 		}
 	}
 	
