@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Iveonik.Stemmers;
 using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.BodyAnalisys
 {
 	class TabulationParser
 	{
-		public static IStemmer Stemmer = new RussianStemmer();
-		public static IEnumerable<TabulationParserUnit> ParseFromFile(String filename)
+		public static IStemmer Stemmer;
+		public TabulationParser(IStemmer stemmer = null)
+		{
+			Stemmer = stemmer;
+		}
+
+		public IEnumerable<TabulationParserUnit> ParseFromFile(String filename)
 		{
 			var text = File.ReadAllText(filename);
 			return Parse(text.Split('\n','\r').Select(s => s.TrimEnd()).Where(s => s != ""));
 		}
-		private static IEnumerable<TabulationParserUnit> Parse(IEnumerable<string> strings)
+		private IEnumerable<TabulationParserUnit> Parse(IEnumerable<string> strings)
 		{
 			return strings.Select(s => new TabulationParserUnit(s));
 		}
@@ -23,7 +27,8 @@ namespace cqa_medical.BodyAnalisys
 
 	internal class TabulationParserUnit
 	{
-		public IEnumerable<String> StemmedStrings { get; private set; }
+		public IEnumerable<String> Strings { get; private set; }
+		public IEnumerable<String> StemmedStrings { get { return Strings.Select(TabulationParser.Stemmer.Stem); }}
 		public int IndicatorAmount { get; private set; }
 
 		public TabulationParserUnit(String text)
@@ -32,10 +37,7 @@ namespace cqa_medical.BodyAnalisys
 			while (text[IndicatorAmount] == '\t')
 				IndicatorAmount++;
 			text = text.Substring(IndicatorAmount);
-
-			var q = text.Split(' ');
-			
-				StemmedStrings = q.Select(t => String.Join(" ", t.Split('_').Select(TabulationParser.Stemmer.Stem)));
+			Strings = text.Split(' ');
 		}
 	}
 
