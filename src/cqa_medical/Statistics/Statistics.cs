@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Reflection;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 
@@ -38,6 +39,15 @@ namespace cqa_medical.Statistics
 		private SortedDictionary<T, int> GetDistribution<T>(IEnumerable<T> data)
 		{
 			return new DistributionCreator<T>(data).GetData();
+		}
+
+		public SortedDictionary<string, double> WordQuotientDistributionInWeeks(IEnumerable<string> expectedWords)
+		{
+			var enumerator = WordIntensityDistributionInWeeks(expectedWords);
+			var denumerator = GetDistribution(questions
+									.Where(a => a.DateAdded >= firstDate)
+									.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+			return Utilits.DistributientQuotient(enumerator, denumerator);
 		}
 
 		[Statistics]
@@ -213,25 +223,7 @@ namespace cqa_medical.Statistics
 		}
 
 
-		[Statistics]
-		public SortedDictionary<string, double> WordQuotientDistributionInWeeks(IEnumerable<string> expectedWords)
-		{
-			var enumerator = WordIntensityDistributionInWeeks(expectedWords);
-			var denumerator = GetDistribution(questions
-									.Where(a => a.DateAdded >= firstDate)
-									.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
-			return DistributientQuotient(enumerator, denumerator);
-		}
-
-
-		public SortedDictionary<TKey, double> DistributientQuotient<TKey>(SortedDictionary<TKey, int> numerator, SortedDictionary<TKey, int> denominator)
-		{
-			var result = new SortedDictionary<TKey, double>();
-			foreach (var w in numerator.Where(w => denominator.ContainsKey(w.Key)))
-				result.Add(w.Key, (double)w.Value / denominator[w.Key]);
-			return result;
-		}
-
+	
 
 
 	}
@@ -411,5 +403,46 @@ namespace cqa_medical.Statistics
 			Assert.AreEqual(13, distibution[1]);
 			Assert.AreEqual(1, distibution[3]);
 		}
+	}
+
+
+	[TestFixture]
+	internal class GetDistributions
+	{
+		private Statistics statistics;
+		[TestFixtureSetUp]
+		public void DistributionInit()
+		{
+			var ql = Program.Parse(Program.TestQuestionsFileName, Program.TestAnswersFileName);
+			statistics = new Statistics(ql);
+		}
+
+		[Test]
+		public void CommonStatistics()
+		{
+			IEnumerable<MethodInfo> infos = statistics
+				.GetType()
+				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+				.Where(m => m.GetCustomAttributes(typeof (StatisticsAttribute), true).Any());
+
+			foreach (var info in infos)
+			{
+				Console.WriteLine("calculating " + info.Name);
+				var data = info.Invoke(statistics, new object[0]).ToString();
+				File.WriteAllText(Program.StatisticsDirectory + info.Name + ".txt", data);
+			}
+		}
+
+
+		[Test, TestCaseSource("DivideCases")]
+		public void WordQuotientDistributionInWeeks(string[] expectedWords)
+		{
+			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
+			var data = statistics.WordQuotientDistributionInWeeks(expectedWords).ToString();
+			File.WriteAllText(Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
+		}
+		private static object[] DivideCases = new object[]{
+				new object[] { new string[] {"грипп", "ОРВИ"} }
+			};
 	}
 }
