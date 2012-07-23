@@ -15,15 +15,15 @@ namespace cqa_medical.Statistics
 	internal class Statistics
 	{
 		private readonly QuestionList questionList;
-		private readonly IEnumerable<Question> questions;
-		private readonly IEnumerable<Answer> answers;
+		private readonly Question[] questions;
+		private readonly Answer[] answers;
 		static private DateTime firstDate = new DateTime(2011, 9, 26);
 
 		public Statistics(QuestionList questionList)
 		{
 			this.questionList = questionList;
-			questions = questionList.GetAllQuestions();
-			answers = questionList.GetAllAnswers();
+			questions = questionList.GetAllQuestions().ToArray();
+			answers = questionList.GetAllAnswers().ToArray();
 		}
 
 
@@ -220,11 +220,6 @@ namespace cqa_medical.Statistics
 													.Any(textWord => words.Any(expectedWord => expectedWord == textWord))))
 			                       	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
 		}
-
-
-	
-
-
 	}
 
 
@@ -412,7 +407,7 @@ namespace cqa_medical.Statistics
 		[TestFixtureSetUp]
 		public void DistributionInit()
 		{
-			var ql = Program.Parse(Program.TestQuestionsFileName, Program.TestAnswersFileName);
+			var ql = Program.Parse(Program.QuestionsFileName, Program.AnswersFileName);
 			statistics = new Statistics(ql);
 		}
 
@@ -422,13 +417,16 @@ namespace cqa_medical.Statistics
 			IEnumerable<MethodInfo> infos = statistics
 				.GetType()
 				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-				.Where(m => m.GetCustomAttributes(typeof (StatisticsAttribute), true).Any());
+				.Where(m => m.GetCustomAttributes(typeof (StatisticsAttribute), true).Any()).ToList();
 
+			var rawMethod = typeof(Utilits).GetMethod("ToStringNormal");
 			foreach (var info in infos)
 			{
 				Console.WriteLine("calculating " + info.Name);
-				var data = info.Invoke(statistics, new object[0]).ToString();
-				File.WriteAllText(Program.StatisticsDirectory + info.Name + ".txt", data);
+				var data = info.Invoke(statistics, new object[0]);
+				var genericMethod = rawMethod.MakeGenericMethod(data.GetType().GetGenericArguments());
+				var outString = genericMethod.Invoke(null, new []{data});			
+				File.WriteAllText(Program.StatisticsDirectory + info.Name + ".txt", (string) outString);
 			}
 		}
 
@@ -437,14 +435,14 @@ namespace cqa_medical.Statistics
 		public void WordQuotientDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
-			var data = statistics.WordQuotientDistributionInWeeks(expectedWords).ToString();
+			var data = statistics.WordQuotientDistributionInWeeks(expectedWords).ToStringNormal();
 			File.WriteAllText(Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
 		[Test, TestCaseSource("DivideCases")]
 		public void WordIntensityDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
-			var data = statistics.WordIntensityDistributionInWeeks(expectedWords).ToString();
+			var data = statistics.WordIntensityDistributionInWeeks(expectedWords).ToStringNormal();
 			File.WriteAllText(Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
 		private static object[] DivideCases = new object[]{

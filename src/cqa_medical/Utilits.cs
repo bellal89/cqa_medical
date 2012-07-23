@@ -26,14 +26,14 @@ namespace cqa_medical
 			return dict.ContainsKey(key) ? dict[key] : defaultValue;
 		}
 
-		public static string ToStringNormal<TKey, TValue>(this SortedDictionary<TKey, TValue> data)
+		public static string ToStringNormal<TKey, TValue>(this IDictionary<TKey, TValue> data)
 		{
-			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + "\t" + data[k].ToString()).ToArray());
+			return string.Join(Environment.NewLine, data.Keys.OrderBy(key => key).Select(k => k.ToString() + "\t" + data[k].ToString()).ToArray());
 		}
 
-		public static string ToStringInverted<TKey, TValue>(this SortedDictionary<TKey, TValue> data)
+		public static string ToStringInverted<TKey, TValue>(this IDictionary<TKey, TValue> data)
 		{
-			return string.Join(Environment.NewLine, data.Keys.Select(k => data[k].ToString() + "\t" + k.ToString()).ToArray());
+			return string.Join(Environment.NewLine, data.Keys.OrderBy(key => key).Select(k => data[k].ToString() + "\t" + k.ToString()).ToArray());
 		}
 
 
