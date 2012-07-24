@@ -21,7 +21,7 @@ namespace cqa_medical
 		}
 		public static IEnumerable<string> SplitInWordsAndStripHTML(this string s)
 		{
-			return s.StripHTMLTags().SplitIntoWords();
+			return s.ToLower().StripHTMLTags().SplitIntoWords();
 		}
 
 		public static TValue GetOrDefault<TKey, TValue>(this SortedDictionary<TKey, TValue> dict, TKey key,
@@ -32,18 +32,18 @@ namespace cqa_medical
 
 		public static string ToStringNormal<TKey, TValue>(this IDictionary<TKey, TValue> data)
 		{
-			return string.Join(Environment.NewLine, data.Keys.OrderBy(key => key).Select(k => k.ToString() + "\t" + data[k].ToString()).ToArray());
+			return string.Join(Environment.NewLine, data.Keys.OrderByDescending(key => key).Select(k => k.ToString() + "\t" + data[k].ToString()).ToArray());
 		}
 
 		public static string ToStringInverted<TKey, TValue>(this IDictionary<TKey, TValue> data)
 		{
-			return string.Join(Environment.NewLine, data.Keys.OrderBy(key => key).Select(k => data[k].ToString() + "\t" + k.ToString()).ToArray());
+			return string.Join(Environment.NewLine, data.Keys.OrderByDescending(key => data[key]).Select(k => data[k].ToString() + "\t" + k.ToString()).ToArray());
 		}
 
 
 		public static string[] GetStemmedWords(IStemmer stemmer, string text)
 		{
-			var noHTMLWords = text.StripHTMLTags().SplitIntoWords();
+			var noHTMLWords = text.SplitInWordsAndStripHTML();
 			var words = noHTMLWords.Select(stemmer.Stem).ToArray();
 			return words;
 		}
