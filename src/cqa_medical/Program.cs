@@ -19,7 +19,6 @@ namespace cqa_medical
 
 		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
-    	public const string BodyPartsFileName = @"..\..\Files\BodyParts.txt";
 
 		public static QuestionList ParseAndStem()
 		{
