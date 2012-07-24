@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -56,23 +57,19 @@ namespace cqa_medical.BodyAnalisys
 	}
 
 	[TestFixture]
-	public class BodyCalculatorTest
+	public class GetBodyCalculations
 	{
 		[Test]
 		public void TestCalculation()
 		{
-			var parser = new Parser(Program.TestQuestionsFileName, Program.TestAnswersFileName);
-			var questionList = new QuestionList();
-			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-			questionList.StemIt();
-
-			var body = BodyPart.GetBodyPartsFromFile("../../Files/BodyParts.txt");
-
+			var questionList = Program.ParseAndStem();
+			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
 			var calc = new BodyCalculator(questionList, body);
-
 			calc.CalculateQuestionDistribution();
 			var newBody = calc.GetBody();
-			Console.WriteLine(newBody.ToString(questionList.GetAllQuestions().Count()));
+			var allQuestionsCount = questionList.GetAllQuestions().Count();
+			File.WriteAllText(Program.StatisticsDirectory + "1_BodyPartsDistribution.txt", newBody.ToExcelString(allQuestionsCount), Encoding.UTF8);
+			File.WriteAllText(Program.StatisticsDirectory + "2_BodyPartsDistribution.txt", newBody.ToString(allQuestionsCount), Encoding.UTF8);
 		}
 	}
 }
