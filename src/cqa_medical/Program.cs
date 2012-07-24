@@ -10,10 +10,12 @@ namespace cqa_medical
 {
     class Program
     {
-
-		public const string StatisticsDirectory = "../../StatOutput/";
+    	public const string StatisticsDirectory = "../../StatOutput/";
 		public const string QuestionsFileName = "../../Files/qst_25.csv";
 		public const string AnswersFileName = "../../Files/ans_25.csv";
+		public const string DeseasesFileName = "../../Files/Deseases.txt";
+		public const string BodyPartsFileName = "../../Files/BodyParts.txt";
+		public const string MedicamentsFileName = "../../Files/Grls.txt";
 
 		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";

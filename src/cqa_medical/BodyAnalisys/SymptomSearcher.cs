@@ -19,5 +19,7 @@ namespace cqa_medical.BodyAnalisys
 			this.questionList = questionList;
 			bodyParts = body.ToDictionary();
 		}
+
+
 	}
 }
