@@ -8,7 +8,6 @@ using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
-using cqa_medical.DataInput.Stemmers.MyStemmer;
 
 namespace cqa_medical.Statistics
 {
@@ -443,7 +442,7 @@ namespace cqa_medical.Statistics
 		}
 
 
-		[Test, TestCaseSource("DivideCases")]
+		[Test, TestCaseSource("divideCases")]
 		public void WordQuotientDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
@@ -452,7 +451,7 @@ namespace cqa_medical.Statistics
 				Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
 
-		[Test, TestCaseSource("DivideCases")]
+		[Test, TestCaseSource("divideCases")]
 		public void WordIntensityDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
@@ -469,18 +468,33 @@ namespace cqa_medical.Statistics
 		[Test]
 		public void WordFrequency()
 		{
-			foreach (var stemmer in StemmerCases)
+			var stemmerCases = new CaseT[]
+			                   	{
+			                   		new CaseT(new RussianStemmer(), new DateTime(0, 0, 0, 0, 4, 25)),
+			                   		new CaseT(new AOTLemmatizer(), new DateTime(0, 0, 0, 6, 45, 0))
+			                   	};
+			foreach (var q in stemmerCases)
 			{
-				Console.WriteLine("calculating WordFrequency_" + stemmer);
-				var data = statistics.WordFrequency(stemmer).ToStringNormal();
+				Console.WriteLine("calculating WordFrequency_" + q.Stemmer);
+				Console.WriteLine("Начало    " + DateTime.Now);
+				Console.WriteLine("Завершить " + DateTime.Now + q.TimeToAdd);
+				var data = statistics.WordFrequency(q.Stemmer).ToStringInverted();
 				File.WriteAllText(
-					Program.StatisticsDirectory + "WordFrequency_" + stemmer + ".txt", data);
+					Program.StatisticsDirectory + "WordFrequency_" + q.Stemmer+ ".txt", data);
 			}
 		}
-		private static readonly IStemmer[] StemmerCases = {
-		                                      		new RussianStemmer(),
-													//new MyStemmer(null), //TODO
- 													new AOTLemmatizer() 
-		                                      	};
+		
+		
+	}
+	struct CaseT
+	{
+		public IStemmer Stemmer;
+		public DateTime TimeToAdd;
+
+		public CaseT(IStemmer stemmer, DateTime timeToAdd)
+		{
+			Stemmer = stemmer;
+			TimeToAdd = timeToAdd;
+		}
 	}
 }
