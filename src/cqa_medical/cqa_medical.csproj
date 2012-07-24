@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="BodyAnalisys\BodyCalculator.cs" />
     <Compile Include="BodyAnalisys\BodyPart.cs" />
+    <Compile Include="BodyAnalisys\Medicaments.cs" />
     <Compile Include="BodyAnalisys\SymptomSearcher.cs" />
     <Compile Include="BodyAnalisys\Deseases.cs" />
     <Compile Include="DataInput\Answer.cs" />
