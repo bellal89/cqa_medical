@@ -475,16 +475,17 @@ namespace cqa_medical.Statistics
 			                   	};
 			foreach (var q in stemmerCases)
 			{
-				Console.WriteLine("calculating WordFrequency_" + q.Stemmer);
-				Console.WriteLine("Начало    " + DateTime.Now);
-				Console.WriteLine("Завершить " + DateTime.Now + q.TimeToAdd);
+				Console.WriteLine("Считает WordFrequency_" + q.Stemmer);
+				Console.WriteLine("Начало     " + DateTime.Now);
+				Console.WriteLine("Завершить  " + DateTime.Now + q.TimeToAdd);
 				var data = statistics.WordFrequency(q.Stemmer).ToStringInverted();
 				File.WriteAllText(
-					Program.StatisticsDirectory + "WordFrequency_" + q.Stemmer+ ".txt", data);
+					Program.StatisticsDirectory + "WordFrequency_" + q.Stemmer + ".txt", data);
+				Console.WriteLine("Свершилось " + DateTime.Now);
 			}
 		}
-		
-		
+
+
 	}
 	struct CaseT
 	{
