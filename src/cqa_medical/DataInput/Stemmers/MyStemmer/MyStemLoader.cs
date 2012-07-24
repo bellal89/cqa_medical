@@ -9,7 +9,39 @@ using NUnit.Framework;
 
 namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
-	class MyStemProcessor
+	class Vocabulary
+	{
+		private readonly Dictionary<string, StemInfo> wordToStemInfo = new Dictionary<string, StemInfo>();
+
+		public Vocabulary(params string[] fileNames)
+		{
+			wordToStemInfo =
+				(new MyStemLoader(fileNames)).GetStemInfoVocabulary();
+		}
+
+		public IEnumerable<string> GetPartOfSpeech(string partOfSpeech, string text)
+		{
+			return text.SplitIntoWords().Select(GetPartOfSpeech).Where(p => p == partOfSpeech);
+		}
+
+		public string GetPartOfSpeech(string word)
+		{
+			return wordToStemInfo.ContainsKey(word) ? wordToStemInfo[word].PartOfSpeach : null;
+		}
+
+		public Dictionary<string, StemInfo> GetWordInfos()
+		{
+			return wordToStemInfo;
+		}
+
+		public StemInfo FindWordInfo(string word)
+		{
+			StemInfo wordInfo;
+			return wordToStemInfo.TryGetValue(word, out wordInfo) ? wordInfo : null;
+		}
+	}
+
+	class MyStemLoader
 	{
 		private const string StemmedFileSuffix = ".stemmed.txt";
 		public readonly string[] QAFileNames;
@@ -21,7 +53,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		///  If no mystem output files found it runs mystem to retrieve output files.
 		/// </summary>
 		/// <param name="qaFileNames">Community question answering data file name.</param>
-		public MyStemProcessor(params string[] qaFileNames)
+		public MyStemLoader(params string[] qaFileNames)
 		{
 			QAFileNames = qaFileNames;
 			foreach (var qaFileName in QAFileNames)
@@ -49,7 +81,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 
 		private bool IsActual(string fileName)
 		{
-			return QAFileNames.All(name => File.GetCreationTime(name) < File.GetCreationTime(fileName));
+			return QAFileNames.All(name => File.GetLastWriteTime(name) < File.GetCreationTime(fileName));
 		}
 
 		private void InvokeMystem(string inputFileName, string outputFileName)
@@ -108,8 +140,8 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		public void TestQuestionsProcessor()
 		{
 			var start = DateTime.Now;
-			var parser = new MyStemProcessor(Program.QuestionsFileName, Program.AnswersFileName);
-			var voc = parser.GetStemInfoVocabulary();
+			var loader = new MyStemLoader(Program.QuestionsFileName, Program.AnswersFileName);
+			var voc = loader.GetStemInfoVocabulary();
 			Console.WriteLine("Question parsing: " + (DateTime.Now - start).TotalSeconds);
 			Console.WriteLine("Parsed: " + voc.Count);
 		}

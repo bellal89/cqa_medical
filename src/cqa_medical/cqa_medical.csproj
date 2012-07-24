@@ -61,7 +61,7 @@
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
-    <Compile Include="DataInput\Stemmers\MyStemmer\MyStemProcessor.cs" />
+    <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
     <Compile Include="BodyAnalisys\TabulationParser.cs" />
     <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />

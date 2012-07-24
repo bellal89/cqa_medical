@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,38 +6,6 @@ using NUnit.Framework;
 
 namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
-	class Vocabulary
-	{
-		private readonly Dictionary<string, StemInfo> wordToStemInfo = new Dictionary<string, StemInfo>();
-		private readonly string[] fileNames;
-
-		public Vocabulary(params string[] fileNames)
-		{
-			this.fileNames = fileNames;
-		}
-
-		public IEnumerable<string> GetPartOfSpeech(string partOfSpeech, string text)
-		{
-			return text.SplitIntoWords().Select(GetPartOfSpeech).Where(p => p == partOfSpeech);
-		}
-
-		public string GetPartOfSpeech(string word)
-		{
-			return wordToStemInfo.ContainsKey(word) ? wordToStemInfo[word].PartOfSpeach : null;
-		}
-
-		public Dictionary<string, StemInfo> GetWordInfos()
-		{
-			return wordToStemInfo;
-		}
-
-		public StemInfo FindWordInfo(string word)
-		{
-			StemInfo wordInfo;
-			return wordToStemInfo.TryGetValue(word, out wordInfo) ? wordInfo : null;
-		}
-	}
-	
 	class MyStemmer : IStemmer
 	{
 		private readonly Vocabulary vocabulary;
@@ -49,7 +17,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 
 		public string Stem(string word)
 		{
-			var wordInfo = vocabulary.FindWordInfo(word);
+			var wordInfo = vocabulary.FindWordInfo(word.ToLower());
 			return wordInfo != null ? wordInfo.Stem : word.ToLower();
 		}
 	}
@@ -72,9 +40,10 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		[Test]
 		public void TestDictionaryLoading()
 		{
-			var vocabulary = new Vocabulary("../../Files/qst_stemmed.txt", "../../Files/ans_stemmed2.txt");
+			var vocabulary = new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName);
 			var stemmer = new MyStemmer(vocabulary);
-			Console.WriteLine(vocabulary.GetWordInfos().Count);
+			Assert.AreEqual(661255, vocabulary.GetWordInfos().Count);
+			Assert.AreEqual("сильный", stemmer.Stem("СилЬнЫх"));
 		}
 	}
 }
