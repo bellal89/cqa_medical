@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using Iveonik.Stemmers;
 using cqa_medical.DataInput.Stemmers;
 
-namespace cqa_medical
+namespace cqa_medical.Utilits
 {
 	internal static class Utilits
 	{
@@ -55,6 +55,17 @@ namespace cqa_medical
 			foreach (var w in numerator.Where(w => denominator.ContainsKey(w.Key)))
 				result.Add(w.Key, (double) w.Value/denominator[w.Key]);
 			return result;
+		}
+		public static void UpdateOrAdd<TKey,TValue>(this IDictionary<TKey,TValue> dictionary, TKey key, Func<TValue,TValue> func, TValue deafultValue  )
+		{
+			if (dictionary.ContainsKey(key))
+			{
+				dictionary[key] = func(dictionary[key]);
+			}
+			else
+			{
+				dictionary.Add(key,deafultValue);
+			}
 		}
 	}
 }

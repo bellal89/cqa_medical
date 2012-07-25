@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using cqa_medical.DataInput;
 
-namespace cqa_medical.DataInput
+namespace cqa_medical.Utilits
 {
 	interface IParser
 	{

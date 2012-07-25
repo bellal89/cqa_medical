@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
 {

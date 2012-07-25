@@ -6,6 +6,7 @@ using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.BodyAnalisys;
+using cqa_medical.Utilits;
 
 namespace cqa_medical
 {
@@ -38,6 +39,29 @@ namespace cqa_medical
 			Console.WriteLine(String.Format("Parsing Completed in {0}", (DateTime.Now - start).TotalSeconds));
     		return questionList;
     	}
+
+		[TestFixture]
+		public class ProgramTest
+		{
+			[Test]
+			public void TestId()
+			{
+				var ql = Parse(QuestionsFileName, AnswersFileName);
+				var hasIdenticId = false;
+				foreach (var question in ql.GetAllQuestions())
+				{
+
+					foreach (var answer in ql.GetAllAnswers())
+					{
+						hasIdenticId = true;
+						if (answer.Id == question.Id)
+							Console.WriteLine("BAD ID!!!!!!!!! " + answer.Id);
+					}
+					//Console.WriteLine(question.Id);
+				}
+				Assert.AreEqual(true, hasIdenticId);
+			}
+		}
 		
 
     	

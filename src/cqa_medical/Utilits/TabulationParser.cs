@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using cqa_medical.DataInput.Stemmers;
 
-namespace cqa_medical.BodyAnalisys
+namespace cqa_medical.Utilits
 {
 	class TabulationParser
 	{

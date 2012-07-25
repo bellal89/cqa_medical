@@ -6,8 +6,9 @@ using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 using NUnit.Framework;
+using cqa_medical.DataInput;
 
-namespace cqa_medical.DataInput
+namespace cqa_medical.Utilits
 {
 	internal class Parser : IParser
 	{
