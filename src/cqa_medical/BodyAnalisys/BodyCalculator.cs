@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
+using cqa_medical.DataInput.Stemmers.MyStemmer;
 
 namespace cqa_medical.BodyAnalisys
 {

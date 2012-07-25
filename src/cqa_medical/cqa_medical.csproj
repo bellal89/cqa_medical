@@ -61,11 +61,11 @@
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="Utilits\InvertedIndexUnit.cs" />
-    <Compile Include="Utilits\IParser.cs" />
+    <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
     <Compile Include="Utilits\TabulationParser.cs" />
-    <Compile Include="Utilits\Parser.cs" />
+    <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />
     <Compile Include="DataInput\Question.cs" />
     <Compile Include="DataInput\Stemmers\SnowBallStemmer\Among.cs" />

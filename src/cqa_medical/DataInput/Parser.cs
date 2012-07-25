@@ -6,33 +6,33 @@ using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 using NUnit.Framework;
-using cqa_medical.DataInput;
+using cqa_medical.Utilits;
 
-namespace cqa_medical.Utilits
+namespace cqa_medical.DataInput
 {
 	internal class Parser : IParser
 	{
-		public Parser(string _questionsFileName, string _answersFileName)
+		public Parser(string questionsFileName, string answersFileName)
 		{
-			questionsFileName = _questionsFileName;
-			answersFileName = _answersFileName;
+			QuestionsFileName = questionsFileName;
+			AnswersFileName = answersFileName;
 		}
 
-		private string questionsFileName { get; set; }
+		private string QuestionsFileName { get; set; }
 
-		private string answersFileName { get; set; }
+		private string AnswersFileName { get; set; }
 
 		#region IParser Members
 
 		public void Parse(Action<Question> addQuestion, Action<Answer> addAnswer)
 		{
-			IEnumerable<Question> questions = GetValuesFromCSV<Question>(questionsFileName);
+			IEnumerable<Question> questions = GetValuesFromCSV<Question>(QuestionsFileName);
 			foreach (Question question in questions)
 			{
 				addQuestion(question);
 			}
 
-			IEnumerable<Answer> answers = GetValuesFromCSV<Answer>(answersFileName);
+			IEnumerable<Answer> answers = GetValuesFromCSV<Answer>(AnswersFileName);
 			foreach (Answer answer in answers)
 			{
 			    addAnswer(answer);

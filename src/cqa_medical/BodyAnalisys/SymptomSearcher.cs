@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
@@ -12,50 +13,40 @@ namespace cqa_medical.BodyAnalisys
 	class SymptomSearcher
 	{
 		private readonly Vocabulary vocabulary;
-		private readonly QuestionList questionList;
 		private readonly Dictionary<string, BodyPart> bodyParts;
 		private Dictionary<string, List<string>> bodyPartToSymptoms;
 
 		private const int Radius = 2;
 
-		public SymptomSearcher(Vocabulary vocabulary, QuestionList questionList, BodyPart body)
+		public SymptomSearcher(Vocabulary vocabulary, BodyPart body)
 		{
 			this.vocabulary = vocabulary;
-			this.questionList = questionList;
 			bodyParts = body.ToDictionary();
 		}
 
-		public Dictionary<string, List<long>> GetSymptoms()
+		public List<InvertedIndexUnit> GetSymptoms(IEnumerable<Tuple<long, string>> idAndTextList)
 		{
-			var partToSymptoms = new Dictionary<string, List<string>>();
 			var symptomToQuestionList = new Dictionary<string, List<long>>();
 
-			foreach (var question in questionList.GetAllQuestions())
+			foreach (var pair in idAndTextList)
 			{
-				var words = question.WholeText.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+				var words = pair.Item2.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 				for (var i = 0; i < words.Length; i++)
 				{
 					if (!bodyParts.ContainsKey(words[i])) continue;
 					var verbs = GetVerbs(words, i, Radius);
 					if (verbs == null) continue;
 					
-					if (!partToSymptoms.ContainsKey(words[i]))
+					foreach (var symptom in verbs.Select(verb => words[i] + " " + verb))
 					{
-						partToSymptoms.Add(words[i], new List<string>());
-					}
-					foreach (var verb in verbs)
-					{
-						partToSymptoms[words[i]].Add(verb);
-						
-						var symptom = words[i] + " " + verb;
 						if (!symptomToQuestionList.ContainsKey(symptom))
 							symptomToQuestionList.Add(symptom, new List<long>());
-						symptomToQuestionList[symptom].Add(question.Id);
+						symptomToQuestionList[symptom].Add(pair.Item1);
 					}
 				}
 			}
 
-			return symptomToQuestionList;
+			return symptomToQuestionList.Select(item => new InvertedIndexUnit(item.Key, item.Value)).ToList();
 		}
 
 		private IEnumerable<string> GetVerbs(IList<string> words, int pos, int radius)
@@ -83,16 +74,14 @@ namespace cqa_medical.BodyAnalisys
 		public static void TestSearch()
 		{
 			var voc = new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName);
-
-			var parser = new Parser(Program.QuestionsFileName, Program.AnswersFileName);
-			var questionList = new QuestionList();
-			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-			questionList.StemIt(new MyStemmer(voc));
-
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
+			var searcher = new SymptomSearcher(voc, body);
 
-			var searcher = new SymptomSearcher(voc, questionList, body);
-			var symptoms = searcher.GetSymptoms();
+			var questionList = Program.ParseAndStem();
+
+			var start = DateTime.Now;
+			var symptoms = searcher.GetSymptoms(questionList.GetAllQuestions().Select(item => Tuple.Create(item.Id, item.WholeText)));
+			Console.WriteLine("Symptoms found at {0} seconds.", (DateTime.Now - start).TotalSeconds);
 			Console.WriteLine(symptoms);
 		}
 	}

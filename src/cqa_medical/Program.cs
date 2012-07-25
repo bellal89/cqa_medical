@@ -6,6 +6,8 @@ using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.BodyAnalisys;
+using cqa_medical.DataInput.Stemmers;
+using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.Utilits;
 
 namespace cqa_medical
@@ -24,11 +26,13 @@ namespace cqa_medical
 
 		public static QuestionList ParseAndStem()
 		{
+			var voc = new Vocabulary(QuestionsFileName, AnswersFileName);
+			var stemmer = new MyStemmer(voc);
 			var questionList = Parse(QuestionsFileName, AnswersFileName);
-			return questionList.StemIt(new RussianStemmer());
+			return questionList.StemIt(stemmer);
 		}
 
-		public static QuestionList Parse(String questionsFileName, string answersFileName)
+		public static QuestionList Parse(string questionsFileName, string answersFileName)
     	{
     		var questionList = new QuestionList();
 
