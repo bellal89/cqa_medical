@@ -64,7 +64,7 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public void TestCalculation()
 		{
-			var questionList = Program.ParseAndStem();
+			var questionList = Program.ParseAndStemByDefault();
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
 			var calc = new BodyCalculator(questionList, body);
 			calc.CalculateQuestionDistribution();

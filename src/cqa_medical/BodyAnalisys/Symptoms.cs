@@ -10,7 +10,7 @@ using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
 {
-	class SymptomSearcher
+	class Symptoms
 	{
 		private readonly Vocabulary vocabulary;
 		private readonly Dictionary<string, BodyPart> bodyParts;
@@ -18,7 +18,7 @@ namespace cqa_medical.BodyAnalisys
 
 		private const int Radius = 2;
 
-		public SymptomSearcher(Vocabulary vocabulary, BodyPart body)
+		public Symptoms(Vocabulary vocabulary, BodyPart body)
 		{
 			this.vocabulary = vocabulary;
 			bodyParts = body.ToDictionary();
@@ -75,9 +75,9 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var voc = new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName);
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
-			var searcher = new SymptomSearcher(voc, body);
+			var searcher = new Symptoms(voc, body);
 
-			var questionList = Program.ParseAndStem();
+			var questionList = Program.ParseAndStemByDefault();
 
 			var start = DateTime.Now;
 			var symptoms = searcher.GetSymptoms(questionList.GetAllQuestions().Select(item => Tuple.Create(item.Id, item.WholeText)));

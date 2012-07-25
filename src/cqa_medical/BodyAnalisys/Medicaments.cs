@@ -6,6 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
 {
@@ -66,6 +67,22 @@ namespace cqa_medical.BodyAnalisys
 		{
 			return invertedIndex.Keys;
 		}
+
+		public List<InvertedIndexUnit> FindMedicamentsInTexts(IEnumerable<Tuple<long, string>> idAndTextList)
+		{
+			var medicamentToIds = new Dictionary<string, HashSet<long>>();
+			foreach (var idAndText in idAndTextList)
+			{
+				var words = idAndText.Item2.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+				foreach (var word in words.Where(word => invertedIndex.ContainsKey(word)))
+				{
+					if (!medicamentToIds.ContainsKey(word))
+						medicamentToIds.Add(word, new HashSet<long>());
+					medicamentToIds[word].Add(idAndText.Item1);
+				}
+			}
+			return medicamentToIds.Select(item => new InvertedIndexUnit(item.Key, item.Value)).ToList();
+		}
 	}
 
 	[TestFixture]
@@ -74,9 +91,15 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public void CreationTest()
 		{
+			var questionList = Program.ParseAndStemByDefault();
+
 			var medicaments = new Medicaments(
 				new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)),
 				Program.MedicamentsFileName);
+
+			var meds =
+				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text)));
+
 			Console.WriteLine(medicaments);
 			File.WriteAllText("MedOutput2.txt", medicaments.ToString());
 		}

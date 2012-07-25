@@ -24,7 +24,7 @@ namespace cqa_medical
 		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
 
-		public static QuestionList ParseAndStem()
+		public static QuestionList ParseAndStemByDefault()
 		{
 			var voc = new Vocabulary(QuestionsFileName, AnswersFileName);
 			var stemmer = new MyStemmer(voc);
