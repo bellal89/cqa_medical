@@ -40,17 +40,7 @@ namespace cqa_medical
     	}
 		
 
-    	public static void BodyPartsWork()
-		{
-			var questionList = ParseAndStem();
-			var body = BodyPart.GetBodyPartsFromFile(@"..\..\Files\BodyParts.txt");
-			var calc = new BodyCalculator(questionList, body);
-			calc.CalculateQuestionDistribution();
-			var newBody = calc.GetBody();
-			var allQuestionsCount = questionList.GetAllQuestions().Count();
-			File.WriteAllText("1.txt", newBody.ToExcelString(allQuestionsCount), Encoding.UTF8);
-			File.WriteAllText("2.txt", newBody.ToString(allQuestionsCount), Encoding.UTF8);
-		}
+    	
 
     	
     }

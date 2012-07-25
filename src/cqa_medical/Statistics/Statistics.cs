@@ -8,6 +8,7 @@ using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
+using cqa_medical.DataInput.Stemmers.MyStemmer;
 
 namespace cqa_medical.Statistics
 {
@@ -470,14 +471,15 @@ namespace cqa_medical.Statistics
 		{
 			var stemmerCases = new CaseT[]
 			                   	{
-			                   		new CaseT(new RussianStemmer(), new DateTime(0, 0, 0, 0, 4, 25)),
-			                   		new CaseT(new AOTLemmatizer(), new DateTime(0, 0, 0, 6, 45, 0))
+									new CaseT(new AOTLemmatizer(), new TimeSpan(6, 45, 0)),
+			                   		new CaseT(new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)), new TimeSpan(0, 4, 1)),
+			                   		new CaseT(new RussianStemmer(), new TimeSpan(0, 4, 20))
 			                   	};
 			foreach (var q in stemmerCases)
 			{
 				Console.WriteLine("Считает WordFrequency_" + q.Stemmer);
 				Console.WriteLine("Начало     " + DateTime.Now);
-				Console.WriteLine("Завершить  " + DateTime.Now + q.TimeToAdd);
+				Console.WriteLine("Завершить  " + DateTime.Now.AddMinutes( q.TimeToAdd.TotalMinutes));
 				var data = statistics.WordFrequency(q.Stemmer).ToStringInverted();
 				File.WriteAllText(
 					Program.StatisticsDirectory + "WordFrequency_" + q.Stemmer + ".txt", data);
@@ -490,9 +492,9 @@ namespace cqa_medical.Statistics
 	struct CaseT
 	{
 		public IStemmer Stemmer;
-		public DateTime TimeToAdd;
+		public TimeSpan TimeToAdd;
 
-		public CaseT(IStemmer stemmer, DateTime timeToAdd)
+		public CaseT(IStemmer stemmer, TimeSpan timeToAdd)
 		{
 			Stemmer = stemmer;
 			TimeToAdd = timeToAdd;
