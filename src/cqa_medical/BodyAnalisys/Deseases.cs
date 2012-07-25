@@ -29,7 +29,7 @@ namespace cqa_medical.BodyAnalisys
 		}
 
 		// очень завязан на файл Deseases.txt
-		public IOrderedEnumerable<string> DeseasesParse()
+		public IOrderedEnumerable<string> GetDeseases()
 		{
 			var tabulationParser = new TabulationParser(stemmer);
 			var neededWords =
@@ -39,41 +39,33 @@ namespace cqa_medical.BodyAnalisys
 					.Where(t => t.IndicatorAmount == 1)
 					.ToList();
 
-			var splittedWords  =  neededWords.SelectMany(s =>  s.StemmedWords.TakeWhile(r => r != "--")).ToArray();
+			var splittedWords = neededWords.SelectMany(s => s.StemmedWords.TakeWhile(r => r != "--")).ToArray();
 			var q = splittedWords.Where(t => !(
-												Regex.IsMatch(t, @"[^йцукенгшшщзхъфывапролджэячсмитьбю]") ||
-												Regex.IsMatch(t, @"(ый|ой|ая|ий)$") ||
-												File.ReadAllLines("../../notDeseases.txt").Any(e => e == t)
-												)
+			                                  	Regex.IsMatch(t, @"[^йцукенгшшщзхъфывапролджэячсмитьбю]") ||
+			                                  	Regex.IsMatch(t, @"(ый|ой|ая|ий)$") ||
+			                                  	File.ReadAllLines("../../notDeseases.txt").Any(e => e == t)
+			                                  )
 				).ToArray();
 			return q.Distinct().OrderBy(s => s);
 		}
 
+		public static IOrderedEnumerable<string> GetDeseasesDefault()
+		{
+			var q = new Deseases(
+				new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)),
+				Program.DeseasesFileName
+				);
+			return q.GetDeseases();
+		}
 	}
 
 	[TestFixture]
 	public class GetDeseases
 	{
 		[Test]
-		public void get()
+		public void Get()
 		{
-			var q = new Deseases(
-				new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)),
-				Program.DeseasesFileName
-				);
-			File.WriteAllLines("rightWords.txt",q.DeseasesParse());
+			File.WriteAllLines("rightWords.txt",Deseases.GetDeseasesDefault());
 		}
 	}
 }
-/*
- * а
- * астма
- * банка
- * блокада
- * боль
-болезнь
-бронх
-
- * 
-
-*/
