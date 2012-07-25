@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,23 +13,16 @@ namespace cqa_medical.BodyAnalisys
 {
 	class Deseases
 	{
-		private string[] deseases;
+		public string[] DeseasesList;
 		private readonly IStemmer stemmer;
-		public Deseases(IStemmer stemmer, string filename)
+		public Deseases(IStemmer stemmer)
 		{
-			deseases = File.ReadLines(filename).Select(s => s.Trim()).ToArray();
-
 			this.stemmer = stemmer;
-		}
-
-		public Deseases(IStemmer stemmer, string[] deseases)
-		{
-			this.deseases = deseases;
-			this.stemmer = stemmer;
+			DeseasesList = GetDeseasesFromDeseasesTxtFile().ToArray();
 		}
 
 		// очень завязан на файл Deseases.txt
-		public IOrderedEnumerable<string> GetDeseases()
+		public IOrderedEnumerable<string> GetDeseasesFromDeseasesTxtFile()
 		{
 			var tabulationParser = new TabulationParser(stemmer);
 			var neededWords =
@@ -42,6 +34,7 @@ namespace cqa_medical.BodyAnalisys
 
 			var splittedWords = neededWords.SelectMany(s => s.StemmedWords.TakeWhile(r => r != "--")).ToArray();
 			var q = splittedWords.Where(t => !(
+												t.Length < 3 ||
 			                                  	Regex.IsMatch(t, @"[^йцукенгшшщзхъфывапролджэячсмитьбю]") ||
 			                                  	Regex.IsMatch(t, @"(ый|ой|ая|ий)$") ||
 			                                  	File.ReadAllLines("../../notDeseases.txt").Any(e => e == t)
@@ -50,13 +43,22 @@ namespace cqa_medical.BodyAnalisys
 			return q.Distinct().OrderBy(s => s);
 		}
 
-		public static IOrderedEnumerable<string> GetDeseasesDefault()
+		public IEnumerable<InvertedIndexUnit> GetIndex(IEnumerable<Tuple<long,string>> idTextList )
 		{
-			var q = new Deseases(
-				new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)),
-				Program.DeseasesFileName
-				);
-			return q.GetDeseases();
+			return DeseasesList.Select(item =>
+			                       new InvertedIndexUnit(
+			                       	item,
+			                       	idTextList
+			                       		.Where(t => t.Item2.SplitInWordsAndStripHTML().Any(s => s == item))
+			                       		.Select(w => w.Item1)
+			                       	))
+									.Where(q => q.Ids.Count > 0 );
+		}
+		public IEnumerable<string> GetIndexFromQuestionList(QuestionList ql)
+		{
+			var des = new Deseases(Program.DefaultMyStemmer);
+			return des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)))
+				.Select(q => q.Word + " " + String.Join(" ", q.Ids));
 		}
 	}
 
@@ -66,7 +68,28 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public void Get()
 		{
-			File.WriteAllLines("rightWords.txt",Deseases.GetDeseasesDefault());
+			var ql = Program.DefaultQuestionList;
+			var des = new Deseases(new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)));
+			Console.WriteLine("Начнем!");
+			var deseasesIndex =
+				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)))
+				.Select(q => q.Word + "\t" + String.Join(" ", q.Ids))
+				.ToArray();
+			File.WriteAllLines("deseasesIndex.txt", deseasesIndex);
 		}
 	}
+	[TestFixture]
+	public class DeseasesTest
+	{
+		[Test]
+		public void GetTest()
+		{
+			var ql = Program.TestDefaultQuestionList;
+			var des = new Deseases(Program.DefaultMyStemmer);
+			var deseasesIndex = des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).Select(q => q.Word + "_" + String.Join("+", q.Ids)).ToArray();
+			Console.WriteLine(String.Join("\n",deseasesIndex));
+			Assert.AreEqual(1,deseasesIndex.Length);
+		}
+	}
+	
 }

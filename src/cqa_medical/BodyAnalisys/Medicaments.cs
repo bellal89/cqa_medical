@@ -91,7 +91,7 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public void CreationTest()
 		{
-			var questionList = Program.ParseAndStemByDefault();
+			var questionList = Program.DefaultQuestionList;
 
 			var medicaments = new Medicaments(
 				new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)),

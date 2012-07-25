@@ -420,7 +420,7 @@ namespace cqa_medical.Statistics
 		[TestFixtureSetUp]
 		public void DistributionInit()
 		{
-			var ql = Program.Parse(Program.QuestionsFileName, Program.AnswersFileName);
+			var ql = Program.DefaultQuestionList;
 			statistics = new Statistics(ql);
 		}
 

@@ -1,14 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
-using cqa_medical.BodyAnalisys;
-using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
-using cqa_medical.Utilits;
 
 namespace cqa_medical
 {
@@ -24,12 +17,32 @@ namespace cqa_medical
 		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
 
-		public static QuestionList ParseAndStemByDefault()
+		
+		private static readonly Lazy<Vocabulary> defaultVocabulary = new Lazy<Vocabulary>(() => new Vocabulary(QuestionsFileName, AnswersFileName));
+		public static Vocabulary DefaultVocabulary{get { return defaultVocabulary.Value; }}
+
+		private static readonly Lazy<MyStemmer> defaultMyStemmer = new Lazy<MyStemmer>(() => new MyStemmer(DefaultVocabulary));
+		public static MyStemmer DefaultMyStemmer { get { return defaultMyStemmer.Value; } }
+
+		// default not stemmed
+    	private static readonly Lazy<QuestionList> defaultQuestionList = new Lazy<QuestionList>(ParseAndStem);
+		public static QuestionList DefaultQuestionList { get { return defaultQuestionList.Value; }}
+
+		private static readonly Lazy<QuestionList> testDefaultQuestionList = new Lazy<QuestionList>(ParseAndStemTest);
+		public static QuestionList TestDefaultQuestionList { get { return testDefaultQuestionList.Value; } }
+
+
+
+
+		public static QuestionList ParseAndStem()
 		{
-			var voc = new Vocabulary(QuestionsFileName, AnswersFileName);
-			var stemmer = new MyStemmer(voc);
 			var questionList = Parse(QuestionsFileName, AnswersFileName);
-			return questionList.StemIt(stemmer);
+			return questionList.StemIt(DefaultMyStemmer);
+		}
+		public static QuestionList ParseAndStemTest()
+		{
+			var questionList = Parse(TestQuestionsFileName, TestAnswersFileName);
+			return questionList.StemIt(DefaultMyStemmer);
 		}
 
 		public static QuestionList Parse(string questionsFileName, string answersFileName)
@@ -66,10 +79,26 @@ namespace cqa_medical
 				Assert.AreEqual(true, hasIdenticId);
 			}
 		}
-		
 
-    	
 
-    	
+    	[TestFixture]
+    	public class tofggf
+    	{
+			[Test]
+			public void qwe()
+			{
+				var ql = DefaultQuestionList;
+				Assert.AreEqual(1,1);
+			}
+			[Test]
+			public void qwe2()
+			{
+				var ql = DefaultQuestionList;
+				Assert.AreEqual(1, 1);
+			}
+
+    	}
+
+
     }
 }

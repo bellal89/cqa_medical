@@ -77,7 +77,7 @@ namespace cqa_medical.BodyAnalisys
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
 			var searcher = new Symptoms(voc, body);
 
-			var questionList = Program.ParseAndStemByDefault();
+			var questionList = Program.DefaultQuestionList;
 
 			var start = DateTime.Now;
 			var symptoms = searcher.GetSymptoms(questionList.GetAllQuestions().Select(item => Tuple.Create(item.Id, item.WholeText)));
