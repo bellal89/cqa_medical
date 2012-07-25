@@ -38,7 +38,7 @@ namespace cqa_medical.BodyAnalisys
 
 		private static Dictionary<string, HashSet<int>> Filter(Dictionary<string, HashSet<int>> index)
 		{
-			return index.Where(item => item.Value.Count <= 85).ToDictionary(item => item.Key, item => item.Value);
+			return index.Where(item => item.Value.Count <= 85 && item.Key.Length > 2).ToDictionary(item => item.Key, item => item.Value);
 		}
 
 		private void AddToIndex(IDictionary<string, HashSet<int>> index, string medicamentFullName, int medicamentId)
@@ -60,6 +60,11 @@ namespace cqa_medical.BodyAnalisys
 			return String.Join("\n",
 			            invertedIndex.OrderByDescending(item => item.Value.Count).Select(
 			            	item => item.Value.Count + "\t" + item.Key + "\t" + String.Join(" ", item.Value.OrderBy(id => id))));
+		}
+
+		public IEnumerable<string> GetMedicamentNames()
+		{
+			return invertedIndex.Keys;
 		}
 	}
 

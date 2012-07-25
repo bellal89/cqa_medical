@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Iveonik.Stemmers;
+using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.DataInput
 {
@@ -47,10 +48,8 @@ namespace cqa_medical.DataInput
 		/// Use SnowballStemmer to modify text of messages
 		/// </summary>
 		/// <returns>QuestionList</returns>
-		public QuestionList StemIt()
+		public QuestionList StemIt(IStemmer stemmer)
 		{
-			var stemmer = new RussianStemmer();
-
 			DateTime start = DateTime.Now;
 			foreach (var question in GetAllQuestions())
 			{

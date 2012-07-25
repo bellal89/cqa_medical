@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 
@@ -64,7 +65,7 @@ namespace cqa_medical.BodyAnalisys
 			var parser = new Parser(Program.TestQuestionsFileName, Program.TestAnswersFileName);
 			var questionList = new QuestionList();
 			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-			questionList.StemIt();
+			questionList.StemIt(new RussianStemmer());
 
 			var body = BodyPart.GetBodyPartsFromFile("../../Files/BodyParts.txt");
 

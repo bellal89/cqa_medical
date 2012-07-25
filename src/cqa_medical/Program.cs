@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.BodyAnalisys;
@@ -23,7 +24,7 @@ namespace cqa_medical
 		public static QuestionList ParseAndStem()
 		{
 			var questionList = Parse(QuestionsFileName, AnswersFileName);
-			return questionList.StemIt();
+			return questionList.StemIt(new RussianStemmer());
 		}
 
 		public static QuestionList Parse(String questionsFileName, string answersFileName)

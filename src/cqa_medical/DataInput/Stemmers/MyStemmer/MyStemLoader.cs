@@ -21,7 +21,10 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 
 		public IEnumerable<string> GetPartOfSpeech(string partOfSpeech, string text)
 		{
-			return text.SplitIntoWords().Select(GetPartOfSpeech).Where(p => p == partOfSpeech);
+			return text.SplitIntoWords()
+				.Select(item => Tuple.Create(item, GetPartOfSpeech(item)))
+				.Where(wordPoS => wordPoS.Item2 == partOfSpeech)
+				.Select(wordPoS => wordPoS.Item1);
 		}
 
 		public string GetPartOfSpeech(string word)
