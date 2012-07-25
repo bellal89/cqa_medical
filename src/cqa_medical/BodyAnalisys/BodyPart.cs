@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Iveonik.Stemmers;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
 {

@@ -4,7 +4,7 @@ using System.Globalization;
 using NUnit.Framework;
 using System.Linq;
 
-namespace cqa_medical.DataInput
+namespace cqa_medical.Utilits
 {
 	public class DistributionCreator<T>
 	{

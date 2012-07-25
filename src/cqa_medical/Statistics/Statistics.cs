@@ -9,6 +9,7 @@ using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.Statistics
 {
@@ -48,7 +49,7 @@ namespace cqa_medical.Statistics
 			var denumerator = GetDistribution(questions
 			                                  	.Where(a => a.DateAdded >= FirstDate)
 			                                  	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
-			return Utilits.DistributientQuotient(enumerator, denumerator);
+			return Utilits.Utilits.DistributientQuotient(enumerator, denumerator);
 		}
 
 		[Statistics]
@@ -431,7 +432,7 @@ namespace cqa_medical.Statistics
 				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
 				.Where(m => m.GetCustomAttributes(typeof (StatisticsAttribute), true).Any()).ToList();
 
-			var rawMethod = typeof (Utilits).GetMethod("ToStringNormal");
+			var rawMethod = typeof (Utilits.Utilits).GetMethod("ToStringNormal");
 			foreach (var info in infos)
 			{
 				Console.WriteLine("calculating " + info.Name);
