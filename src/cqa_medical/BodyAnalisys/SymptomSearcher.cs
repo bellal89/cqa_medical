@@ -24,32 +24,37 @@ namespace cqa_medical.BodyAnalisys
 			bodyParts = body.ToDictionary();
 		}
 
-		public Dictionary<string, List<string>> GetSymptoms(IEnumerable<string> texts)
+		public Dictionary<string, List<long>> GetSymptoms()
 		{
 			var partToSymptoms = new Dictionary<string, List<string>>();
+			var symptomToQuestionList = new Dictionary<string, List<long>>();
 
-			foreach (var words in texts.Select(text => text.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ToArray()))
+			foreach (var question in questionList.GetAllQuestions())
 			{
+				var words = question.WholeText.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 				for (var i = 0; i < words.Length; i++)
 				{
 					if (!bodyParts.ContainsKey(words[i])) continue;
 					var verbs = GetVerbs(words, i, Radius);
+					if (verbs == null) continue;
+					
 					if (!partToSymptoms.ContainsKey(words[i]))
 					{
 						partToSymptoms.Add(words[i], new List<string>());
 					}
-					partToSymptoms[words[i]].AddRange(verbs);
+					foreach (var verb in verbs)
+					{
+						partToSymptoms[words[i]].Add(verb);
+						
+						var symptom = words[i] + " " + verb;
+						if (!symptomToQuestionList.ContainsKey(symptom))
+							symptomToQuestionList.Add(symptom, new List<long>());
+						symptomToQuestionList[symptom].Add(question.Id);
+					}
 				}
 			}
 
-			var parts = new Dictionary<string, List<string>>();
-			foreach (var part in partToSymptoms.Keys)
-			{
-				var distrib = new DistributionCreator<string>(partToSymptoms[part]);
-				parts.Add(part, distrib.GetData().OrderByDescending(item => item.Value).Select(item => item.Key).ToList());
-			}
-
-			return parts;
+			return symptomToQuestionList;
 		}
 
 		private IEnumerable<string> GetVerbs(IList<string> words, int pos, int radius)
@@ -86,7 +91,7 @@ namespace cqa_medical.BodyAnalisys
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
 
 			var searcher = new SymptomSearcher(voc, questionList, body);
-			var symptoms = searcher.GetSymptoms(questionList.GetAllQuestions().Select(q => q.WholeText));
+			var symptoms = searcher.GetSymptoms();
 			Console.WriteLine(symptoms);
 		}
 	}
