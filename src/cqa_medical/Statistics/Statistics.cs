@@ -30,9 +30,7 @@ namespace cqa_medical.Statistics
 			questions = questionList.GetAllQuestions().ToArray();
 			answers = questionList.GetAllAnswers().ToArray();
 		}
-
-
-
+		
 		public static DateTime GetWeekFromRange(DateTime now)
 		{
 			return FirstDate.AddDays(7*Math.Floor((now - FirstDate).TotalDays/7.0));
@@ -208,17 +206,22 @@ namespace cqa_medical.Statistics
 
 		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords)
 		{
-			var words = expectedWords.Select(s => s.ToLower());
 			return GetDistribution(questions
 			                       	.Where(a => a.DateAdded >= FirstDate)
-			                       	.Where(q =>
-			                       	       q.WholeText.SplitInWordsAndStripHTML().Any(t => words.Any(z => z == t))
-			                       	       ||
-			                       	       q.GetAnswers()
-			                       	       	.Any(a => a.Text.SplitInWordsAndStripHTML()
-			                       	       	          	.Select(w => w.ToLower())
-			                       	       	          	.Any(textWord => words.Any(expectedWord => expectedWord == textWord))))
+			                       	.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
 			                       	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+		}
+
+		[Statistics]
+		public SortedDictionary<DateTime, int> WordIntensityDistributionInDays(IEnumerable<string> expectedWords)
+		{
+			var keyWords = expectedWords.Select(s => s.ToLower());
+			return GetDistribution(questions.Where(q => OneOfWordsInsideTheText(q.WholeText, keyWords)).Select(q => q.DateAdded.Date));
+		}
+
+		private static bool OneOfWordsInsideTheText(string text, IEnumerable<string> keyWords)
+		{
+			return keyWords.Select(w => w.ToLower()).Any(text.SplitInWordsAndStripHTML().Contains);
 		}
 
 		public SortedDictionary<string, int> WordFrequency(IStemmer stemmer)
@@ -443,12 +446,22 @@ namespace cqa_medical.Statistics
 			}
 		}
 
+		[Test]
+		public void WordsContainingDistributionInDays()
+		{
+			var words = new []{"температура", "давление"};
+
+			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", words));
+			var data = statistics.WordIntensityDistributionInDays(words).ToStringNormal();
+			File.WriteAllText(
+				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", data);
+		}
 
 		[Test, TestCaseSource("divideCases")]
 		public void WordQuotientDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
-			var data = statistics.WordQuotientDistributionInWeeks(expectedWords).ToStringNormal();
+			var data = statistics.WordQuotientDistributionInWeeks(expectedWords.Select(Program.DefaultMyStemmer.Stem)).ToStringNormal();
 			File.WriteAllText(
 				Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
@@ -486,6 +499,12 @@ namespace cqa_medical.Statistics
 					Program.StatisticsDirectory + "WordFrequency_" + q.Stemmer + ".txt", data);
 				Console.WriteLine("Свершилось " + DateTime.Now);
 			}
+		}
+
+		[Test]
+		public void StoreTemperatureAndPressure()
+		{
+			
 		}
 
 

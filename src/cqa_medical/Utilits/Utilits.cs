@@ -32,7 +32,7 @@ namespace cqa_medical.Utilits
 
 		public static string ToStringNormal<TKey, TValue>(this IDictionary<TKey, TValue> data)
 		{
-			return string.Join(Environment.NewLine, data.Keys.OrderByDescending(key => key).Select(k => k.ToString() + "\t" + data[k].ToString()).ToArray());
+			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + "\t" + data[k].ToString()).ToArray());
 		}
 
 		public static string ToStringInverted<TKey, TValue>(this IDictionary<TKey, TValue> data)
