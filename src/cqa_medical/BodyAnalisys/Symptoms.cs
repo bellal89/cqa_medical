@@ -73,7 +73,7 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public static void TestSearch()
 		{
-			var voc = new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName);
+			var voc = Program.DefaultVocabulary;
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
 			var searcher = new Symptoms(voc, body);
 

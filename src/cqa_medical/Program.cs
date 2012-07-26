@@ -79,26 +79,5 @@ namespace cqa_medical
 				Assert.AreEqual(true, hasIdenticId);
 			}
 		}
-
-
-    	[TestFixture]
-    	public class tofggf
-    	{
-			[Test]
-			public void qwe()
-			{
-				var ql = DefaultQuestionList;
-				Assert.AreEqual(1,1);
-			}
-			[Test]
-			public void qwe2()
-			{
-				var ql = DefaultQuestionList;
-				Assert.AreEqual(1, 1);
-			}
-
-    	}
-
-
     }
 }
