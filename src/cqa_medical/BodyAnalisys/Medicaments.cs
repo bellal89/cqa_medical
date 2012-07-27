@@ -27,8 +27,8 @@ namespace cqa_medical.BodyAnalisys
 			var i = 1;
 			foreach (var parts in File.ReadAllLines(fileName)
 									  .Distinct()
-									  .Select(line => line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries))
-									  .Where(item => item.Length > 1))
+									  .Select(line => line.Split(new[] {'\t'}))
+									  .Where(item => item.Length == 3))
 			{
 				AddToIndex(index, parts[0], i);
 				AddToIndex(index, parts[1], i);
