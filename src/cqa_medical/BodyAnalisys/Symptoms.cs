@@ -34,7 +34,7 @@ namespace cqa_medical.BodyAnalisys
 					var verbs = GetVerbs(words, i, Radius);
 					if (verbs == null) continue;
 					
-					foreach (var symptom in verbs.Select(verb => words[i] + "_" + verb))
+					foreach (var symptom in verbs.Where(verb => words[i] != verb).Select(verb => words[i] + "_" + verb))
 					{
 						if (!symptomToQuestionList.ContainsKey(symptom))
 							symptomToQuestionList.Add(symptom, new List<long>());
