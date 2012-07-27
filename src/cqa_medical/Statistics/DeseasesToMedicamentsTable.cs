@@ -31,7 +31,7 @@ namespace cqa_medical.Statistics
 
 		public void AddToMedicalGuide(string desease, string medicament, int howMany = 1)
 		{
-			if (howMany < 100) return;
+			if (howMany < 50 || howMany > 100) return;
 				MedicalGuide.UpdateOrAdd(Tuple.Create(desease, medicament), v => v + howMany,  howMany);
 		}
 
@@ -46,7 +46,7 @@ namespace cqa_medical.Statistics
 			[Test]
 			public void Test()
 			{
-				const int minAmount = 100;
+				const int minAmount = 50;
 				var medicaments = Medicaments.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
 				var deseases = Deseases.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
 				var symptoms = Symptoms.GetDefault().Where(a => a.Ids.Count>minAmount).ToArray();
