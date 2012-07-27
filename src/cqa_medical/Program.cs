@@ -30,9 +30,7 @@ namespace cqa_medical
 
 		private static readonly Lazy<QuestionList> testDefaultQuestionList = new Lazy<QuestionList>(ParseAndStemTest);
 		public static QuestionList TestDefaultQuestionList { get { return testDefaultQuestionList.Value; } }
-
-
-
+		
 
 		public static QuestionList ParseAndStem()
 		{
