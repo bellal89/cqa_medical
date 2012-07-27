@@ -69,7 +69,7 @@ namespace cqa_medical.BodyAnalisys
 
 		public static BodyPart GetBodyPartsFromFile(String filename)
 		{
-			var tabParser = new TabulationParser(new RussianStemmer());
+			var tabParser = new TabulationParser(Program.DefaultMyStemmer);
 			var data = tabParser.ParseFromFile(filename).ToList();
 			var first = data.First();
 			if (first.IndicatorAmount != 0)
@@ -109,7 +109,7 @@ namespace cqa_medical.BodyAnalisys
 
 		private Dictionary<string, BodyPart> getDict(Dictionary<string, BodyPart> dict, BodyPart part)
 		{
-			foreach (var name in part.Names)
+			foreach (var name in part.Names.Distinct())
 			{
 				dict.Add(name, part);
 			}

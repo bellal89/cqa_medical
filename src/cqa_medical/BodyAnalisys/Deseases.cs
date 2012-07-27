@@ -6,19 +6,19 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
-using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
 {
-	class Deseases
+	internal class Deseases
 	{
-		public string[] DeseasesList;
+		public HashSet<string> DeseasesList;
 		private readonly IStemmer stemmer;
+
 		public Deseases(IStemmer stemmer)
 		{
 			this.stemmer = stemmer;
-			DeseasesList = GetDeseasesFromDeseasesTxtFile().ToArray();
+			DeseasesList = new HashSet<string>(GetDeseasesFromDeseasesTxtFile());
 		}
 
 		// очень завязан на файл Deseases.txt
@@ -34,31 +34,65 @@ namespace cqa_medical.BodyAnalisys
 
 			var splittedWords = neededWords.SelectMany(s => s.StemmedWords.TakeWhile(r => r != "--")).ToArray();
 			var q = splittedWords.Where(t => !(
-												t.Length < 3 ||
+			                                  	t.Length < 3 ||
 			                                  	Regex.IsMatch(t, @"[^йцукенгшшщзхъфывапролджэячсмитьбю]") ||
 			                                  	Regex.IsMatch(t, @"(ый|ой|ая|ий)$") ||
-			                                  	File.ReadAllLines("../../notDeseases.txt").Any(e => e == t)
+			                                  	File.ReadAllLines("../../Files/notDeseases.txt").Any(e => e == t)
 			                                  )
 				).ToArray();
 			return q.Distinct().OrderBy(s => s);
 		}
 
-		public IEnumerable<InvertedIndexUnit> GetIndex(IEnumerable<Tuple<long,string>> idTextList )
+		public IEnumerable<InvertedIndexUnit> GetIndex(IEnumerable<Tuple<long, string>> idTextList)
 		{
-			return DeseasesList.Select(item =>
-			                       new InvertedIndexUnit(
-			                       	item,
-			                       	idTextList
-			                       		.Where(t => t.Item2.SplitInWordsAndStripHTML().Any(s => s == item))
-			                       		.Select(w => w.Item1)
-			                       	))
-									.Where(q => q.Ids.Count > 0 );
+			//			var temp = idTextList.ToList();
+			//			return DeseasesList.Select(item =>
+			//			                       new InvertedIndexUnit(
+			//			                       	item,
+			//									temp
+			//			                       		.Where(t => t.Item2
+			//											.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
+			//											.Any(s => s == item))
+			//			                       		.Select(w => w.Item1)
+			//			                       	))
+			//									.Where(q => q.Ids.Count > 0 );
+			var deseasesToIds = new Dictionary<string, HashSet<long>>();
+			foreach (var idAndText in idTextList)
+			{
+				var words = idAndText.Item2.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+				foreach (var word in words.Where(word => DeseasesList.Contains(word)))
+				{
+					if (!deseasesToIds.ContainsKey(word))
+						deseasesToIds.Add(word, new HashSet<long>());
+					deseasesToIds[word].Add(idAndText.Item1);
+				}
+			}
+			return deseasesToIds.Select(item => new InvertedIndexUnit(item.Key, item.Value)).ToList();
+
 		}
+
 		public IEnumerable<string> GetIndexFromQuestionList(QuestionList ql)
 		{
 			var des = new Deseases(Program.DefaultMyStemmer);
 			return des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)))
 				.Select(q => q.Word + " " + String.Join(" ", q.Ids));
+		}
+
+		public static IEnumerable<InvertedIndexUnit> GetDefault()
+		{
+			if (Utilits.Utilits.IsFileActual(Program.DeseasesIndexFileName, Program.DeseasesFileName))
+			{
+				var rawStrings = File.ReadAllLines(Program.DeseasesIndexFileName);
+				return rawStrings.Select(s => new InvertedIndexUnit(s));
+			}
+
+			var ql = Program.DefaultQuestionList;
+			var des = new Deseases(Program.DefaultMyStemmer);
+			var deseasesIndex =
+				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).ToArray();
+
+			File.WriteAllLines(Program.DeseasesIndexFileName, deseasesIndex.Select(s => s.ToString()));
+			return deseasesIndex;
 		}
 	}
 
@@ -66,16 +100,19 @@ namespace cqa_medical.BodyAnalisys
 	public class GetDeseases
 	{
 		[Test]
+		public void GetRight()
+		{
+			var q  = Deseases.GetDefault();
+			File.WriteAllLines("rty.txt", q.Select(s=>s.ToString()));
+		}
+		[Test]
 		public void Get()
 		{
 			var ql = Program.DefaultQuestionList;
-			var des = new Deseases(new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)));
-			Console.WriteLine("Начнем!");
+			var des = new Deseases(Program.DefaultMyStemmer);
 			var deseasesIndex =
-				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)))
-				.Select(q => q.Word + "\t" + String.Join(" ", q.Ids))
-				.ToArray();
-			File.WriteAllLines("deseasesIndex.txt", deseasesIndex);
+				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)));
+			File.WriteAllLines("DeseasesIndex.txt", deseasesIndex.Select(s => s.ToString()));
 		}
 	}
 	[TestFixture]

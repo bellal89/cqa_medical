@@ -83,6 +83,27 @@ namespace cqa_medical.BodyAnalisys
 			}
 			return medicamentToIds.Select(item => new InvertedIndexUnit(item.Key, item.Value)).ToList();
 		}
+		public static IEnumerable<InvertedIndexUnit> GetDefault()
+		{
+			if (Utilits.Utilits.IsFileActual(Program.MedicamentsIndexFileName, Program.MedicamentsFileName))
+			{
+				var rawStrings = File.ReadAllLines(Program.MedicamentsIndexFileName);
+				return rawStrings.Select(s => new InvertedIndexUnit(s));
+			}
+
+			var questionList = Program.DefaultQuestionList;
+
+			var medicaments = new Medicaments(Program.DefaultMyStemmer, Program.MedicamentsFileName);
+
+			var meds = medicaments
+				.FindMedicamentsInTexts(questionList
+						.GetAllAnswers()
+						.Select(a => Tuple.Create(a.QuestionId, a.Text)))
+				.ToArray();
+			File.WriteAllLines(Program.MedicamentsIndexFileName, meds.Select(s => s.ToString()));
+			return meds;
+			
+		}
 	}
 
 	[TestFixture]
@@ -93,15 +114,36 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var questionList = Program.DefaultQuestionList;
 
-			var medicaments = new Medicaments(
-				new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)),
-				Program.MedicamentsFileName);
+			var medicaments = new Medicaments(Program.DefaultMyStemmer,Program.MedicamentsFileName);
 
 			var meds =
 				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text)));
 
 			Console.WriteLine(medicaments);
 			File.WriteAllText("MedOutput2.txt", medicaments.ToString());
+		}
+
+		[Test]
+		public void IndexTest()
+		{
+			var questionList = Program.TestDefaultQuestionList;
+
+			var medicaments = new Medicaments(Program.DefaultMyStemmer, Program.MedicamentsFileName);
+
+			var meds =
+				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text))).ToList();
+			Console.WriteLine(String.Join("\n", meds.Select(s => s.ToString())));
+		}
+		[Test]
+		public void IndexCreation()
+		{
+			var questionList = Program.DefaultQuestionList;
+
+			var medicaments = new Medicaments(Program.DefaultMyStemmer, Program.MedicamentsFileName);
+
+			var meds =
+				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text))).ToList();
+			File.WriteAllLines("MedicamentsIndex.txt", meds.Select(s => s.ToString()));
 		}
 	}
 }
