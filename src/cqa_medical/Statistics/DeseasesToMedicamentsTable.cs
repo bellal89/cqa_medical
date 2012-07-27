@@ -31,8 +31,8 @@ namespace cqa_medical.Statistics
 
 		public void AddToMedicalGuide(string desease, string medicament, int howMany = 1)
 		{
-			if (howMany < 50 || howMany > 100) return;
-				MedicalGuide.UpdateOrAdd(Tuple.Create(desease, medicament), v => v + howMany,  howMany);
+			if (howMany > 100 || howMany < 50) return;
+				MedicalGuide.Add(Tuple.Create(desease, medicament), howMany);
 		}
 
 		public override string ToString()
