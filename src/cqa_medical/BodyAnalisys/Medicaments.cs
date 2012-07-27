@@ -85,7 +85,7 @@ namespace cqa_medical.BodyAnalisys
 		}
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
-			if (Utilits.Utilits.IsFileActual(Program.MedicamentsIndexFileName, Program.MedicamentsFileName))
+			if (Utilits.Utilits.IsFileActual(Program.MedicamentsIndexFileName, new[]{Program.MedicamentsFileName}))
 			{
 				var rawStrings = File.ReadAllLines(Program.MedicamentsIndexFileName);
 				return rawStrings.Select(s => new InvertedIndexUnit(s));
@@ -97,12 +97,12 @@ namespace cqa_medical.BodyAnalisys
 
 			var meds = medicaments
 				.FindMedicamentsInTexts(questionList
-						.GetAllAnswers()
-						.Select(a => Tuple.Create(a.QuestionId, a.Text)))
+				                        	.GetAllAnswers()
+				                        	.Select(a => Tuple.Create(a.QuestionId, a.Text)))
 				.ToArray();
 			File.WriteAllLines(Program.MedicamentsIndexFileName, meds.Select(s => s.ToString()));
 			return meds;
-			
+
 		}
 	}
 

@@ -68,7 +68,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 
 		public Dictionary<string, StemInfo> GetStemInfoVocabulary()
 		{
-			if (!stemmedFileNames.Any(name => File.Exists(name) && IsActual(name)))
+			if (!stemmedFileNames.Any(name => Utilits.Utilits.IsFileActual(name, QAFileNames)))
 				foreach (var name in QAFileNames)
 					InvokeMystem(name, name + StemmedFileSuffix);
 
@@ -81,11 +81,6 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 				wordToStemInfo.Add(parts[0], new StemInfo(parts[1], parts[2]));
 			}
 			return wordToStemInfo;
-		}
-
-		private bool IsActual(string fileName)
-		{
-			return QAFileNames.All(name => File.GetLastWriteTime(name) < File.GetCreationTime(fileName));
 		}
 
 		private void InvokeMystem(string inputFileName, string outputFileName)

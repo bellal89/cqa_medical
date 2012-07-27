@@ -71,9 +71,9 @@ namespace cqa_medical.Utilits
 				dictionary.Add(key,deafultValue);
 			}
 		}
-		public static bool IsFileActual(string fileName, string parentFileName)
+		public static bool IsFileActual(string fileName, string[] parentFileNames)
 		{
-			return File.Exists(fileName) && (File.GetLastWriteTime(parentFileName) < File.GetCreationTime(fileName));
+			return File.Exists(fileName) && parentFileNames.All(parentFileName => File.GetLastWriteTime(parentFileName) < File.GetCreationTime(fileName));
 		}
 		
 	}

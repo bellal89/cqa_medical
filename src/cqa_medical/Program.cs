@@ -11,6 +11,7 @@ namespace cqa_medical
 		public const string QuestionsFileName = "../../Files/qst_25.csv";
 		public const string AnswersFileName = "../../Files/ans_25.csv";
 		public const string DeseasesFileName = "../../Files/Deseases.txt";
+		public const string NotDeseasesFileName = "../../Files/notDeseases.txt";
 		public const string BodyPartsFileName = "../../Files/BodyParts.txt";
 		public const string MedicamentsFileName = "../../Files/Grls.txt";
 		public const string DeseasesIndexFileName = "../../Files/DeseasesIndex.txt";

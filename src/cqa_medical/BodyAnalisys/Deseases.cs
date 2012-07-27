@@ -37,7 +37,7 @@ namespace cqa_medical.BodyAnalisys
 			                                  	t.Length < 3 ||
 			                                  	Regex.IsMatch(t, @"[^йцукенгшшщзхъфывапролджэячсмитьбю]") ||
 			                                  	Regex.IsMatch(t, @"(ый|ой|ая|ий)$") ||
-			                                  	File.ReadAllLines("../../Files/notDeseases.txt").Any(e => e == t)
+			                                  	File.ReadAllLines(Program.NotDeseasesFileName).Contains(t)
 			                                  )
 				).ToArray();
 			return q.Distinct().OrderBy(s => s);
@@ -45,17 +45,6 @@ namespace cqa_medical.BodyAnalisys
 
 		public IEnumerable<InvertedIndexUnit> GetIndex(IEnumerable<Tuple<long, string>> idTextList)
 		{
-			//			var temp = idTextList.ToList();
-			//			return DeseasesList.Select(item =>
-			//			                       new InvertedIndexUnit(
-			//			                       	item,
-			//									temp
-			//			                       		.Where(t => t.Item2
-			//											.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
-			//											.Any(s => s == item))
-			//			                       		.Select(w => w.Item1)
-			//			                       	))
-			//									.Where(q => q.Ids.Count > 0 );
 			var deseasesToIds = new Dictionary<string, HashSet<long>>();
 			foreach (var idAndText in idTextList)
 			{
@@ -80,7 +69,7 @@ namespace cqa_medical.BodyAnalisys
 
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
-			if (Utilits.Utilits.IsFileActual(Program.DeseasesIndexFileName, Program.DeseasesFileName))
+			if (Utilits.Utilits.IsFileActual(Program.DeseasesIndexFileName, new []{Program.DeseasesFileName}))
 			{
 				var rawStrings = File.ReadAllLines(Program.DeseasesIndexFileName);
 				return rawStrings.Select(s => new InvertedIndexUnit(s));
