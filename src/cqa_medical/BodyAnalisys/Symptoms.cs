@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.Utilits;
 
@@ -14,7 +12,6 @@ namespace cqa_medical.BodyAnalisys
 	{
 		private readonly Vocabulary vocabulary;
 		private readonly Dictionary<string, BodyPart> bodyParts;
-		private Dictionary<string, List<string>> bodyPartToSymptoms;
 
 		private const int Radius = 2;
 
@@ -66,9 +63,8 @@ namespace cqa_medical.BodyAnalisys
 		}
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
-			if (Utilits.Utilits.IsFileActual(Program.SymptomsIndexFileName, Program.QuestionsFileName))
-			{
-				var rawStrings = File.ReadAllLines(Program.SymptomsIndexFileName);
+			if (Utilits.Utilits.IsFileActual(Program.SymptomsIndexFileName, new []{Program.QuestionsFileName}))
+			{var rawStrings = File.ReadAllLines(Program.SymptomsIndexFileName);
 				return rawStrings.Select(s => new InvertedIndexUnit(s));
 			}
 
