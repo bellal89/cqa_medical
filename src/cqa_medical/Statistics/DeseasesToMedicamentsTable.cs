@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using cqa_medical.DataInput;
+using NUnit.Framework;
+using cqa_medical.BodyAnalisys;
 using cqa_medical.Utilits;
 
 namespace cqa_medical.Statistics
 {
-	internal class DeseasesToMedicamentsTable
+	public class DeseasesToMedicamentsTable
 	{
-		public Dictionary<string, Dictionary<string, int>> MedicalGuide;
-		private QuestionList questionList;
+		public Dictionary<Tuple<string,string>,  int> MedicalGuide;
 		private readonly InvertedIndexUnit[] deseases;
 		private readonly InvertedIndexUnit[] medicaments;
 
-		public DeseasesToMedicamentsTable(QuestionList questionList, InvertedIndexUnit[] deseases,
-		                                  InvertedIndexUnit[] medicaments)
+		public DeseasesToMedicamentsTable( InvertedIndexUnit[] deseases, InvertedIndexUnit[] medicaments)
 		{
-			MedicalGuide = new Dictionary<string, Dictionary<string, int>>();
-			this.questionList = questionList;
+			MedicalGuide = new Dictionary<Tuple<string, string>, int>();
 			this.deseases = deseases;
 			this.medicaments = medicaments;
 			Initialize();
@@ -33,11 +31,33 @@ namespace cqa_medical.Statistics
 
 		public void AddToMedicalGuide(string desease, string medicament, int howMany = 1)
 		{
-			if (howMany == 0) return;
-			if (!MedicalGuide.ContainsKey((desease)))
-				MedicalGuide.Add(desease, new Dictionary<string, int>());
-			MedicalGuide[desease].UpdateOrAdd(medicament, v => v + howMany, 1);
+			if (howMany < 100) return;
+				MedicalGuide.UpdateOrAdd(Tuple.Create(desease, medicament), v => v + howMany,  howMany);
 		}
+
+		public override string ToString()
+		{
+			return String.Join("\n", MedicalGuide.OrderByDescending(a => a.Value).Select(t => String.Join("\t", t.Key.Item1 , t.Key.Item2 , t.Value)));
+		}
+
+		[TestFixture]
+		public class TestTable
+		{
+			[Test]
+			public void Test()
+			{
+				const int minAmount = 100;
+				var medicaments = Medicaments.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
+				var deseases = Deseases.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
+				var symptoms = Symptoms.GetDefault().Where(a => a.Ids.Count>minAmount).ToArray();
+				var q = new DeseasesToMedicamentsTable(deseases, medicaments);
+				File.WriteAllText("../../Files/deseases-medicaments.txt", q.ToString());
+				var w = new DeseasesToMedicamentsTable(symptoms, medicaments);
+				File.WriteAllText("../../Files/symptoms-medicaments.txt", w.ToString());
+
+			}
+		}
+
 	}
 
 }

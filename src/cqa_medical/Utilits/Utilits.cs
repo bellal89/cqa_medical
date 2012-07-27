@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Iveonik.Stemmers;
+using NUnit.Framework;
+using cqa_medical.BodyAnalisys;
 using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.Utilits
@@ -67,5 +70,10 @@ namespace cqa_medical.Utilits
 				dictionary.Add(key,deafultValue);
 			}
 		}
+		public static bool IsFileActual(string fileName, string parentFileName)
+		{
+			return File.Exists(fileName) && (File.GetLastWriteTime(parentFileName) < File.GetCreationTime(fileName));
+		}
+		
 	}
 }

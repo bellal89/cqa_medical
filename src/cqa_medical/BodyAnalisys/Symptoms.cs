@@ -37,7 +37,7 @@ namespace cqa_medical.BodyAnalisys
 					var verbs = GetVerbs(words, i, Radius);
 					if (verbs == null) continue;
 					
-					foreach (var symptom in verbs.Select(verb => words[i] + " " + verb))
+					foreach (var symptom in verbs.Select(verb => words[i] + "_" + verb))
 					{
 						if (!symptomToQuestionList.ContainsKey(symptom))
 							symptomToQuestionList.Add(symptom, new List<long>());
@@ -64,6 +64,25 @@ namespace cqa_medical.BodyAnalisys
 			}
 			return verbs;
 		}
+		public static IEnumerable<InvertedIndexUnit> GetDefault()
+		{
+			if (Utilits.Utilits.IsFileActual(Program.SymptomsIndexFileName, Program.QuestionsFileName))
+			{
+				var rawStrings = File.ReadAllLines(Program.SymptomsIndexFileName);
+				return rawStrings.Select(s => new InvertedIndexUnit(s));
+			}
+
+			var voc = Program.DefaultVocabulary;
+			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
+			var searcher = new Symptoms(voc, body);
+
+			var questionList = Program.DefaultQuestionList;
+
+			var symptoms = searcher.GetSymptoms(questionList.GetAllQuestions().Select(item => Tuple.Create(item.Id, item.WholeText))).ToArray();
+			File.WriteAllLines(Program.SymptomsIndexFileName, symptoms.Select(s => s.ToString()));
+
+			return symptoms;
+		}
 
 	}
 
@@ -77,12 +96,27 @@ namespace cqa_medical.BodyAnalisys
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
 			var searcher = new Symptoms(voc, body);
 
-			var questionList = Program.DefaultQuestionList;
+			var questionList = Program.TestDefaultQuestionList;
 
 			var start = DateTime.Now;
 			var symptoms = searcher.GetSymptoms(questionList.GetAllQuestions().Select(item => Tuple.Create(item.Id, item.WholeText)));
 			Console.WriteLine("Symptoms found at {0} seconds.", (DateTime.Now - start).TotalSeconds);
-			Console.WriteLine(symptoms);
+			Console.WriteLine(String.Join("\n",symptoms.Select(s => s.ToString())));
+		}
+
+		[Test]
+		public static void GetSymptoms()
+		{
+			var voc = new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName);
+			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
+			var searcher = new Symptoms(voc, body);
+
+			var questionList = Program.DefaultQuestionList;
+
+			var start = DateTime.Now;
+			var symptoms = searcher.GetSymptoms(questionList.GetAllQuestions().Select(item => Tuple.Create(item.Id, item.WholeText))).ToList();
+			Console.WriteLine("Symptoms found at {0} seconds.", (DateTime.Now - start).TotalSeconds);
+			File.WriteAllLines("SymptomIndex.txt", symptoms.Select(s => s.ToString()));
 		}
 	}
 }
