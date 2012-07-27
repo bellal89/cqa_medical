@@ -64,6 +64,7 @@ namespace cqa_medical.BodyAnalisys
 			}
 			return verbs;
 		}
+
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
 			if (Utilits.Utilits.IsFileActual(Program.SymptomsIndexFileName, Program.QuestionsFileName))

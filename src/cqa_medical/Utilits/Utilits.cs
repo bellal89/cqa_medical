@@ -20,11 +20,12 @@ namespace cqa_medical.Utilits
 
 		public static IEnumerable<string> SplitIntoWords(this string s)
 		{
-			return Regex.Split(s, @"\W+").Where(t => t != "");
+			return Regex.Split(s.ToLower(), @"\W+").Where(t => t != "");
 		}
+
 		public static IEnumerable<string> SplitInWordsAndStripHTML(this string s)
 		{
-			return s.ToLower().StripHTMLTags().SplitIntoWords();
+			return s.StripHTMLTags().SplitIntoWords();
 		}
 
 		public static TValue GetOrDefault<TKey, TValue>(this SortedDictionary<TKey, TValue> dict, TKey key,

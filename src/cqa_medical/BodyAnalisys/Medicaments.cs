@@ -44,16 +44,16 @@ namespace cqa_medical.BodyAnalisys
 
 		private void AddToIndex(IDictionary<string, HashSet<int>> index, string medicamentFullName, int medicamentId)
 		{
-			var words = medicamentFullName.ToLower().Split(new[] { ' ', '®', '+', '-', '—', '~', '[', ']', '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
+			var name = medicamentFullName.SplitIntoWords().FirstOrDefault();
 			
-			if (words.Length == 0) return;
+			if (string.IsNullOrEmpty(name)) return;
 			
-			var stemmedWord = stemmer.Stem(words[0]);
-			if (!index.ContainsKey(stemmedWord))
+			var stemmedName = stemmer.Stem(name);
+			if (!index.ContainsKey(stemmedName))
 			{
-				index.Add(stemmedWord, new HashSet<int>());
+				index.Add(stemmedName, new HashSet<int>());
 			}
-			index[stemmedWord].Add(medicamentId);
+			index[stemmedName].Add(medicamentId);
 		}
 
 		public override string ToString()
