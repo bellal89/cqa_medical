@@ -73,8 +73,9 @@ namespace cqa_medical.Utilits
 		}
 		public static bool IsFileActual(string fileName, string[] parentFileNames)
 		{
+			var q = new Func<int> (() => 3);
 			return File.Exists(fileName) && parentFileNames.All(parentFileName => File.GetLastWriteTime(parentFileName) < File.GetCreationTime(fileName));
 		}
-		
+
 	}
 }

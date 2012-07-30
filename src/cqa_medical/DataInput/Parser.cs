@@ -49,7 +49,7 @@ namespace cqa_medical.DataInput
 				var config = new CsvConfiguration
 				             	{Quote = (char) 1, Delimiter = ';', HasHeaderRecord = false, UseInvariantCulture = true};
 				var csvReader = new CsvReader(streamReader, config);
-				List<T> resultsList = csvReader.GetRecords<T>().ToList();
+				var resultsList = csvReader.GetRecords<T>().ToArray();
 				return resultsList;
 			}
 		}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using CsvHelper.Configuration;
 
@@ -10,7 +11,7 @@ namespace cqa_medical.DataInput
 	/// Формат файла с вопросами:
 	/// Номер вопроса;Адрес автора;Кпд;Баллов;Дата добавления;Дата закрытия;Подкатегория;Сумма оценок;Всего оценок;Кто выбрал лучшим;Текст вопроса;Описание;Теги 
 	///  </summary>
-    class Question
+    public class Question
 	{
 		[CsvField(Index = 0)]
 		public long Id { get; set; }

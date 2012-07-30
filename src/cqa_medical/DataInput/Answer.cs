@@ -11,7 +11,7 @@ namespace cqa_medical.DataInput
 	/// Номер ответа;Номер вопроса;Лучший?;Кто выбрал лучшим;Адрес автора;Кпд;Баллов;Дата добавления;Сумма оценок;Всего оценок;Текст ответа;источник; 
 	/// </summary>
 
-    class Answer
+    public class Answer
     {
 		[CsvField(Index = 0)]
 		public long Id { get; set; }

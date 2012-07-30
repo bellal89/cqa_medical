@@ -10,7 +10,7 @@ using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
 {
-	internal class Deseases
+	public class Deseases
 	{
 		public HashSet<string> DeseasesList;
 		private readonly IStemmer stemmer;
@@ -69,12 +69,14 @@ namespace cqa_medical.BodyAnalisys
 
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
-			if (Utilits.Utilits.IsFileActual(Program.DeseasesIndexFileName, new []{Program.DeseasesFileName}))
-			{
-				var rawStrings = File.ReadAllLines(Program.DeseasesIndexFileName);
-				return rawStrings.Select(s => new InvertedIndexUnit(s));
-			}
+			return FileActualityChecker.Check(CreateNew,
+			                           new FileDependencies(
+										   Program.DeseasesIndexFileName,
+										   Program.DeseasesFileName));
+		}
 
+		public static IEnumerable<InvertedIndexUnit> CreateNew()
+		{
 			var ql = Program.DefaultQuestionList;
 			var des = new Deseases(Program.DefaultMyStemmer);
 			var deseasesIndex =
@@ -83,11 +85,20 @@ namespace cqa_medical.BodyAnalisys
 			File.WriteAllLines(Program.DeseasesIndexFileName, deseasesIndex.Select(s => s.ToString()));
 			return deseasesIndex;
 		}
+		public static IEnumerable<InvertedIndexUnit> TestCreateNew()
+		{
+			var ql = Program.TestDefaultQuestionList;
+			var des = new Deseases(Program.DefaultMyStemmer);
+			var deseasesIndex =
+				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).ToArray();
+			return deseasesIndex;
+		}
 	}
 
 	[TestFixture]
 	public class GetDeseases
 	{
+		
 		[Test]
 		public void GetRight()
 		{

@@ -22,18 +22,17 @@ namespace cqa_medical
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
 
 		
-		private static readonly Lazy<Vocabulary> defaultVocabulary = new Lazy<Vocabulary>(() => new Vocabulary(QuestionsFileName, AnswersFileName));
-		public static Vocabulary DefaultVocabulary{get { return defaultVocabulary.Value; }}
+		private static readonly Lazy<Vocabulary> DefaultVocabularyLazy = new Lazy<Vocabulary>(() => new Vocabulary(QuestionsFileName, AnswersFileName));
+		public static Vocabulary DefaultVocabulary{get { return DefaultVocabularyLazy.Value; }}
 
-		private static readonly Lazy<MyStemmer> defaultMyStemmer = new Lazy<MyStemmer>(() => new MyStemmer(DefaultVocabulary));
-		public static MyStemmer DefaultMyStemmer { get { return defaultMyStemmer.Value; } }
+		private static readonly Lazy<MyStemmer> DefaultMyStemmerLazy = new Lazy<MyStemmer>(() => new MyStemmer(DefaultVocabulary));
+		public static MyStemmer DefaultMyStemmer { get { return DefaultMyStemmerLazy.Value; } }
 
-		// default not stemmed
-    	private static readonly Lazy<QuestionList> defaultQuestionList = new Lazy<QuestionList>(ParseAndStem);
-		public static QuestionList DefaultQuestionList { get { return defaultQuestionList.Value; }}
+    	private static readonly Lazy<QuestionList> DefaultQuestionListLazy = new Lazy<QuestionList>(ParseAndStem);
+		public static QuestionList DefaultQuestionList { get { return DefaultQuestionListLazy.Value; }}
 
-		private static readonly Lazy<QuestionList> testDefaultQuestionList = new Lazy<QuestionList>(ParseAndStemTest);
-		public static QuestionList TestDefaultQuestionList { get { return testDefaultQuestionList.Value; } }
+		private static readonly Lazy<QuestionList> TestDefaultQuestionListLazy = new Lazy<QuestionList>(ParseAndStemTest);
+		public static QuestionList TestDefaultQuestionList { get { return TestDefaultQuestionListLazy.Value; } }
 		
 
 		public static QuestionList ParseAndStem()

@@ -6,7 +6,7 @@ using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.DataInput
 {
-	internal class QuestionList
+	public class QuestionList
 	{
 
 		/// <summary>
