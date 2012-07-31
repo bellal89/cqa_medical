@@ -70,29 +70,21 @@ namespace cqa_medical.BodyAnalisys
 
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
-			return FileActualityChecker.Check(TestCreateNew,
-			                           new FileDependencies(
-										   Program.DeseasesIndexFileName,
-										   Program.DeseasesFileName));
-		}
-
-		public static IEnumerable<InvertedIndexUnit> CreateNew()
-		{
-			var ql = Program.DefaultQuestionList;
-			var des = new Deseases(Program.DefaultMyStemmer);
-			var deseasesIndex =
-				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).ToArray();
-
-			File.WriteAllLines(Program.DeseasesIndexFileName, deseasesIndex.Select(s => s.ToString()));
-			return deseasesIndex;
-		}
-		public static IEnumerable<InvertedIndexUnit> TestCreateNew()
-		{
-			var ql = Program.TestDefaultQuestionList;
-			var des = new Deseases(Program.DefaultMyStemmer);
-			var deseasesIndex =
-				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).ToArray();
-			return deseasesIndex;
+			return DataActualityChecker.Check(
+				new Lazy<InvertedIndexUnit[]>(() =>
+				                              	{
+				                              		var ql = Program.DefaultQuestionList;
+				                              		var des = new Deseases(Program.DefaultMyStemmer);
+				                              		return des.GetIndex(ql
+				                              		                    	.GetAllQuestions()
+				                              		                    	.Select(t => Tuple.Create(t.Id, t.WholeText)))
+				                              			.ToArray();
+				                              	}),
+				InvertedIndexUnit.FormatStringWrite,
+				InvertedIndexUnit.FormatStringParse,
+				new FileDependencies(
+					Program.DeseasesIndexFileName,
+					Program.DeseasesFileName));
 		}
 	}
 
@@ -103,7 +95,7 @@ namespace cqa_medical.BodyAnalisys
 		public void GetRight()
 		{
 			var q  = Deseases.GetDefault();
-			File.WriteAllLines("rty.txt", q.Select(s=>s.ToString()));
+			File.WriteAllLines("rtyy.txt", q.Select(s=>s.ToString()));
 		}
 		[Test]
 		public void Get()

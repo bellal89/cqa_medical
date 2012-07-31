@@ -9,19 +9,21 @@ using cqa_medical.BodyAnalisys;
 
 namespace cqa_medical.Utilits
 {
-	class FileActualityChecker
+	class DataActualityChecker
 	{
-		public static IEnumerable<T> Check<T>(Func<IEnumerable<T>> getData, FileDependencies dependencies) where T : IFormatParse<T>, new()
+		public static IEnumerable<T> Check<T>(Lazy<T[]> data,Func<T,string> formatStringWrite, Func<string,T> formatStringParse, FileDependencies dependencies)
 		{
+
 			if (!dependencies.IsFileActual())
 			{
+				var dataArray = data.Value.ToArray();
 				Console.WriteLine("Generating " + dependencies.DestinationFile);
-				var data = getData().ToArray();
-				File.WriteAllLines(dependencies.DestinationFile, data.Select(s => s.FormatStringWrite()).ToArray());
-				return data;
+				File.WriteAllLines(dependencies.DestinationFile, dataArray.Select(formatStringWrite).ToArray());
+				return dataArray;
 			}
+			Console.WriteLine("Taking from " + dependencies.DestinationFile);
 			var lines = File.ReadAllLines(dependencies.DestinationFile);
-			var parsedLines = lines.Select(s => (new T()).FormatStringParse(s));
+			var parsedLines = lines.Select(formatStringParse);
 			return parsedLines;
 		}
 		public static bool IsFileActual(string fileName, string[] parentFileNames)
@@ -37,7 +39,7 @@ namespace cqa_medical.Utilits
 		public string[] DependencyFiles;
 		public bool IsFileActual()
 		{
-			return FileActualityChecker.IsFileActual(DestinationFile, DependencyFiles);
+			return DataActualityChecker.IsFileActual(DestinationFile, DependencyFiles);
 		}
 		public FileDependencies(string destinationFile,  params string[] dependencyFiles)
 		{

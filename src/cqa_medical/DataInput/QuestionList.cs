@@ -52,24 +52,24 @@ namespace cqa_medical.DataInput
 			{
 				var questionsStemmedFileName = questionsFileName + stemmer+".csv";
 				var answersStemmedFileName = answersFileName + stemmer+".csv";
-				var areQuestionsStemmed = FileActualityChecker.IsFileActual(questionsStemmedFileName, new[] {questionsFileName});
-				var areAnswersStemmed = FileActualityChecker.IsFileActual(answersStemmedFileName, new[] {answersFileName});
+				var areQuestionsStemmed = DataActualityChecker.IsFileActual(questionsStemmedFileName, new[] {questionsFileName});
+				var areAnswersStemmed = DataActualityChecker.IsFileActual(answersStemmedFileName, new[] {answersFileName});
 
 				var start = DateTime.Now;
 				var parser = new Parser(areQuestionsStemmed?questionsStemmedFileName: questionsFileName,
 					areAnswersStemmed?answersStemmedFileName:answersFileName);
 				parser.Parse(AddQuestion, AddAnswer);
-				Console.WriteLine(String.Format("Parsing Completed in {0}",
+				Console.WriteLine(String.Format("QuestionList Parsing Completed in {0}",
 				                                (DateTime.Now - start).TotalSeconds));
 				if (!areQuestionsStemmed)
 				{
 					StemQuestions(stemmer);
-					File.WriteAllLines(questionsStemmedFileName, GetAllQuestions().Select(s => s.FormatStringWrite()), Encoding.UTF8);
+					File.WriteAllLines(questionsStemmedFileName, GetAllQuestions().Select(Question.FormatStringWrite), Encoding.GetEncoding(1251));
 				}
 				if (!areAnswersStemmed)
 				{
 					StemAnswers(stemmer);
-					File.WriteAllLines(answersStemmedFileName, GetAllAnswers().Select(s => s.FormatStringWrite()), Encoding.UTF8);
+					File.WriteAllLines(answersStemmedFileName, GetAllAnswers().Select(Answer.FormatStringWrite), Encoding.GetEncoding(1251));
 				}
 
 			}
@@ -79,7 +79,7 @@ namespace cqa_medical.DataInput
 				var parser = new Parser(questionsFileName, answersFileName);
 				parser.Parse(AddQuestion, AddAnswer);
 
-				Console.WriteLine(String.Format("Parsing Completed in {0}",
+				Console.WriteLine(String.Format("QuestionList Parsing Completed in {0}",
 												(DateTime.Now - start).TotalSeconds));
 			}
 
