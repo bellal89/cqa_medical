@@ -106,5 +106,11 @@ namespace cqa_medical.DataInput
 			}
 			Console.WriteLine(String.Format("Questions Stemming Completed in {0}", (DateTime.Now - start).TotalSeconds));
 		}
+
+		public override int GetHashCode()
+		{
+			return (questionList != null ? questionList.Keys.Select(k => k.GetHashCode()).Aggregate(0, (i1, i2) => i1 + i2) : 0);
+		}
 	}
+
 }

@@ -5,21 +5,18 @@ using System.Text;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.SpellChecker
 {
-	class TrigramIndex
+	internal class TrigramIndex
 	{
 		private readonly Dictionary<string, int> wordFrequencies;
 		private Dictionary<string, HashSet<int>> trigrams;
- 
+
 		public TrigramIndex(QuestionList questionList)
 		{
-			var statistics = new Statistics.Statistics(questionList);
-			wordFrequencies = statistics.WordFrequency(new EmptyStemmer())
-										.Where(item => item.Value > 10)
-										.ToDictionary(item => item.Key, item => item.Value);
-
+			wordFrequencies = GetDefaultWordFrequencies(questionList);
 			trigrams = CalculateTrigramIndex();
 		}
 
@@ -43,7 +40,20 @@ namespace cqa_medical.SpellChecker
 		private static IEnumerable<string> GetKGrams(string word, int k)
 		{
 			var kgrams = new List<string>();
+			if (k > word.Length)
+			{
+				return kgrams;
+			}
+			for (var i = 0; i < (word.Length - k + 1); i++)
+			{
+				kgrams.Add(word.Substring(i, k));
+			}
 			return kgrams;
+		}
+
+		public Dictionary<string, HashSet<int>> GetTrigrams()
+		{
+			return trigrams;
 		}
 
 		public Dictionary<string, int> GetWordFrequencies()
@@ -51,8 +61,49 @@ namespace cqa_medical.SpellChecker
 			return wordFrequencies;
 		}
 
+		public static Dictionary<string, int> GetDefaultWordFrequencies(QuestionList questionList)
+		{
+			var getDataFunction = new Func<Tuple<string, int>[]>(() =>
+			                                                     	{
+			                                                     		var statistics = new Statistics.Statistics(questionList);
+			                                                     		return statistics.WordFrequency(new EmptyStemmer())
+			                                                     			.Where(item => item.Value > 10)
+			                                                     			.Select(item => Tuple.Create(item.Key, item.Value))
+			                                                     			.ToArray();
+			                                                     	});
 
+			return DataActualityChecker.Check(new Lazy<Tuple<string, int>[]>(getDataFunction),
+			                                  t => t.Item1 + "\x2" + t.Item2,
+			                                  s =>
+			                                  	{
+			                                  		var q = s.Split('\x2');
+			                                  		return Tuple.Create(q[0], int.Parse(q[1]));
+			                                  	},
+			                                  new FileDependencies(String.Format("WordFrequencies_{0}.txt", questionList.GetHashCode()), Program.QuestionsFileName,
+			                                                       Program.AnswersFileName))
+				.ToDictionary(item => item.Item1, item => item.Item2);
+		}
 
+		public static Dictionary<string, HashSet<int>> GetDefaultTrigramIndex(QuestionList questionList)
+		{
+			var getDataFunction = new Func<Tuple<string, HashSet<int>>[]>(
+				() =>
+					{
+						var trigramIndex = new TrigramIndex(questionList);
+						return trigramIndex.CalculateTrigramIndex().Select(pair => Tuple.Create(pair.Key, pair.Value)).ToArray();
+					});
+
+			return DataActualityChecker.Check(new Lazy<Tuple<string, HashSet<int>>[]>(getDataFunction),
+											  t => t.Item1 + "\x2" + String.Join("\x2", t.Item2),
+											  s =>
+											  {
+												  var q = s.Split('\x2');
+												  return Tuple.Create(q[0], new HashSet<int>(q.Skip(1).Select(int.Parse)));
+											  },
+											  new FileDependencies(String.Format("TrigramIndex_{0}.txt", questionList.GetHashCode()), Program.QuestionsFileName,
+																   Program.AnswersFileName))
+				.ToDictionary(item => item.Item1, item => item.Item2);
+		}
 	}
 
 	[TestFixture]
@@ -62,7 +113,14 @@ namespace cqa_medical.SpellChecker
 		public void TestIndexCreation()
 		{
 			var index = new TrigramIndex(Program.DefaultNotStemmedQuestionList);
-			index.GetWordFrequencies();
+			Console.WriteLine(String.Join("\n",index.GetTrigrams().OrderByDescending(t => t.Value.Count).Select(t => t.Key + "\t" + t.Value.Count)));
+		}
+
+		[Test]
+		public void TestTrigramIndexStoring()
+		{
+			var index = TrigramIndex.GetDefaultTrigramIndex(Program.DefaultNotStemmedQuestionList);
+			Assert.AreEqual(14875, index.Count);
 		}
 	}
 

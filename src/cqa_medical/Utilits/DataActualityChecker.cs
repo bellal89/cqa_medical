@@ -12,14 +12,16 @@ namespace cqa_medical.Utilits
 
 			if (!dependencies.IsFileActual())
 			{
-				var dataArray = data.Value.ToArray();
+				var dataArray = data.Value;
 				Console.WriteLine("Generating " + dependencies.DestinationFile);
 				File.WriteAllLines(dependencies.DestinationFile, dataArray.Select(formatStringWrite).ToArray());
 				return dataArray;
 			}
 			Console.WriteLine("Taking from " + dependencies.DestinationFile);
+			var start = DateTime.Now;
 			var lines = File.ReadAllLines(dependencies.DestinationFile);
 			var parsedLines = lines.Select(formatStringParse);
+			Console.WriteLine("Took in " + (DateTime.Now - start).TotalSeconds);
 			return parsedLines;
 		}
 		public static bool IsFileActual(string fileName, string[] parentFileNames)
