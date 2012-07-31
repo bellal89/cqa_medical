@@ -63,8 +63,10 @@
     <Compile Include="BodyAnalisys\Deseases.cs" />
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
+    <Compile Include="DataInput\Stemmers\EmptyStemmer.cs" />
     <Compile Include="QualityAnalisys\AnswerQuality.cs" />
     <Compile Include="QualityAnalisys\UserQuality.cs" />
+    <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="Utilits\InvertedIndexUnit.cs" />
     <Compile Include="DataInput\IParser.cs" />
