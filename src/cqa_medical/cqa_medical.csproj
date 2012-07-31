@@ -66,6 +66,7 @@
     <Compile Include="DataInput\Stemmers\EmptyStemmer.cs" />
     <Compile Include="QualityAnalisys\AnswerQuality.cs" />
     <Compile Include="QualityAnalisys\UserQuality.cs" />
+    <Compile Include="SpellChecker\TrigramIndex.cs" />
     <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="Utilits\FileActualityChecker.cs" />
