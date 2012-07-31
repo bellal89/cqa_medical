@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
-using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
@@ -75,7 +73,7 @@ namespace cqa_medical.BodyAnalisys
 			var medicamentToIds = new Dictionary<string, HashSet<long>>();
 			foreach (var idAndText in idAndTextList)
 			{
-				var words = idAndText.Item2.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+				var words = idAndText.Item2.Split(new [] {' '}, StringSplitOptions.RemoveEmptyEntries);
 				foreach (var word in words.Where(word => invertedIndex.ContainsKey(word)))
 				{
 					if (!medicamentToIds.ContainsKey(word))
@@ -115,12 +113,7 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public void CreationTest()
 		{
-			var questionList = Program.DefaultQuestionList;
-
 			var medicaments = new Medicaments(Program.DefaultMyStemmer,Program.MedicamentsFileName);
-
-			var meds =
-				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text)));
 
 			Console.WriteLine(medicaments);
 			File.WriteAllText("MedOutput2.txt", medicaments.ToString());

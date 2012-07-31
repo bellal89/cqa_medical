@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using CsvHelper.Configuration;
-using NUnit.Framework;
-using cqa_medical.BodyAnalisys;
 
 namespace cqa_medical.Utilits
 {

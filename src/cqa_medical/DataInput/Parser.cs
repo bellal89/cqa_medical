@@ -6,7 +6,6 @@ using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 using NUnit.Framework;
-using cqa_medical.Utilits;
 
 namespace cqa_medical.DataInput
 {

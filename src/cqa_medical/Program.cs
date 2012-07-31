@@ -9,16 +9,17 @@ namespace cqa_medical
 {
 	internal class Program
 	{
+		public const string FilesDirectory = "../../Files/";
 		public const string StatisticsDirectory = "../../StatOutput/";
-		public const string QuestionsFileName = "../../Files/qst_25.csv";
-		public const string AnswersFileName = "../../Files/ans_25.csv";
-		public const string DeseasesFileName = "../../Files/Deseases.txt";
-		public const string NotDeseasesFileName = "../../Files/notDeseases.txt";
-		public const string BodyPartsFileName = "../../Files/BodyParts.txt";
-		public const string MedicamentsFileName = "../../Files/Grls.txt";
-		public const string DeseasesIndexFileName = "../../Files/DeseasesIndex.txt";
-		public const string MedicamentsIndexFileName = "../../Files/MedicamentsIndex.txt";
-		public const string SymptomsIndexFileName = "../../Files/SymptomsIndex.txt";
+		public const string QuestionsFileName = FilesDirectory + "qst_25.csv";
+		public const string AnswersFileName = FilesDirectory + "ans_25.csv";
+		public const string DeseasesFileName = FilesDirectory + "Deseases.txt";
+		public const string NotDeseasesFileName = FilesDirectory + "notDeseases.txt";
+		public const string BodyPartsFileName = FilesDirectory + "BodyParts.txt";
+		public const string MedicamentsFileName = FilesDirectory + "Grls.txt";
+		public const string DeseasesIndexFileName = FilesDirectory + "DeseasesIndex.txt";
+		public const string MedicamentsIndexFileName = FilesDirectory + "MedicamentsIndex.txt";
+		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
 
 		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
