@@ -13,7 +13,7 @@ namespace cqa_medical.DataInput
 	/// Номер ответа;Номер вопроса;Лучший?;Кто выбрал лучшим;Адрес автора;Кпд;Баллов;Дата добавления;Сумма оценок;Всего оценок;Текст ответа;источник; 
 	/// </summary>
 
-	public class Answer : IFormatParse<Answer>
+	public class Answer
     {
 		private static readonly CultureInfo Culture = new CultureInfo("ru")
 		{
@@ -59,7 +59,7 @@ namespace cqa_medical.DataInput
 
 		public Answer(){}
 
-		public Answer FormatStringParse(string formattedString)
+		public static Answer FormatStringParse(string formattedString)
 		{
 			var q = formattedString.Split(';');
 			return new Answer
@@ -69,9 +69,9 @@ namespace cqa_medical.DataInput
 			       		IsBest = int.Parse(q[2]),
 			       		ChosenBestBy = q[3],
 			       		AuthorEmail = q[4],
-			       		AuthorEfficiency = float.Parse(q[5]),
+			       		AuthorEfficiency = float.Parse(q[5],Culture),
 			       		AuthorRating = int.Parse(q[6]),
-						DateAdded = DateTime.Parse(q[7]),
+						DateAdded = DateTime.Parse(q[7], Culture),
 						Rating = q[8],
 			       		ValuesAmount = q[9],
 			       		Text = q[10],
@@ -79,11 +79,11 @@ namespace cqa_medical.DataInput
 			       	};
 		}
 
-		public string FormatStringWrite()
+		public static string FormatStringWrite(Answer a)
 		{
-			return String.Join(";", Id, QuestionId, IsBest, ChosenBestBy, AuthorEmail,
-											AuthorEfficiency.ToString(Culture), AuthorRating,
-										  DateAdded.ToString("F",Culture), Rating, ValuesAmount, Text, Source);
+			return String.Join(";", a.Id, a.QuestionId, a.IsBest, a.ChosenBestBy, a.AuthorEmail,
+			                   a.AuthorEfficiency.ToString(Culture), a.AuthorRating,
+			                   a.DateAdded.ToString("F", Culture), a.Rating, a.ValuesAmount, a.Text, a.Source);
 		}
     }
 }

@@ -69,8 +69,7 @@
     <Compile Include="SpellChecker\TrigramIndex.cs" />
     <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
-    <Compile Include="Utilits\FileActualityChecker.cs" />
-    <Compile Include="Utilits\IFormatParse.cs" />
+    <Compile Include="Utilits\DataActualityChecker.cs" />
     <Compile Include="Utilits\InvertedIndexUnit.cs" />
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />

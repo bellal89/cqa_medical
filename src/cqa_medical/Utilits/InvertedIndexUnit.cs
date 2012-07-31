@@ -6,7 +6,7 @@ using CsvHelper.Configuration;
 
 namespace cqa_medical.Utilits
 {
-	public class InvertedIndexUnit : IFormatParse<InvertedIndexUnit>
+	public class InvertedIndexUnit
 	{
 		public string Word;
 		public HashSet<long> Ids;
@@ -31,7 +31,7 @@ namespace cqa_medical.Utilits
 			return Word + " " + String.Join(",", Ids);
 		}
 
-		public InvertedIndexUnit FormatStringParse(string formattedString)
+		public static InvertedIndexUnit FormatStringParse(string formattedString)
 		{
 			var q = formattedString.Split(' ');
 			var word = q[0];
@@ -40,9 +40,9 @@ namespace cqa_medical.Utilits
 		}
 		
 
-		public string FormatStringWrite()
+		public static string FormatStringWrite(InvertedIndexUnit unit)
 		{
-			return Word + " " + String.Join(" ", Ids);
+			return unit.Word + " " + String.Join(" ", unit.Ids);
 		}
 
 		//		public InvertedIndexUnit(InvertedIndexUnitWrap unit)
