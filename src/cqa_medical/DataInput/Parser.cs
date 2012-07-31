@@ -61,9 +61,7 @@ namespace cqa_medical.DataInput
 		[Test]
 		public void TestCSVParsing()
 		{
-			var parser = new Parser(Program.QuestionsFileName, Program.AnswersFileName);
-			var questionList = new QuestionList();
-			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
+			var questionList = new QuestionList(Program.QuestionsFileName, Program.AnswersFileName);
 			Assert.AreEqual(313101, questionList.GetAllQuestions().ToArray().Length);
 			Assert.IsNotEmpty(questionList.GetQuestion(55879373).GetAnswers());
 		}

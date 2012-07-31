@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
+using cqa_medical.Utilits;
 
 namespace cqa_medical
 {
@@ -37,34 +38,27 @@ namespace cqa_medical
 
 		public static QuestionList ParseAndStem()
 		{
-			var questionList = Parse(QuestionsFileName, AnswersFileName);
-			return questionList.StemIt(DefaultMyStemmer);
+			return new QuestionList(QuestionsFileName, AnswersFileName, DefaultMyStemmer);
 		}
 		public static QuestionList ParseAndStemTest()
 		{
-			var questionList = Parse(TestQuestionsFileName, TestAnswersFileName);
-			return questionList.StemIt(DefaultMyStemmer);
+			return new QuestionList(TestQuestionsFileName, TestAnswersFileName, DefaultMyStemmer);
 		}
 
-		public static QuestionList Parse(string questionsFileName, string answersFileName)
-    	{
-    		var questionList = new QuestionList();
-
-    		var start = DateTime.Now;
-			var parser = new Parser(questionsFileName, answersFileName);
-    		parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
-
-			Console.WriteLine(String.Format("Parsing Completed in {0}", (DateTime.Now - start).TotalSeconds));
-    		return questionList;
-    	}
-
+		
 		[TestFixture]
 		public class ProgramTest
 		{
 			[Test]
+			public void Getq()
+			{
+				var q = DefaultQuestionList;
+			}
+
+			[Test]
 			public void TestId()
 			{
-				var ql = Parse(QuestionsFileName, AnswersFileName);
+				var ql = new QuestionList(QuestionsFileName, AnswersFileName);
 				var hasIdenticId = false;
 				foreach (var question in ql.GetAllQuestions())
 				{

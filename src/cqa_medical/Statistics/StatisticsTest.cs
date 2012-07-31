@@ -14,9 +14,7 @@ namespace cqa_medical.Statistics
 		[TestFixtureSetUp]
 		public void Init()
 		{
-			var parser = new Parser(Program.TestQuestionsFileName, Program.TestAnswersFileName);
-			var questionList = new QuestionList();
-			parser.Parse(questionList.AddQuestion, questionList.AddAnswer);
+			var questionList = new QuestionList(Program.TestQuestionsFileName, Program.TestAnswersFileName);
 			statistics = new Statistics(questionList);
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -69,7 +70,7 @@ namespace cqa_medical.BodyAnalisys
 
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
-			return FileActualityChecker.Check(CreateNew,
+			return FileActualityChecker.Check(TestCreateNew,
 			                           new FileDependencies(
 										   Program.DeseasesIndexFileName,
 										   Program.DeseasesFileName));
@@ -98,7 +99,6 @@ namespace cqa_medical.BodyAnalisys
 	[TestFixture]
 	public class GetDeseases
 	{
-		
 		[Test]
 		public void GetRight()
 		{

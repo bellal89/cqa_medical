@@ -11,37 +11,9 @@ namespace cqa_medical.Utilits
 {
 	class FileActualityChecker
 	{
-//		public static IEnumerable<T> Check<T>(char delimeter, Func< IEnumerable<T>> getData, FileDependencies dependencies) where T : class
-//		{
-//			var configs = new CsvConfiguration()
-//			              	{
-//								Delimiter = delimeter,
-//			              		Quote = (char) 1,
-//			              		HasHeaderRecord = false,
-//			              		UseInvariantCulture = true
-//			              	};
-//			if (!IsFileActual(dependencies.DestinationFile, dependencies.DependencyFiles))
-//			{
-//				Console.WriteLine("Generating from " + dependencies.SourceFile);
-//				var data = getData().ToArray();
-//				using (var writeStream = new StreamWriter(dependencies.DestinationFile))
-//				{
-//					var writer = new CsvHelper.CsvWriter(writeStream, configs);
-//					writer.WriteRecords(data);
-//				}
-//				return data;
-//			}
-//			using (var readStream = new StringReader(dependencies.DestinationFile))
-//			{
-//				var csvReader = new CsvHelper.CsvReader(readStream, configs);
-//				var enumerable = csvReader.GetRecords<T>();
-//				var q =  enumerable.ToArray();
-//				return q;
-//			}
-//		}
 		public static IEnumerable<T> Check<T>(Func<IEnumerable<T>> getData, FileDependencies dependencies) where T : IFormatParse<T>, new()
 		{
-			if (!IsFileActual(dependencies.DestinationFile, dependencies.DependencyFiles))
+			if (!dependencies.IsFileActual())
 			{
 				Console.WriteLine("Generating " + dependencies.DestinationFile);
 				var data = getData().ToArray();
@@ -63,7 +35,10 @@ namespace cqa_medical.Utilits
 	{
 		public string DestinationFile;
 		public string[] DependencyFiles;
-
+		public bool IsFileActual()
+		{
+			return FileActualityChecker.IsFileActual(DestinationFile, DependencyFiles);
+		}
 		public FileDependencies(string destinationFile,  params string[] dependencyFiles)
 		{
 			DestinationFile = destinationFile;

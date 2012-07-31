@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Iveonik.Stemmers;
 using cqa_medical.DataInput.Stemmers;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.DataInput
 {
@@ -43,22 +46,49 @@ namespace cqa_medical.DataInput
 				question.AddAnswer(answer);
 			}
 		}
-
-		/// <summary>
-		/// All words in text messages are stemmed
-		/// and joined with " ".
-		/// </summary>
-		/// <returns>QuestionList</returns>
-		public QuestionList StemIt(IStemmer stemmer)
+		public  QuestionList (string questionsFileName, string answersFileName, IStemmer stemmer = null)
 		{
-			StemQuestions(stemmer);
-			StemAnswers(stemmer);
-			return this;
+			if (stemmer != null)
+			{
+				var questionsStemmedFileName = questionsFileName + stemmer+".csv";
+				var answersStemmedFileName = answersFileName + stemmer+".csv";
+				var areQuestionsStemmed = FileActualityChecker.IsFileActual(questionsStemmedFileName, new[] {questionsFileName});
+				var areAnswersStemmed = FileActualityChecker.IsFileActual(answersStemmedFileName, new[] {answersFileName});
+
+				var start = DateTime.Now;
+				var parser = new Parser(areQuestionsStemmed?questionsStemmedFileName: questionsFileName,
+					areAnswersStemmed?answersStemmedFileName:answersFileName);
+				parser.Parse(AddQuestion, AddAnswer);
+				Console.WriteLine(String.Format("Parsing Completed in {0}",
+				                                (DateTime.Now - start).TotalSeconds));
+				if (!areQuestionsStemmed)
+				{
+					StemQuestions(stemmer);
+					File.WriteAllLines(questionsStemmedFileName, GetAllQuestions().Select(s => s.FormatStringWrite()), Encoding.UTF8);
+				}
+				if (!areAnswersStemmed)
+				{
+					StemAnswers(stemmer);
+					File.WriteAllLines(answersStemmedFileName, GetAllAnswers().Select(s => s.FormatStringWrite()), Encoding.UTF8);
+				}
+
+			}
+			else
+			{
+				var start = DateTime.Now;
+				var parser = new Parser(questionsFileName, answersFileName);
+				parser.Parse(AddQuestion, AddAnswer);
+
+				Console.WriteLine(String.Format("Parsing Completed in {0}",
+												(DateTime.Now - start).TotalSeconds));
+			}
+
+
 		}
 
 		private void StemAnswers(IStemmer stemmer)
 		{
-			DateTime start = DateTime.Now;
+			var start = DateTime.Now;
 			foreach (var answer in GetAllAnswers())
 			{
 				answer.Text = String.Join(" ", Utilits.Utilits.GetStemmedWords(stemmer, answer.Text));
@@ -68,7 +98,7 @@ namespace cqa_medical.DataInput
 
 		private void StemQuestions(IStemmer stemmer)
 		{
-			DateTime start = DateTime.Now;
+			var start = DateTime.Now;
 			foreach (var question in GetAllQuestions())
 			{
 				question.Text = String.Join(" ", Utilits.Utilits.GetStemmedWords(stemmer, question.Text));
