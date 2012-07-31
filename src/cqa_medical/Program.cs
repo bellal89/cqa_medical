@@ -1,14 +1,15 @@
 ﻿using System;
 using NUnit.Framework;
 using cqa_medical.DataInput;
+using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.Utilits;
 
 namespace cqa_medical
 {
-    class Program
-    {
-    	public const string StatisticsDirectory = "../../StatOutput/";
+	internal class Program
+	{
+		public const string StatisticsDirectory = "../../StatOutput/";
 		public const string QuestionsFileName = "../../Files/qst_25.csv";
 		public const string AnswersFileName = "../../Files/ans_25.csv";
 		public const string DeseasesFileName = "../../Files/Deseases.txt";
@@ -22,37 +23,57 @@ namespace cqa_medical
 		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
 
-		
-		private static readonly Lazy<Vocabulary> DefaultVocabularyLazy = new Lazy<Vocabulary>(() => new Vocabulary(QuestionsFileName, AnswersFileName));
-		public static Vocabulary DefaultVocabulary{get { return DefaultVocabularyLazy.Value; }}
 
-		private static readonly Lazy<MyStemmer> DefaultMyStemmerLazy = new Lazy<MyStemmer>(() => new MyStemmer(DefaultVocabulary));
-		public static MyStemmer DefaultMyStemmer { get { return DefaultMyStemmerLazy.Value; } }
-
-    	private static readonly Lazy<QuestionList> DefaultQuestionListLazy = new Lazy<QuestionList>(ParseAndStem);
-		public static QuestionList DefaultQuestionList { get { return DefaultQuestionListLazy.Value; }}
-
-		private static readonly Lazy<QuestionList> TestDefaultQuestionListLazy = new Lazy<QuestionList>(ParseAndStemTest);
-		public static QuestionList TestDefaultQuestionList { get { return TestDefaultQuestionListLazy.Value; } }
-		
-
-		public static QuestionList ParseAndStem()
+		private static readonly Lazy<Vocabulary> DefaultVocabularyLazy =
+			new Lazy<Vocabulary>(() => new Vocabulary(QuestionsFileName, AnswersFileName));
+		public static Vocabulary DefaultVocabulary
 		{
-			return new QuestionList(QuestionsFileName, AnswersFileName, DefaultMyStemmer);
-		}
-		public static QuestionList ParseAndStemTest()
-		{
-			return new QuestionList(TestQuestionsFileName, TestAnswersFileName, DefaultMyStemmer);
+			get { return DefaultVocabularyLazy.Value; }
 		}
 
-		
+		private static readonly Lazy<MyStemmer> DefaultMyStemmerLazy =
+			new Lazy<MyStemmer>(() => new MyStemmer(DefaultVocabulary));
+		public static MyStemmer DefaultMyStemmer
+		{
+			get { return DefaultMyStemmerLazy.Value; }
+		}
+
+		private static readonly Lazy<QuestionList> DefaultQuestionListLazy =
+			new Lazy<QuestionList>(() => new QuestionList(QuestionsFileName, AnswersFileName, DefaultMyStemmer));
+		public static QuestionList DefaultQuestionList
+		{
+			get { return DefaultQuestionListLazy.Value; }
+		}
+
+		private static readonly Lazy<QuestionList> TestDefaultQuestionListLazy =
+			new Lazy<QuestionList>(() => new QuestionList(TestQuestionsFileName, TestAnswersFileName, DefaultMyStemmer));
+		public static QuestionList TestDefaultQuestionList
+		{
+			get { return TestDefaultQuestionListLazy.Value; }
+		}
+
+		private static readonly Lazy<QuestionList> DefaultNotStemmedQuestionListLazy =
+			new Lazy<QuestionList>(() => new QuestionList(QuestionsFileName, AnswersFileName));
+		public static QuestionList DefaultNotStemmedQuestionList
+		{
+			get { return DefaultNotStemmedQuestionListLazy.Value; }
+		}
+
+		private static readonly Lazy<QuestionList> TestDefaultNotStemmedQuestionListLazy =
+			new Lazy<QuestionList>(() => new QuestionList(TestQuestionsFileName, TestAnswersFileName));
+		public static QuestionList TestDefaultNotStemmedQuestionList
+		{
+			get { return TestDefaultNotStemmedQuestionListLazy.Value; }
+		}
+
+
 		[TestFixture]
 		public class ProgramTest
 		{
 			[Test]
 			public void Getq()
 			{
-				var q = DefaultQuestionList;
+				var q = DefaultNotStemmedQuestionList;
 			}
 
 			[Test]
@@ -74,5 +95,5 @@ namespace cqa_medical
 				Assert.AreEqual(true, hasIdenticId);
 			}
 		}
-    }
+	}
 }

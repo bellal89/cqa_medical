@@ -40,7 +40,7 @@ namespace cqa_medical.SpellChecker
 		[Test]
 		public static void TestCreation()
 		{			
-			var questionList = Program.Parse(Program.QuestionsFileName, Program.AnswersFileName);
+			var questionList = Program.DefaultNotStemmedQuestionList;
 			Console.WriteLine("Go!");
 			var start = DateTime.Now;
 			var typoDetecter = new TypoDetecter(questionList);
