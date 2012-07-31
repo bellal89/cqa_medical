@@ -66,7 +66,7 @@ namespace cqa_medical.BodyAnalisys
 		{
 			if (Utilits.Utilits.IsFileActual(Program.SymptomsIndexFileName, new []{Program.QuestionsFileName}))
 			{var rawStrings = File.ReadAllLines(Program.SymptomsIndexFileName);
-				return rawStrings.Select(s => new InvertedIndexUnit(s));
+				return rawStrings.Select(s => (new InvertedIndexUnit()).FormatStringParse(s));
 			}
 
 			var voc = Program.DefaultVocabulary;

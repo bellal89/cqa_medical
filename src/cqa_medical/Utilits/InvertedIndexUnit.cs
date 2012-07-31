@@ -2,29 +2,69 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CsvHelper.Configuration;
 
 namespace cqa_medical.Utilits
 {
-	public class InvertedIndexUnit
+	public class InvertedIndexUnit : IFormatParse<InvertedIndexUnit>
 	{
 		public string Word;
 		public HashSet<long> Ids;
+
 
 		public InvertedIndexUnit(string word, IEnumerable<long> ids)
 		{
 			Word = word;
 			Ids =  new HashSet<long>(ids);
 		}
-
-		public InvertedIndexUnit(string formattedString)
+		public InvertedIndexUnit (string formattedString)
 		{
 			var q = formattedString.Split(' ');
 			Word = q[0];
 			Ids = new HashSet<long>(q.Skip(1).Select(Int64.Parse));
 		}
+		public InvertedIndexUnit(){}
+
+		
 		public override string ToString()
+		{
+			return Word + " " + String.Join(",", Ids);
+		}
+
+		public InvertedIndexUnit FormatStringParse(string formattedString)
+		{
+			var q = formattedString.Split(' ');
+			var word = q[0];
+			var ids = new HashSet<long>(q.Skip(1).Select(Int64.Parse));
+			return new InvertedIndexUnit(word, ids);
+		}
+		
+
+		public string FormatStringWrite()
 		{
 			return Word + " " + String.Join(" ", Ids);
 		}
+
+		//		public InvertedIndexUnit(InvertedIndexUnitWrap unit)
+		//		{
+		//			Word = unit.Word;
+		//			Ids = new HashSet<long>(unit.Ids.Split(',').Select(Int64.Parse));
+		//		}
 	}
+
+//	public class InvertedIndexUnitWrap
+//	{
+//		[CsvField(Index = 0)]
+//		public string Word { get; set; }
+//		[CsvField(Index = 1)]
+//		public string Ids { get; set; }
+//
+//		public InvertedIndexUnitWrap (InvertedIndexUnit unit)
+//		{
+//			Word = unit.Word;
+//			Ids = String.Join(",", unit.Ids);
+//		}
+//		public InvertedIndexUnitWrap (){}
+//
+//	}
 }

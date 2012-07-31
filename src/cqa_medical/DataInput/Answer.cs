@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using CsvHelper.Configuration;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.DataInput
 {
@@ -11,8 +13,13 @@ namespace cqa_medical.DataInput
 	/// Номер ответа;Номер вопроса;Лучший?;Кто выбрал лучшим;Адрес автора;Кпд;Баллов;Дата добавления;Сумма оценок;Всего оценок;Текст ответа;источник; 
 	/// </summary>
 
-    class Answer
+	public class Answer : IFormatParse<Answer>
     {
+		private static readonly CultureInfo Culture = new CultureInfo("ru")
+		{
+			NumberFormat = { NumberDecimalDigits = 4, NumberDecimalSeparator = "." },
+			DateTimeFormat = { FullDateTimePattern = "yyyy/MM/dd' 'HH':'mm':'ss" }
+		};
 		[CsvField(Index = 0)]
 		public long Id { get; set; }
 
@@ -48,5 +55,35 @@ namespace cqa_medical.DataInput
 
 		[CsvField(Index = 11)]
 		public string Source { get; set; }
+
+
+		public Answer(){}
+
+		public Answer FormatStringParse(string formattedString)
+		{
+			var q = formattedString.Split(';');
+			return new Answer
+			       	{
+			       		Id = long.Parse(q[0]),
+			       		QuestionId = long.Parse(q[1]),
+			       		IsBest = int.Parse(q[2]),
+			       		ChosenBestBy = q[3],
+			       		AuthorEmail = q[4],
+			       		AuthorEfficiency = float.Parse(q[5]),
+			       		AuthorRating = int.Parse(q[6]),
+						DateAdded = DateTime.Parse(q[7]),
+						Rating = q[8],
+			       		ValuesAmount = q[9],
+			       		Text = q[10],
+			       		Source = q[11],
+			       	};
+		}
+
+		public string FormatStringWrite()
+		{
+			return String.Join(";", Id, QuestionId, IsBest, ChosenBestBy, AuthorEmail,
+											AuthorEfficiency.ToString(Culture), AuthorRating,
+										  DateAdded.ToString("F",Culture), Rating, ValuesAmount, Text, Source);
+		}
     }
 }

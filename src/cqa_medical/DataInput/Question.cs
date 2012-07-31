@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using CsvHelper.Configuration;
+using cqa_medical.Utilits;
 
 namespace cqa_medical.DataInput
 {
@@ -10,8 +10,14 @@ namespace cqa_medical.DataInput
 	/// Формат файла с вопросами:
 	/// Номер вопроса;Адрес автора;Кпд;Баллов;Дата добавления;Дата закрытия;Подкатегория;Сумма оценок;Всего оценок;Кто выбрал лучшим;Текст вопроса;Описание;Теги 
 	///  </summary>
-    class Question
+	public class Question : IFormatParse<Question>
 	{
+
+		private static readonly CultureInfo Culture = new CultureInfo("ru")
+		{
+			NumberFormat = { NumberDecimalDigits = 4, NumberDecimalSeparator = "." },
+			DateTimeFormat = { FullDateTimePattern = "yyyy/MM/dd' 'HH':'mm':'ss" }
+		};
 		[CsvField(Index = 0)]
 		public long Id { get; set; }
 
@@ -58,12 +64,40 @@ namespace cqa_medical.DataInput
 
 		public List<Answer> GetAnswers()
 		{
-			return this.answers;
+			return answers;
 		}
 
 		public void AddAnswer(Answer answer)
 		{
 			answers.Add(answer);
+		}
+		
+		public Question FormatStringParse(string formattedString)
+		{
+			var q = formattedString.Split(';');
+			return new Question
+			       	{
+			       		Id = long.Parse(q[0]),
+			       		AuthorEmail = q[1],
+			       		AuthorEfficiency = float.Parse(q[2]),
+			       		AuthorRating = long.Parse(q[3]),
+			       		DateAdded = DateTime.Parse(q[4]),
+			       		DateClosed = DateTime.Parse(q[5]),
+			       		Category = q[6],
+			       		Rating = q[7],
+			       		ValuesAmount = q[8],
+			       		ChosenBestBy = q[9],
+			       		Title = q[10],
+			       		Text = q[11],
+			       		Tags = q[12],
+			       	};
+		}
+
+		public string FormatStringWrite()
+		{
+			return string.Join(";", Id, AuthorEmail, AuthorEfficiency.ToString(Culture),AuthorRating,
+				DateAdded.ToString("F", Culture), DateClosed.ToString("F", Culture),
+				Category, Rating, ValuesAmount, ChosenBestBy, Title, Text, Tags);
 		}
 
 		public override string ToString()
@@ -72,3 +106,4 @@ namespace cqa_medical.DataInput
 		}
 	}
 }
+
