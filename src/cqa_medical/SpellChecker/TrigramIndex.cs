@@ -16,7 +16,7 @@ namespace cqa_medical.SpellChecker
 
 		public TrigramIndex(QuestionList questionList)
 		{
-			wordFrequencies = GetDefaultWordFrequencies(questionList);
+			wordFrequencies = CalculateDefaultWordFrequencies(questionList);
 			trigrams = CalculateTrigramIndex();
 		}
 
@@ -61,7 +61,7 @@ namespace cqa_medical.SpellChecker
 			return wordFrequencies;
 		}
 
-		public static Dictionary<string, int> GetDefaultWordFrequencies(QuestionList questionList)
+		public static Dictionary<string, int> CalculateDefaultWordFrequencies(QuestionList questionList)
 		{
 			var getDataFunction = new Func<Tuple<string, int>[]>(() =>
 			                                                     	{
