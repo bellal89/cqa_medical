@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
@@ -19,9 +18,12 @@ namespace cqa_medical.SpellChecker
 		{
 			// Frequencies dictionary based on Mail.Ru corpus
 			wordFrequencies = CalculateDefaultWordFrequencies(questionList);
-			
+			trigrams = GetDefaultTrigramIndex(questionList);
+		}
+		public TrigramIndex(QuestionList questionList,string wordsDictionaryFileName)
+		{
 			// External frequencies dictionary (Google: "ruscorpora"):
-//			wordFrequencies = LoadFromFile(Program.FilesDirectory + "1grams-3.txt");
+			wordFrequencies = LoadFromFile(wordsDictionaryFileName);
 			trigrams = GetDefaultTrigramIndex(questionList);
 		}
 
@@ -53,6 +55,8 @@ namespace cqa_medical.SpellChecker
 			{
 				kgrams.Add(word.Substring(i, k));
 			}
+			kgrams.Add("$" + word.Substring(0, k - 1));
+			kgrams.Add(word.Substring(word.Length - k + 1, k - 1) + "$");
 			return kgrams;
 		}
 
@@ -74,24 +78,26 @@ namespace cqa_medical.SpellChecker
 
 		public static Dictionary<string, int> CalculateDefaultWordFrequencies(QuestionList questionList)
 		{
-			var getDataFunction = new Func<Tuple<string, int>[]>(() =>
-			                                                     	{
-			                                                     		var statistics = new Statistics.Statistics(questionList);
-			                                                     		return statistics.WordFrequency(new EmptyStemmer())
-			                                                     			.Where(item => item.Value > 10)
-			                                                     			.Select(item => Tuple.Create(item.Key, item.Value))
-			                                                     			.ToArray();
-			                                                     	});
+			var getDataFunction = new Func<Tuple<string, int>[]>(
+				() =>
+					{
+						var statistics = new Statistics.Statistics(questionList);
+						return statistics.WordFrequency(new EmptyStemmer())
+							.Where(item => item.Value > 10)
+							.Select(item => Tuple.Create(item.Key, item.Value))
+							.ToArray();
+					});
 
-			return DataActualityChecker.Check(new Lazy<Tuple<string, int>[]>(getDataFunction),
-			                                  t => t.Item1 + "\x2" + t.Item2,
-			                                  s =>
-			                                  	{
-			                                  		var q = s.Split('\x2');
-			                                  		return Tuple.Create(q[0], int.Parse(q[1]));
-			                                  	},
-			                                  new FileDependencies(String.Format("WordFrequencies_{0}.txt", questionList.GetHashCode()), Program.QuestionsFileName,
-			                                                       Program.AnswersFileName))
+			return DataActualityChecker.Check(
+				new Lazy<Tuple<string, int>[]>(getDataFunction),
+				t => t.Item1 + "\x2" + t.Item2,
+				s =>
+					{
+						var q = s.Split('\x2');
+						return Tuple.Create(q[0], int.Parse(q[1]));
+					},
+				new FileDependencies(String.Format("WordFrequencies_{0}.txt", questionList.GetHashCode()), Program.QuestionsFileName,
+				                     Program.AnswersFileName))
 				.ToDictionary(item => item.Item1, item => item.Item2);
 		}
 
@@ -100,15 +106,18 @@ namespace cqa_medical.SpellChecker
 			var getDataFunction = new Func<Tuple<string, HashSet<int>>[]>(
 				() => CalculateTrigramIndex().Select(pair => Tuple.Create(pair.Key, pair.Value)).ToArray());
 
-			return DataActualityChecker.Check(new Lazy<Tuple<string, HashSet<int>>[]>(getDataFunction),
-											  t => t.Item1 + "\x2" + String.Join("\x2", t.Item2),
-											  s =>
-											  {
-												  var q = s.Split('\x2');
-												  return Tuple.Create(q[0], new HashSet<int>(q.Skip(1).Select(int.Parse)));
-											  },
-											  new FileDependencies(String.Format("TrigramIndex_{0}.txt", questionList.GetHashCode()), Program.QuestionsFileName,
-																   Program.AnswersFileName))
+			return DataActualityChecker.Check(
+				new Lazy<Tuple<string, HashSet<int>>[]>(getDataFunction),
+				t => t.Item1 + "\x2" + String.Join("\x2", t.Item2),
+				s =>
+					{
+						var q = s.Split('\x2');
+						return Tuple.Create(q[0], new HashSet<int>(q.Skip(1).Select(int.Parse)));
+					},
+				new FileDependencies(
+					String.Format("TrigramIndex_{0}.txt", questionList.GetHashCode()),
+					Program.QuestionsFileName,
+					Program.AnswersFileName))
 				.ToDictionary(item => item.Item1, item => item.Item2);
 		}
 
@@ -121,11 +130,28 @@ namespace cqa_medical.SpellChecker
 	[TestFixture]
 	public class TrigramIndexTest
 	{
+
 		[Test]
 		public void TestIndexCreation()
 		{
 			var index = new TrigramIndex(Program.DefaultNotStemmedQuestionList);
 			Console.WriteLine(String.Join("\n",index.GetTrigrams().OrderByDescending(t => t.Value.Count).Select(t => t.Key + "\t" + t.Value.Count)));
+		}
+		[Test]
+		public void FileNormalize()
+		{
+			const string fileName = Program.FilesDirectory + "1grams-3.txt";
+			var lines = File.ReadAllLines(fileName)
+				.Select(line => line.Split('\t')[1]);
+
+			long i = 1;
+			File.WriteAllLines(fileName + ".modified.txt", lines.Select(s => (i++) + "\t" + s));
+		}
+		[Test]
+		public void TestIndexFromFileCreation()
+		{
+			var index = new TrigramIndex(Program.DefaultNotStemmedQuestionList, Program.FilesDirectory + "1grams-3.txt.modified.txt");
+			Console.WriteLine(String.Join("\n", index.GetTrigrams().OrderByDescending(t => t.Value.Count).Select(t => t.Key + "\t" + t.Value.Count)));
 		}
 	}
 
