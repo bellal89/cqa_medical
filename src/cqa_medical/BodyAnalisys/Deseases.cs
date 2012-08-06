@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -33,11 +34,12 @@ namespace cqa_medical.BodyAnalisys
 					.ToList();
 
 			var splittedWords = neededWords.SelectMany(s => s.StemmedWords.TakeWhile(r => r != "--")).ToArray();
+			const string notDeseasesFileName = "BodyAnalisys/notDeseases.txt";
 			var q = splittedWords.Where(t => !(
 			                                  	t.Length < 3 ||
 			                                  	Regex.IsMatch(t, @"[^йцукенгшшщзхъфывапролджэячсмитьбю]") ||
 			                                  	Regex.IsMatch(t, @"(ый|ой|ая|ий)$") ||
-			                                  	File.ReadAllLines(Program.NotDeseasesFileName).Contains(t)
+			                                  	File.ReadAllLines(notDeseasesFileName).Contains(t)
 			                                  )
 				).ToArray();
 			return q.Distinct().OrderBy(s => s);

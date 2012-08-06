@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using CsvHelper.Configuration;
-using cqa_medical.Utilits;
 
 namespace cqa_medical.DataInput
 {

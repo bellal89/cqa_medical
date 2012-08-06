@@ -11,29 +11,50 @@ namespace cqa_medical.SpellChecker
 {
 	internal class TrigramIndex
 	{
-		private readonly Dictionary<string, int> wordFrequencies;
-		private readonly Dictionary<string, HashSet<int>> trigrams;
+		public SortedDictionary<int, string> WordAndId { get; private set; }
+		public Dictionary<string, HashSet<int>> Trigrams { get; private set; }
+		private readonly HashSet<string> vocabulary;
 
-		public TrigramIndex(QuestionList questionList)
+		public static TrigramIndex CreateFrom(QuestionList questionList)
+		{
+			return new TrigramIndex(questionList);
+		}
+
+		public static TrigramIndex CreateFromDefaultDictionaryAnd(QuestionList questionList)
+		{
+			return new TrigramIndex(questionList, Program.FilesDirectory + "1grams-3.txt");
+		}
+
+
+		private TrigramIndex(QuestionList questionList)
 		{
 			// Frequencies dictionary based on Mail.Ru corpus
-			wordFrequencies = CalculateDefaultWordFrequencies(questionList);
-			trigrams = GetDefaultTrigramIndex(questionList);
+			WordAndId = new SortedDictionary<int, string>(CalculateDefaultWordFrequencies(questionList).ToDictionary(q => q.Value, q => q.Key));
+			Trigrams = GetDefaultTrigramIndex(questionList);
+			vocabulary = new HashSet<string>(WordAndId.Values);
 		}
-		public TrigramIndex(QuestionList questionList,string wordsDictionaryFileName)
+
+		private TrigramIndex(QuestionList questionList, string wordsDictionaryFileName)
 		{
 			// External frequencies dictionary (Google: "ruscorpora"):
-			wordFrequencies = LoadFromFile(wordsDictionaryFileName);
-			trigrams = GetDefaultTrigramIndex(questionList);
+			Console.WriteLine("TrigramIndex: Geting Words from " + wordsDictionaryFileName);
+			WordAndId = new SortedDictionary<int, string>(LoadFromFile(wordsDictionaryFileName));
+			Console.WriteLine("TrigramIndex: Geting Trigram Index now");
+			Trigrams = GetDefaultTrigramIndex(questionList);
+			vocabulary = new HashSet<string>(WordAndId.Values);
+		}
+		public bool ContainsWord(string word)
+		{
+			return vocabulary.Contains(word);
 		}
 
 		private Dictionary<string, HashSet<int>> CalculateTrigramIndex()
 		{
 			var kgrams = new Dictionary<string, HashSet<int>>();
-			for (var i = 0; i < wordFrequencies.Count; i++)
+			for (var i = 0; i < WordAndId.Count; i++)
 			{
-				var word = wordFrequencies.ElementAt(i).Key;
-				var wordTrigrams = GetKgramsFrom(word, 3);
+				var word = WordAndId[i];
+				var wordTrigrams = GetTrigramsFrom(word);
 				foreach (var trigram in wordTrigrams)
 				{
 					if (!kgrams.ContainsKey(trigram))
@@ -59,21 +80,17 @@ namespace cqa_medical.SpellChecker
 			kgrams.Add(word.Substring(word.Length - k + 1, k - 1) + "$");
 			return kgrams;
 		}
-
-		public Dictionary<string, HashSet<int>> GetTrigrams()
+		public static HashSet<string> GetTrigramsFrom(string word)
 		{
-			return trigrams;
+			return GetKgramsFrom(word, 3);
 		}
-
-		public Dictionary<string, int> GetWordFrequencies()
+		private static Dictionary<int, string> LoadFromFile(string fileName)
 		{
-			return wordFrequencies;
-		}
-
-		private static Dictionary<string, int> LoadFromFile(string fileName)
-		{
-			return File.ReadAllLines(fileName).Select(line => line.Split('\t')).Where(item => item.Length > 1).ToDictionary(
-				item => item[1], item => int.Parse(item[0]));
+			int i = 0;
+			return File.ReadAllLines(fileName)
+				.Select(line => line.Split('\t'))
+				.Where(a => a.Length > 1)
+				.ToDictionary(a => i++, a => a[1]);
 		}
 
 		public static Dictionary<string, int> CalculateDefaultWordFrequencies(QuestionList questionList)
@@ -88,44 +105,52 @@ namespace cqa_medical.SpellChecker
 							.ToArray();
 					});
 
-			return DataActualityChecker.Check(
-				new Lazy<Tuple<string, int>[]>(getDataFunction),
-				t => t.Item1 + "\x2" + t.Item2,
-				s =>
-					{
-						var q = s.Split('\x2');
-						return Tuple.Create(q[0], int.Parse(q[1]));
-					},
-				new FileDependencies(String.Format("WordFrequencies_{0}.txt", questionList.GetHashCode()), Program.QuestionsFileName,
-				                     Program.AnswersFileName))
+			return DataActualityChecker.Check
+				(
+					new Lazy<Tuple<string, int>[]>(getDataFunction),
+					t => t.Item1 + "\x2" + t.Item2,
+					s =>
+						{
+							var q = s.Split('\x2');
+							return Tuple.Create(q[0], int.Parse(q[1]));
+						},
+					new FileDependencies(String.Format("WordFrequencies_{0}.txt", questionList.GetHashCode()),
+					                     Program.QuestionsFileName,
+					                     Program.AnswersFileName)
+				)
 				.ToDictionary(item => item.Item1, item => item.Item2);
 		}
 
-		public Dictionary<string, HashSet<int>> GetDefaultTrigramIndex(QuestionList questionList)
+		private Dictionary<string, HashSet<int>> GetDefaultTrigramIndex(QuestionList questionList)
 		{
 			var getDataFunction = new Func<Tuple<string, HashSet<int>>[]>(
 				() => CalculateTrigramIndex().Select(pair => Tuple.Create(pair.Key, pair.Value)).ToArray());
 
-			return DataActualityChecker.Check(
-				new Lazy<Tuple<string, HashSet<int>>[]>(getDataFunction),
-				t => t.Item1 + "\x2" + String.Join("\x2", t.Item2),
-				s =>
-					{
-						var q = s.Split('\x2');
-						return Tuple.Create(q[0], new HashSet<int>(q.Skip(1).Select(int.Parse)));
-					},
-				new FileDependencies(
-					String.Format("TrigramIndex_{0}.txt", questionList.GetHashCode()),
-					Program.QuestionsFileName,
-					Program.AnswersFileName))
+			return DataActualityChecker.Check
+				(
+					new Lazy<Tuple<string, HashSet<int>>[]>(getDataFunction),
+					t => t.Item1 + "\x2" + String.Join("\x2", t.Item2),
+					s =>
+						{
+							var q = s.Split('\x2');
+							return Tuple.Create(q[0], new HashSet<int>(q.Skip(1).Select(int.Parse)));
+						},
+					new FileDependencies(
+						String.Format("TrigramIndex_{0}.txt", questionList.GetHashCode()),
+						Program.QuestionsFileName,
+						Program.AnswersFileName)
+				)
 				.ToDictionary(item => item.Item1, item => item.Item2);
 		}
 
-		public IEnumerable<HashSet<int>> GetWordSetsBy(IEnumerable<string> wordTrigrams)
+		public HashSet<int> WordsIdsUnionFrom(IEnumerable<string> wordTrigrams)
 		{
-			return wordTrigrams.Select(trigram => trigrams.ContainsKey(trigram) ? trigrams[trigram] : new HashSet<int>()).ToList();
+			var result = new HashSet<int>();
+			foreach (var word in wordTrigrams.Where(Trigrams.ContainsKey).SelectMany(t=> Trigrams[t]))
+				result.Add(word);
+			return result;
 		}
-	}
+}
 
 	[TestFixture]
 	public class TrigramIndexTest
@@ -134,24 +159,30 @@ namespace cqa_medical.SpellChecker
 		[Test]
 		public void TestIndexCreation()
 		{
-			var index = new TrigramIndex(Program.DefaultNotStemmedQuestionList);
-			Console.WriteLine(String.Join("\n",index.GetTrigrams().OrderByDescending(t => t.Value.Count).Select(t => t.Key + "\t" + t.Value.Count)));
+			var index = TrigramIndex.CreateFrom(Program.DefaultNotStemmedQuestionList);
+			Console.WriteLine(String.Join("\n",
+			                              index.Trigrams.OrderByDescending(t => t.Value.Count).Select(
+			                              	t => t.Key + "\t" + t.Value.Count)));
 		}
-		[Test]
-		public void FileNormalize()
-		{
-			const string fileName = Program.FilesDirectory + "1grams-3.txt";
-			var lines = File.ReadAllLines(fileName)
-				.Select(line => line.Split('\t')[1]);
 
-			long i = 1;
-			File.WriteAllLines(fileName + ".modified.txt", lines.Select(s => (i++) + "\t" + s));
-		}
+//		[Test]
+//		public void FileNormalize()
+//		{
+//			const string fileName = Program.FilesDirectory + "1grams-3.txt";
+//			var rawLines = File.ReadAllLines(fileName);
+//			var enumerable = TrigramIndex.GetWordsAndIds(rawLines, 1, '\t');
+//			File.WriteAllLines(fileName + ".modified.txt", enumerable);
+//		}
+
+
+
 		[Test]
 		public void TestIndexFromFileCreation()
 		{
-			var index = new TrigramIndex(Program.DefaultNotStemmedQuestionList, Program.FilesDirectory + "1grams-3.txt.modified.txt");
-			Console.WriteLine(String.Join("\n", index.GetTrigrams().OrderByDescending(t => t.Value.Count).Select(t => t.Key + "\t" + t.Value.Count)));
+			var index = TrigramIndex.CreateFromDefaultDictionaryAnd(Program.DefaultNotStemmedQuestionList);
+			File.WriteAllLines("right.txt",
+			                   index.Trigrams.OrderByDescending(t => t.Value.Count).Select(
+			                   	t => t.Key + "\t" + String.Join(" ", t.Value)));
 		}
 	}
 

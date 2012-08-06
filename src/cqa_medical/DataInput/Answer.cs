@@ -57,8 +57,6 @@ namespace cqa_medical.DataInput
 		public string Source { get; set; }
 
 
-		public Answer(){}
-
 		public static Answer FormatStringParse(string formattedString)
 		{
 			var q = formattedString.Split(';');

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.IO;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
+using cqa_medical.SpellChecker;
 using cqa_medical.Utilits;
 
 namespace cqa_medical
@@ -11,10 +14,11 @@ namespace cqa_medical
 	{
 		public const string FilesDirectory = "../../Files/";
 		public const string StatisticsDirectory = "../../StatOutput/";
+		public const string QuestionsNoTyposFileName = FilesDirectory + "qst_25.NoTypos.csv";
+		public const string AnswersNoTyposFileName = FilesDirectory + "ans_25.NoTypos.csv";
 		public const string QuestionsFileName = FilesDirectory + "qst_25.csv";
 		public const string AnswersFileName = FilesDirectory + "ans_25.csv";
 		public const string DeseasesFileName = FilesDirectory + "Deseases.txt";
-		public const string NotDeseasesFileName = FilesDirectory + "notDeseases.txt";
 		public const string BodyPartsFileName = FilesDirectory + "BodyParts.txt";
 		public const string MedicamentsFileName = FilesDirectory + "Grls.txt";
 		public const string DeseasesIndexFileName = FilesDirectory + "DeseasesIndex.txt";
@@ -40,7 +44,12 @@ namespace cqa_medical
 		}
 
 		private static readonly Lazy<QuestionList> DefaultQuestionListLazy =
-			new Lazy<QuestionList>(() => new QuestionList(QuestionsFileName, AnswersFileName, DefaultMyStemmer));
+			new Lazy<QuestionList>(
+				() =>
+					{
+						CheckQuestionListTypos();
+						return new QuestionList(QuestionsNoTyposFileName, AnswersNoTyposFileName, DefaultMyStemmer);
+					});
 		public static QuestionList DefaultQuestionList
 		{
 			get { return DefaultQuestionListLazy.Value; }
@@ -66,6 +75,13 @@ namespace cqa_medical
 		{
 			get { return TestDefaultNotStemmedQuestionListLazy.Value; }
 		}
+		public static void CheckQuestionListTypos()
+		{
+			if (DataActualityChecker.IsFileActual(QuestionsNoTyposFileName, new[] { QuestionsFileName }) &&
+				  DataActualityChecker.IsFileActual(AnswersNoTyposFileName, new[] { AnswersFileName })) return;
+			var ql = new QuestionList(QuestionsFileName, AnswersFileName);
+			TypoDetecter.ModifyTyposCorpus(ql);
+		}
 
 
 		[TestFixture]
@@ -74,7 +90,7 @@ namespace cqa_medical
 			[Test]
 			public void Getq()
 			{
-				var q = DefaultNotStemmedQuestionList;
+				var q = DefaultQuestionList;
 			}
 
 			[Test]
