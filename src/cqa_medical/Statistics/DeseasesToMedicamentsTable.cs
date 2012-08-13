@@ -43,7 +43,7 @@ namespace cqa_medical.Statistics
 		[TestFixture]
 		public class TestTable
 		{
-			[Test]
+			[Test, Explicit]
 			public void Test()
 			{
 				const int minAmount = 50;
@@ -54,7 +54,6 @@ namespace cqa_medical.Statistics
 				File.WriteAllText("../../Files/deseases-medicaments.txt", q.ToString());
 				var w = new DeseasesToMedicamentsTable(symptoms, medicaments);
 				File.WriteAllText("../../Files/symptoms-medicaments.txt", w.ToString());
-
 			}
 		}
 

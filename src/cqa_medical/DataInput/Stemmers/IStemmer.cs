@@ -16,11 +16,10 @@ namespace cqa_medical.DataInput.Stemmers
 	[TestFixture]
 	public class StemmersComparisonTest
 	{
-		[Test]
+		[Test, Explicit]
 		public void StemmersComparison()
 		{
 			SaveMyStemWords();
-
 		}
 
 		private static void SaveMyStemWords()

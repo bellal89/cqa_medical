@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.IO;
 using NUnit.Framework;
 using cqa_medical.DataInput;
-using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.SpellChecker;
 using cqa_medical.Utilits;
@@ -44,22 +42,10 @@ namespace cqa_medical
 		}
 
 		private static readonly Lazy<QuestionList> DefaultQuestionListLazy =
-			new Lazy<QuestionList>(
-				() =>
-					{
-						CheckQuestionListTypos();
-						return new QuestionList(QuestionsNoTyposFileName, AnswersNoTyposFileName, DefaultMyStemmer);
-					});
+			new Lazy<QuestionList>(() => new QuestionList(QuestionsFileName, AnswersFileName, DefaultMyStemmer));
 		public static QuestionList DefaultQuestionList
 		{
 			get { return DefaultQuestionListLazy.Value; }
-		}
-
-		private static readonly Lazy<QuestionList> TestDefaultQuestionListLazy =
-			new Lazy<QuestionList>(() => new QuestionList(TestQuestionsFileName, TestAnswersFileName, DefaultMyStemmer));
-		public static QuestionList TestDefaultQuestionList
-		{
-			get { return TestDefaultQuestionListLazy.Value; }
 		}
 
 		private static readonly Lazy<QuestionList> DefaultNotStemmedQuestionListLazy =
@@ -69,20 +55,24 @@ namespace cqa_medical
 			get { return DefaultNotStemmedQuestionListLazy.Value; }
 		}
 
+		private static readonly Lazy<QuestionList> TestDefaultQuestionListLazy =
+			new Lazy<QuestionList>(() => new QuestionList(TestQuestionsFileName, TestAnswersFileName, DefaultMyStemmer));
+		public static QuestionList TestDefaultQuestionList
+		{
+			get { return TestDefaultQuestionListLazy.Value; }
+		}
+
 		private static readonly Lazy<QuestionList> TestDefaultNotStemmedQuestionListLazy =
 			new Lazy<QuestionList>(() => new QuestionList(TestQuestionsFileName, TestAnswersFileName));
 		public static QuestionList TestDefaultNotStemmedQuestionList
 		{
 			get { return TestDefaultNotStemmedQuestionListLazy.Value; }
 		}
-		public static void CheckQuestionListTypos()
-		{
-			if (DataActualityChecker.IsFileActual(QuestionsNoTyposFileName, new[] { QuestionsFileName }) &&
-				  DataActualityChecker.IsFileActual(AnswersNoTyposFileName, new[] { AnswersFileName })) return;
-			var ql = new QuestionList(QuestionsFileName, AnswersFileName);
-			TypoDetecter.ModifyTyposCorpus(ql);
-		}
+		
 
+
+
+		
 
 		[TestFixture]
 		public class ProgramTest
@@ -91,9 +81,10 @@ namespace cqa_medical
 			public void Getq()
 			{
 				var q = DefaultQuestionList;
+				Console.WriteLine(q.GetAllQuestions().First());
 			}
 
-			[Test]
+			[Test, Explicit]
 			public void TestId()
 			{
 				var ql = new QuestionList(QuestionsFileName, AnswersFileName);
@@ -111,6 +102,19 @@ namespace cqa_medical
 				}
 				Assert.AreEqual(true, hasIdenticId);
 			}
+			[Test]
+			public static void CheckQuestionListTypos()
+			{
+//				if (DataActualityChecker.IsFileActual(QuestionsNoTyposFileName, new[] { QuestionsFileName }) &&
+//					  DataActualityChecker.IsFileActual(AnswersNoTyposFileName, new[] { AnswersFileName })) return;
+				var ql = DefaultNotStemmedQuestionList;
+				TypoDetecter.ModifyTyposCorpus(ql);
+				var actual = ql.GetAllQuestions().First(q => q.Id == 68484951);
+				Assert.That(actual.Text, Is.EqualTo("одна знакомая плюсной пользуется ветеринарными свечами для себя для профилактики женских заболеваний знаете название свечей и не вредно ли это"));
+
+			}
+
 		}
+		
 	}
 }

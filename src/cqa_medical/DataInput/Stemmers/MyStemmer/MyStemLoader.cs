@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using cqa_medical.Utilits;
@@ -102,8 +101,6 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			RemoveRedundancies(outputFileName, outputFileName);
 		}
 
-		/// <param name="inputFileName"> </param>
-		/// <param name="outputFileName"> </param>
 		public void RemoveRedundancies(string inputFileName, string outputFileName)
 		{
 			var processedLines = new HashSet<string>();
@@ -135,7 +132,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 	[TestFixture]
 	class MyStemProcessorTest
 	{
-		[Test]
+		[Test, Explicit]
 		public void TestQuestionsProcessor()
 		{
 			var start = DateTime.Now;

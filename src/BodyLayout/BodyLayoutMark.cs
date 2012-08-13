@@ -28,17 +28,27 @@ namespace BodyLayout
 		}
 		private void InitPicture(string fileName)
 		{
-			pictureFileName = fileName;
-			bodyPartCoordinatesFileName = fileName + ".BodyPartsCoordinates.txt";
-			var image = Image.FromFile(pictureFileName);
-			BodyPanel.Size = image.Size;
-			BodyPanel.BackgroundImage = image;
-			initialized = true;
-			graphics = BodyPanel.CreateGraphics();
-			graphics.SmoothingMode = SmoothingMode.HighQuality;
-			Size = BodyPanel.Size + new Size(BodyPart.Width, 0) + new Size(200 , 80);
-			LoadDataGrid();
-			Activate();
+			try
+			{
+				var candidatePictureFileName = fileName;
+				var candidateBodyPartCoordinatesFileName = fileName + ".BodyPartsCoordinates.txt";
+				var image = Image.FromFile(candidatePictureFileName);
+				BodyPanel.Size = image.Size;
+				BodyPanel.BackgroundImage = image;
+				initialized = true;
+				graphics = BodyPanel.CreateGraphics();
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				Size = BodyPanel.Size + new Size(BodyPart.Width, 0) + new Size(200, 80);
+				pictureFileName = candidatePictureFileName;
+				bodyPartCoordinatesFileName = candidateBodyPartCoordinatesFileName;
+				LoadDataGrid();
+				Activate();
+			}
+			catch (Exception)
+			{
+				MessageBox.Show("Bad picture");
+			}
+			
 		}
 		private static string Row2String(DataGridViewRow row)
 		{
@@ -90,7 +100,8 @@ namespace BodyLayout
 
 		private void BodyLayoutMark_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			SaveDataGrid();
+			if (initialized)
+				SaveDataGrid();
 		}
 
 		private void BodyLayoutMark_Load(object sender, EventArgs e)

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using NUnit.Framework;
-using System.Linq;
 
 namespace cqa_medical.Utilits
 {
@@ -42,7 +40,7 @@ namespace cqa_medical.Utilits
 		public void Test()
 		{
 			var d = new DistributionCreator<int>(new[]{1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5});
-			SortedDictionary<int, int> ans = d.GetData();
+			var ans = d.GetData();
 			Assert.AreEqual(ans[1], 1);
 			Assert.AreEqual(ans[2], 2);
 			Assert.AreEqual(ans[3], 4);

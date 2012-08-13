@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace cqa_medical.DataInput.Stemmers.AOTLemmatizer
 {
@@ -26,7 +25,7 @@ namespace cqa_medical.DataInput.Stemmers.AOTLemmatizer
 	}
 	
 	[TestFixture]
-	public class AOTLemmatizer_Test
+	public class AOTLemmatizerTest
 	{
 		[Test]
 		public void Test()

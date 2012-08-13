@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 
@@ -74,7 +73,7 @@ namespace cqa_medical.QualityAnalisys
 	[TestFixture]
 	public class UserQualityTest
 	{
-		[Test]
+		[Test, Explicit]
 		public void TestDifferentFuncs()
 		{
 			var userQuality = new UserQuality(Program.DefaultQuestionList);

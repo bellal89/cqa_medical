@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Iveonik.Stemmers;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.Utilits;
 

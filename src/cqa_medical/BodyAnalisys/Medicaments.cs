@@ -119,7 +119,7 @@ namespace cqa_medical.BodyAnalisys
 			File.WriteAllText("MedOutput2.txt", medicaments.ToString());
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void IndexTest()
 		{
 			var questionList = Program.TestDefaultQuestionList;
@@ -130,7 +130,7 @@ namespace cqa_medical.BodyAnalisys
 				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text))).ToList();
 			Console.WriteLine(String.Join("\n", meds.Select(s => s.ToString())));
 		}
-		[Test]
+		[Test, Explicit]
 		public void IndexCreation()
 		{
 			var questionList = Program.DefaultQuestionList;

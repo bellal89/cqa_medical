@@ -145,7 +145,7 @@ namespace cqa_medical.Utilits
 	[TestFixture]
 	public class MonthWeatherHTMLParserTest
 	{
-		[Test]
+		[Test, Explicit]
 		public static void RunWeatherRetrieval()
 		{
 			// 4368 = Moscow code

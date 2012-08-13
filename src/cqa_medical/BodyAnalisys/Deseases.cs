@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -92,13 +91,13 @@ namespace cqa_medical.BodyAnalisys
 	[TestFixture]
 	public class GetDeseases
 	{
-		[Test]
+		[Test, Explicit]
 		public void GetRight()
 		{
 			var q  = Deseases.GetDefault();
 			File.WriteAllLines("rtyy.txt", q.Select(s=>s.ToString()));
 		}
-		[Test]
+		[Test, Explicit]
 		public void Get()
 		{
 			var ql = Program.DefaultQuestionList;
@@ -107,19 +106,14 @@ namespace cqa_medical.BodyAnalisys
 				des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText)));
 			File.WriteAllLines("DeseasesIndex.txt", deseasesIndex.Select(s => s.ToString()));
 		}
-	}
-	[TestFixture]
-	public class DeseasesTest
-	{
 		[Test]
 		public void GetTest()
 		{
 			var ql = Program.TestDefaultQuestionList;
 			var des = new Deseases(Program.DefaultMyStemmer);
 			var deseasesIndex = des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).Select(q => q.Word + "_" + String.Join("+", q.Ids)).ToArray();
-			Console.WriteLine(String.Join("\n",deseasesIndex));
-			Assert.AreEqual(1,deseasesIndex.Length);
+			Console.WriteLine(String.Join("\n", deseasesIndex));
+			Assert.AreEqual(1, deseasesIndex.Length);
 		}
 	}
-	
 }

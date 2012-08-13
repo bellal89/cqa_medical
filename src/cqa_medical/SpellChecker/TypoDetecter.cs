@@ -8,10 +8,10 @@ using cqa_medical.Utilits;
 
 namespace cqa_medical.SpellChecker
 {
-	class TypoDetecter
+	internal class TypoDetecter
 	{
 		private readonly TrigramIndex trigramIndex;
-	
+
 		public TypoDetecter(TrigramIndex trigramIndex)
 		{
 			this.trigramIndex = trigramIndex;
@@ -24,29 +24,34 @@ namespace cqa_medical.SpellChecker
 
 			var wordTrigrams = TrigramIndex.GetTrigramsFrom(word);
 
-			var wordJaccards = new Dictionary<string, double>();
+			var maxJaccard = 0.0;
+			var resultWord = "";
 			foreach (var id in trigramIndex.WordsIdsUnionFrom(wordTrigrams))
 			{
 				var candidateWord = trigramIndex.WordAndId[id];
 				var candidateWordTrigrams = TrigramIndex.GetTrigramsFrom(candidateWord);
-				wordJaccards.Add(candidateWord, CalculateJaccard(wordTrigrams, candidateWordTrigrams));
+				var indexJaccard = CalculateJaccard(wordTrigrams, candidateWordTrigrams);
+				if (maxJaccard >= indexJaccard) continue;
+				maxJaccard = indexJaccard;
+				resultWord = candidateWord;
 			}
-			if (wordJaccards.Count < 1)
+			if (maxJaccard < 0.5)
 			{
-				Console.WriteLine("Bad Word {0}", word);
+				Console.WriteLine("Bad Word '{0}'. Best '{1}'", word, resultWord);
 				return word;
 			}
-			return wordJaccards.Max(item => Tuple.Create(item.Value, item.Key)).Item2;
+			return resultWord;
 		}
 
 		private static double CalculateJaccard(HashSet<string> wordTrigrams, HashSet<string> candidateWordTrigrams)
 		{
 			var intersectionCount = wordTrigrams.Intersect(candidateWordTrigrams).Count();
-			return (0.0+intersectionCount)/(wordTrigrams.Count() + candidateWordTrigrams.Count() - intersectionCount);
+			return (0.0 + intersectionCount)/(wordTrigrams.Count() + candidateWordTrigrams.Count() - intersectionCount);
 		}
+
 		public static void ModifyTyposCorpus(QuestionList ql)
 		{
-			var detector = new TypoDetecter(TrigramIndex.CreateFromDefaultDictionaryAnd(ql));
+			var detector = new TypoDetecter(TrigramIndex.CreateFrom(ql));
 			Console.WriteLine("I am Modifying");
 
 			var start = DateTime.Now;
@@ -72,7 +77,7 @@ namespace cqa_medical.SpellChecker
 	[TestFixture]
 	public class TypoDetecterTest
 	{
-		[Test]
+		[Test, Explicit]
 		public static void TestCreation()
 		{
 			var detector = new TypoDetecter(TrigramIndex.CreateFromDefaultDictionaryAnd(Program.DefaultNotStemmedQuestionList));
@@ -86,28 +91,29 @@ namespace cqa_medical.SpellChecker
 			                  String.Join("\n",
 			                              words.Zip(fixedWords, (w1, w2) => ((w1 != w2) ? "!!!\t" : "") + w1 + "\t-\t" + w2)));
 		}
-		[Test]
+
+		[Test, Explicit]
 		public void TestModify()
 		{
 			TypoDetecter.ModifyTyposCorpus(Program.DefaultNotStemmedQuestionList);
 		}
 
-		[Test]
+		[Test, Explicit]
 		public static void TestRightWordsDictionaryCount()
 		{
 			var detector = TrigramIndex.CreateFrom(Program.DefaultNotStemmedQuestionList);
 			Console.WriteLine(detector.WordAndId.Count);
 		}
 
-	[Test]
+		[Test, Explicit]
 		public static void FixWordTest()
-	{
-		string[] words = {"Проверка"};
-		var detector = new TypoDetecter(TrigramIndex.CreateFromDefaultDictionaryAnd(Program.DefaultNotStemmedQuestionList));
-		var fixedWords = words.Select(detector.Fix).ToArray();
-		Console.WriteLine(String.Join("\n",
-										  words.Zip(fixedWords, (w1, w2) => ((w1 != w2) ? "!!!\t" : "") + w1 + "\t-\t" + w2)));
+		{
+			string[] words = {"Проверка"};
+			var detector = new TypoDetecter(TrigramIndex.CreateFromDefaultDictionaryAnd(Program.DefaultNotStemmedQuestionList));
+			var fixedWords = words.Select(detector.Fix).ToArray();
+			Console.WriteLine(String.Join("\n",
+			                              words.Zip(fixedWords, (w1, w2) => ((w1 != w2) ? "!!!\t" : "") + w1 + "\t-\t" + w2)));
 
-	}
+		}
 	}
 }

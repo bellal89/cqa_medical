@@ -4,10 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Iveonik.Stemmers;
 using NUnit.Framework;
 using cqa_medical.DataInput;
-using cqa_medical.DataInput.Stemmers.MyStemmer;
 
 namespace cqa_medical.BodyAnalisys
 {
@@ -61,7 +59,7 @@ namespace cqa_medical.BodyAnalisys
 	[TestFixture]
 	public class GetBodyCalculations
 	{
-		[Test]
+		[Test, Explicit]
 		public void TestCalculation()
 		{
 			var questionList = Program.DefaultQuestionList;

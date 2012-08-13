@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Iveonik.Stemmers;
 using cqa_medical.Utilits;
 
 namespace cqa_medical.BodyAnalisys
@@ -11,8 +10,8 @@ namespace cqa_medical.BodyAnalisys
 		public readonly string[] Names;
 		private List<BodyPart> subParts = new List<BodyPart>();
 
-		private int questionsCount = 0;
-		private long lastId = 0;
+		private int questionsCount;
+		private long lastId;
 
 		public readonly BodyPart Parent;
 
@@ -40,7 +39,7 @@ namespace cqa_medical.BodyAnalisys
 		public BodyPart AddSubPartAndReturnItUsing(IEnumerable<string> names)
 		{
 			var q = new BodyPart(this, names.ToArray());
-			this.AddSubPart(q);
+			AddSubPart(q);
 			return q;
 		}
 

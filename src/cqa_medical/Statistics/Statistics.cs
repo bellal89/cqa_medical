@@ -11,6 +11,7 @@ using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.Utilits;
 
+
 namespace cqa_medical.Statistics
 {
 	public class StatisticsAttribute : Attribute
@@ -248,7 +249,7 @@ namespace cqa_medical.Statistics
 			statistics = new Statistics(ql);
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void CommonStatistics()
 		{
 			IEnumerable<MethodInfo> infos = statistics
@@ -267,7 +268,7 @@ namespace cqa_medical.Statistics
 			}
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void WordsContainingDistributionInDays()
 		{
 			var words = new []{"температура"};
@@ -278,7 +279,7 @@ namespace cqa_medical.Statistics
 				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", data);
 		}
 
-		[Test, TestCaseSource("divideCases")]
+		[Test, Explicit, TestCaseSource("divideCases")]
 		public void WordQuotientDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", expectedWords));
@@ -287,7 +288,7 @@ namespace cqa_medical.Statistics
 				Program.StatisticsDirectory + "WordQuotientDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
 
-		[Test, TestCaseSource("divideCases")]
+		[Test, Explicit, TestCaseSource("divideCases")]
 		public void WordIntensityDistributionInWeeks(string[] expectedWords)
 		{
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
@@ -295,16 +296,15 @@ namespace cqa_medical.Statistics
 			File.WriteAllText(
 				Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", data);
 		}
-
-		private static object[] divideCases = new object[]
+		public static object[] divideCases = new object[]
 		                                      	{
 		                                      		new object[] {new[] {"грипп", "ОРВИ"}}
 		                                      	};
 
-		[Test]
+		[Test, Explicit]
 		public void WordFrequency()
 		{
-			var stemmerCases = new CaseT[]
+			var stemmerCases = new[]
 			                   	{
 									new CaseT(new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)), new TimeSpan(0, 4, 1)),
 			                   		new CaseT(new RussianStemmer(), new TimeSpan(0, 4, 20)),
@@ -322,7 +322,7 @@ namespace cqa_medical.Statistics
 			}
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void StoreTemperatureAndPressure()
 		{
 			

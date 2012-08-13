@@ -29,7 +29,9 @@ namespace cqa_medical.SpellChecker
 		private TrigramIndex(QuestionList questionList)
 		{
 			// Frequencies dictionary based on Mail.Ru corpus
-			WordAndId = new SortedDictionary<int, string>(CalculateDefaultWordFrequencies(questionList).ToDictionary(q => q.Value, q => q.Key));
+			var frequencies = CalculateDefaultWordFrequencies(questionList);
+			int i = 0;
+			WordAndId = new SortedDictionary<int, string>(frequencies.ToDictionary(q =>  i++, q => q));
 			Trigrams = GetDefaultTrigramIndex(questionList);
 			vocabulary = new HashSet<string>(WordAndId.Values);
 		}
@@ -77,7 +79,7 @@ namespace cqa_medical.SpellChecker
 				kgrams.Add(word.Substring(i, k));
 			}
 			kgrams.Add("$" + word.Substring(0, k - 1));
-			kgrams.Add(word.Substring(word.Length - k + 1, k - 1) + "$");
+//			kgrams.Add(word.Substring(word.Length - k + 1, k - 1) + "$");
 			return kgrams;
 		}
 		public static HashSet<string> GetTrigramsFrom(string word)
@@ -93,32 +95,27 @@ namespace cqa_medical.SpellChecker
 				.ToDictionary(a => i++, a => a[1]);
 		}
 
-		public static Dictionary<string, int> CalculateDefaultWordFrequencies(QuestionList questionList)
+		public static string[] CalculateDefaultWordFrequencies(QuestionList questionList)
 		{
-			var getDataFunction = new Func<Tuple<string, int>[]>(
+			var getDataFunction = new Func<string[]>(
 				() =>
 					{
 						var statistics = new Statistics.Statistics(questionList);
 						return statistics.WordFrequency(new EmptyStemmer())
 							.Where(item => item.Value > 10)
-							.Select(item => Tuple.Create(item.Key, item.Value))
+							.Select(item => item.Key)
 							.ToArray();
 					});
 
 			return DataActualityChecker.Check
 				(
-					new Lazy<Tuple<string, int>[]>(getDataFunction),
-					t => t.Item1 + "\x2" + t.Item2,
-					s =>
-						{
-							var q = s.Split('\x2');
-							return Tuple.Create(q[0], int.Parse(q[1]));
-						},
-					new FileDependencies(String.Format("WordFrequencies_{0}.txt", questionList.GetHashCode()),
+					new Lazy<string[]>(getDataFunction),
+					t => t,
+					s => s,
+					new FileDependencies(String.Format("FrequentWords_{0}.txt", questionList.GetHashCode()),
 					                     Program.QuestionsFileName,
 					                     Program.AnswersFileName)
-				)
-				.ToDictionary(item => item.Item1, item => item.Item2);
+				).ToArray();
 		}
 
 		private Dictionary<string, HashSet<int>> GetDefaultTrigramIndex(QuestionList questionList)
@@ -156,7 +153,7 @@ namespace cqa_medical.SpellChecker
 	public class TrigramIndexTest
 	{
 
-		[Test]
+		[Test, Explicit]
 		public void TestIndexCreation()
 		{
 			var index = TrigramIndex.CreateFrom(Program.DefaultNotStemmedQuestionList);
@@ -176,7 +173,7 @@ namespace cqa_medical.SpellChecker
 
 
 
-		[Test]
+		[Test, Explicit]
 		public void TestIndexFromFileCreation()
 		{
 			var index = TrigramIndex.CreateFromDefaultDictionaryAnd(Program.DefaultNotStemmedQuestionList);

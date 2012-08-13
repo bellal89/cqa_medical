@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Iveonik.Stemmers;
 using NUnit.Framework;
-using cqa_medical.BodyAnalisys;
 using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.Utilits
@@ -71,6 +67,31 @@ namespace cqa_medical.Utilits
 				dictionary.Add(key,deafultValue);
 			}
 		}
+		public static void DetectTime(this Action a, string message)
+		{
+			var start = DateTime.Now;
+			a.Invoke();
+			Console.WriteLine("{0} in: {1}", message, (DateTime.Now - start).TotalSeconds);
+		}
+		public static T DetectTime<T>(this Func<T> f, string message)
+		{
+			var start = DateTime.Now;
+			var result = f.Invoke();
+			Console.WriteLine("{0} in: {1}", message, (DateTime.Now - start).TotalSeconds);
+			return result;
+		}
+
+		[TestFixture]
+		internal class DetectTimeTest
+		{
+			[Test, Explicit]
+			public void TestTime()
+			{
+				new Func<int>(() => 1).DetectTime("trolo");
+			}
+		}
+
+
 
 	}
 }

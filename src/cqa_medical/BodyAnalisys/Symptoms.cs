@@ -88,7 +88,7 @@ namespace cqa_medical.BodyAnalisys
 	[TestFixture]
 	public class SymptomSearchTest
 	{
-		[Test]
+		[Test, Explicit]
 		public static void TestSearch()
 		{
 			var voc = Program.DefaultVocabulary;
@@ -103,7 +103,7 @@ namespace cqa_medical.BodyAnalisys
 			Console.WriteLine(String.Join("\n",symptoms.Select(s => s.ToString())));
 		}
 
-		[Test]
+		[Test, Explicit]
 		public static void GetSymptoms()
 		{
 			var start = DateTime.Now;
