@@ -27,7 +27,7 @@ namespace cqa_medical.Utilits
 		public static bool IsFileActual(string fileName, string[] parentFileNames)
 		{
 			return File.Exists(fileName) && parentFileNames.All(parentFileName =>
-				File.GetLastWriteTime(parentFileName) > File.GetCreationTime(fileName));
+				File.GetLastWriteTime(parentFileName) < File.GetCreationTime(fileName));
 		}
 	}
 

@@ -29,7 +29,7 @@ namespace cqa_medical.BodyAnalisys
 				.Where(item => item.Length == 3))
 			{
 				AddToIndex(index, parts[0], i);
-				AddToIndex(index, parts[1], i);
+				//AddToIndex(index, parts[1], i);
 				i++;
 			}
 			return Filter(index);
@@ -139,7 +139,8 @@ namespace cqa_medical.BodyAnalisys
 
 			var meds =
 				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text))).ToList();
-			File.WriteAllLines("MedicamentsIndex.txt", meds.Select(s => s.ToString()));
+			//File.WriteAllLines("MedicamentsIndex.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.ToString()));
+			File.WriteAllLines("MedicamentsIndex.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.Word + "\t" + s.Ids.Count));
 		}
 	}
 }
