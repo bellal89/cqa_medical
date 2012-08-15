@@ -24,7 +24,7 @@ namespace cqa_medical.Statistics
 		private readonly QuestionList questionList;
 		private readonly Question[] questions;
 		private readonly Answer[] answers;
-		public static readonly DateTime FirstDate = new DateTime(2011, 9, 26);
+		public static readonly DateTime FirstDate = new DateTime(2011, 9, 26, 1, 2, 3);
 
 		public Statistics(QuestionList questionList)
 		{
@@ -33,9 +33,9 @@ namespace cqa_medical.Statistics
 			answers = questionList.GetAllAnswers().ToArray();
 		}
 		
-		public static DateTime GetWeekFromRange(DateTime now)
+		public static DateTime GetWeek(DateTime now)
 		{
-			return FirstDate.AddDays(7*Math.Floor((now - FirstDate).TotalDays/7.0));
+			return now.AddDays(-(int) now.DayOfWeek);
 		}
 
 		private SortedDictionary<T, int> GetDistribution<T>(IEnumerable<T> data)
@@ -49,7 +49,7 @@ namespace cqa_medical.Statistics
 			var denumerator = GetDistribution(questions
 			                                  	.Where(a => a.DateAdded >= FirstDate)
 			                                  	.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
-												//.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+												//.Select(q => GetWeek(q.DateAdded).ToShortDateString()));
 			return Utilits.Utilits.DistributionQuotient(enumerator, denumerator);
 		}
 
@@ -212,7 +212,7 @@ namespace cqa_medical.Statistics
 			return GetDistribution(questions
 			                       	.Where(a => a.DateAdded >= FirstDate)
 			                       	.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
-			                       	.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
+			                       	.Select(q => GetWeek(q.DateAdded).ToShortDateString()));
 		}
 
 		[Statistics]

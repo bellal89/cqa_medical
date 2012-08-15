@@ -31,12 +31,13 @@ namespace cqa_medical.Statistics
 		[Test]
 		public void TestGetWeekFromRange()
 		{
-			Assert.AreEqual(Statistics.FirstDate, Statistics.GetWeekFromRange(Statistics.FirstDate.AddDays(1)));
-			Assert.AreEqual(Statistics.FirstDate, Statistics.GetWeekFromRange(Statistics.FirstDate.AddDays(2)));
-			Assert.AreEqual(Statistics.FirstDate, Statistics.GetWeekFromRange(Statistics.FirstDate.AddDays(3)));
-			Assert.AreEqual(Statistics.FirstDate, Statistics.GetWeekFromRange(Statistics.FirstDate.AddDays(4)));
-			Assert.AreEqual(Statistics.FirstDate.AddDays(7), Statistics.GetWeekFromRange(Statistics.FirstDate.AddDays(7)));
-			Assert.AreEqual(Statistics.FirstDate.AddDays(7), Statistics.GetWeekFromRange(Statistics.FirstDate.AddDays(8)));
+			var now = new DateTime(2011, 9, 26, 1, 2, 3);
+			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(1)));
+			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(2)));
+			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(3)));
+			Assert.AreEqual(now.AddDays(-1), Statistics.GetWeek(now.AddDays(4)));
+			Assert.AreEqual(now.AddDays(6), Statistics.GetWeek(now.AddDays(7)));
+			Assert.AreEqual(now.AddDays(6), Statistics.GetWeek(now.AddDays(8)));
 		}
 
 		[Test]

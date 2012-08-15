@@ -71,13 +71,13 @@ namespace cqa_medical.Utilits
 		{
 			var start = DateTime.Now;
 			a.Invoke();
-			Console.WriteLine("{0} in: {1}", message, (DateTime.Now - start).TotalSeconds);
+			Console.WriteLine("{0} in {1} seconds", message, (DateTime.Now - start).TotalSeconds);
 		}
 		public static T DetectTime<T>(this Func<T> f, string message)
 		{
 			var start = DateTime.Now;
 			var result = f.Invoke();
-			Console.WriteLine("{0} in: {1}", message, (DateTime.Now - start).TotalSeconds);
+			Console.WriteLine("{0} in {1}", message, (DateTime.Now - start).TotalSeconds);
 			return result;
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -22,6 +23,8 @@ namespace cqa_medical
 		public const string DeseasesIndexFileName = FilesDirectory + "DeseasesIndex.txt";
 		public const string MedicamentsIndexFileName = FilesDirectory + "MedicamentsIndex.txt";
 		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
+		public const string LazarevaManualFileName = FilesDirectory + "Лазарева - Справочник фельдшера.txt";
+
 
 		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
@@ -112,6 +115,33 @@ namespace cqa_medical
 				var actual = ql.GetAllQuestions().First(q => q.Id == 68484951);
 				Assert.That(actual.Text, Is.EqualTo("одна знакомая плюсной пользуется ветеринарными свечами для себя для профилактики женских заболеваний знаете название свечей и не вредно ли это"));
 
+			}
+			[Test, Explicit]
+			public static void StplitToWords()
+			{
+				var ql = DefaultNotStemmedQuestionList;
+
+				new Action(
+					()=>
+						{
+							foreach (var question in ql.GetAllQuestions())
+							{
+								question.Text = String.Join(" ", question.Text.SplitInWordsAndStripHTML());
+								question.Title = String.Join(" ", question.Title.SplitInWordsAndStripHTML());
+							}
+						}).DetectTime("Questions Modified");
+
+				new Action(
+					()=>
+						{
+							foreach (var answer in ql.GetAllAnswers())
+							{
+								answer.Text = String.Join(" ", answer.Text.SplitInWordsAndStripHTML());
+							}
+						}).DetectTime("Answers Modified");
+
+				File.WriteAllLines(AnswersFileName + "ol.txt", ql.GetAllAnswers().Select(Answer.FormatStringWrite));
+				File.WriteAllLines(QuestionsFileName + "ol.txt", ql.GetAllQuestions().Select(Question.FormatStringWrite));
 			}
 
 		}

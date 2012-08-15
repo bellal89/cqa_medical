@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -43,6 +45,17 @@ namespace cqa_medical.BodyAnalisys
 				).ToArray();
 			return q.Distinct().OrderBy(s => s);
 		}
+		public static IEnumerable<string> GetDeseasesFromLazarevaManual()
+		{
+			var regexp = new Regex(@"(?<x>[\w ]+?)\r\n\1");
+			var text = File.ReadAllText(Program.LazarevaManualFileName);
+			var matches = regexp.Matches(text);
+			for (int i = 0; i < matches.Count; i++)
+			{ 
+				yield return matches[i].Groups["x"].Value;
+			}
+
+		}
 
 		public IEnumerable<InvertedIndexUnit> GetIndex(IEnumerable<Tuple<long, string>> idTextList)
 		{
@@ -68,18 +81,36 @@ namespace cqa_medical.BodyAnalisys
 				.Select(q => q.Word + " " + String.Join(" ", q.Ids));
 		}
 
+		public static IEnumerable<string> GetIndexFromInternetMedicalDictionary()
+		{
+			// not working yet
+			var urlName = "http://www.vidal.ru/patsientam/spisok-boleznei-po-alfavitu/";
+			var r = WebRequest.Create(urlName);
+
+			var resp = r.GetResponse();
+			using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+			{
+				var text = sr.ReadToEnd();
+				Console.Write(text);
+				File.AppendAllText("1.html", text);
+			}
+
+			return null;
+		}
+
 		public static IEnumerable<InvertedIndexUnit> GetDefault()
 		{
 			return DataActualityChecker.Check(
-				new Lazy<InvertedIndexUnit[]>(() =>
-				                              	{
-				                              		var ql = Program.DefaultQuestionList;
-				                              		var des = new Deseases(Program.DefaultMyStemmer);
-				                              		return des.GetIndex(ql
-				                              		                    	.GetAllQuestions()
-				                              		                    	.Select(t => Tuple.Create(t.Id, t.WholeText)))
-				                              			.ToArray();
-				                              	}),
+				new Lazy<InvertedIndexUnit[]>(
+					() =>
+						{
+							var ql = Program.DefaultQuestionList;
+							var des = new Deseases(Program.DefaultMyStemmer);
+							return des.GetIndex(ql
+							                    	.GetAllQuestions()
+							                    	.Select(t => Tuple.Create(t.Id, t.WholeText)))
+								.ToArray();
+						}),
 				InvertedIndexUnit.FormatStringWrite,
 				InvertedIndexUnit.FormatStringParse,
 				new FileDependencies(
@@ -94,8 +125,8 @@ namespace cqa_medical.BodyAnalisys
 		[Test, Explicit]
 		public void GetRight()
 		{
-			var q  = Deseases.GetDefault();
-			File.WriteAllLines("rtyy.txt", q.Select(s=>s.ToString()));
+			var q  = Deseases.GetDefault().OrderByDescending(qw => qw.Ids.Count());
+			File.WriteAllLines("rtyy.txt", q.Select(s=> s.Word +"\t" +s.Ids.Count()));
 		}
 		[Test, Explicit]
 		public void Get()
@@ -114,6 +145,16 @@ namespace cqa_medical.BodyAnalisys
 			var deseasesIndex = des.GetIndex(ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText))).Select(q => q.Word + "_" + String.Join("+", q.Ids)).ToArray();
 			Console.WriteLine(String.Join("\n", deseasesIndex));
 			Assert.AreEqual(1, deseasesIndex.Length);
+		}
+		[Test]
+		public void GetFromLazarevaManual()
+		{
+			Console.WriteLine(String.Join("\n", Deseases.GetDeseasesFromLazarevaManual().ToArray()));
+		}
+		[Test]
+		public void TestGetIndexFromInternetMedicalDictionary()
+		{
+			Deseases.GetIndexFromInternetMedicalDictionary();
 		}
 	}
 }
