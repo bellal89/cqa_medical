@@ -48,7 +48,7 @@ namespace cqa_medical.Utilits
 			return words;
 		}
 
-		public static SortedDictionary<TKey, double> DistributientQuotient<TKey>(SortedDictionary<TKey, int> numerator,
+		public static SortedDictionary<TKey, double> DistributionQuotient<TKey>(SortedDictionary<TKey, int> numerator,
 		                                                                  SortedDictionary<TKey, int> denominator)
 		{
 			var result = new SortedDictionary<TKey, double>();

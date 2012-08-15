@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Iveonik.Stemmers;
 using NUnit.Framework;
+using cqa_medical.BodyAnalisys;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
@@ -49,7 +50,7 @@ namespace cqa_medical.Statistics
 			                                  	.Where(a => a.DateAdded >= FirstDate)
 			                                  	.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
 												//.Select(q => GetWeekFromRange(q.DateAdded).ToShortDateString()));
-			return Utilits.Utilits.DistributientQuotient(enumerator, denumerator);
+			return Utilits.Utilits.DistributionQuotient(enumerator, denumerator);
 		}
 
 		[Statistics]
@@ -234,6 +235,15 @@ namespace cqa_medical.Statistics
 			statisticGenerator.AddData(answers.SelectMany(t => t.Text.SplitInWordsAndStripHTML()).Select(stemmer.Stem));
 			return statisticGenerator.GetData();
 		}
+
+		public SortedDictionary<string, double> SymptomIntensityDistributionInDays(InvertedIndexUnit symptom)
+		{
+			var numerator = GetDistribution(symptom.Ids.Select(id => questionList.GetQuestion(id).DateAdded.AddDays(-(int)questionList.GetQuestion(id).DateAdded.DayOfWeek).ToShortDateString()));
+			var denominator = GetDistribution(questions.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
+			return Utilits.Utilits.DistributionQuotient(numerator, denominator);
+		}
+
+
 	}
 
 
@@ -247,6 +257,19 @@ namespace cqa_medical.Statistics
 		{
 			var ql = Program.DefaultQuestionList;
 			statistics = new Statistics(ql);
+		}
+
+		[Test, Explicit]
+		public void SymptomsOverTimeDistribution()
+		{
+			const int numberOfSyptoms = 10;
+			var symptoms = Symptoms.GetDefault().OrderByDescending(s => s.Ids.Count).Take(numberOfSyptoms);
+			foreach (var symptom in symptoms)
+			{
+				var data = statistics.SymptomIntensityDistributionInDays(symptom);
+				File.WriteAllText(Program.StatisticsDirectory + "Symptom distributions/Symptom distrib - " + symptom.Word + ".txt",
+								  String.Join("\n", data.Select(item => item.Key + "\t" + item.Value)));
+			}
 		}
 
 		[Test, Explicit]

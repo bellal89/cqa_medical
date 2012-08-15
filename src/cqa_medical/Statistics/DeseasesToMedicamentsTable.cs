@@ -49,7 +49,7 @@ namespace cqa_medical.Statistics
 				const int minAmount = 50;
 				var medicaments = Medicaments.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
 				var deseases = Deseases.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
-				var symptoms = Symptoms.GetDefault().Where(a => a.Ids.Count>minAmount).ToArray();
+				var symptoms = Symptoms.GetDefault().Where(a => a.Ids.Count > minAmount).ToArray();
 				var q = new DeseasesToMedicamentsTable(deseases, medicaments);
 				File.WriteAllText("../../Files/deseases-medicaments.txt", q.ToString());
 				var w = new DeseasesToMedicamentsTable(symptoms, medicaments);
