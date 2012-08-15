@@ -75,6 +75,7 @@
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
     <Compile Include="Utilits\GismeteoHTMLParser.cs" />
+    <Compile Include="Utilits\OctaveController.cs" />
     <Compile Include="Utilits\TabulationParser.cs" />
     <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />

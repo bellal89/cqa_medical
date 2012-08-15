@@ -55,7 +55,8 @@ namespace cqa_medical.DataInput
 				var areAnswersStemmed = DataActualityChecker.IsFileActual(answersStemmedFileName, new[] {answersFileName});
 
 				var start = DateTime.Now;
-				var parser = new Parser(areQuestionsStemmed?questionsStemmedFileName: questionsFileName,
+				var parser = new Parser(
+					areQuestionsStemmed?questionsStemmedFileName: questionsFileName,
 					areAnswersStemmed?answersStemmedFileName:answersFileName);
 				parser.Parse(AddQuestion, AddAnswer);
 				Console.WriteLine(String.Format("QuestionList Parsing Completed in {0}",
