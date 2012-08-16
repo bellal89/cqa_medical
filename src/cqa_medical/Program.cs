@@ -5,7 +5,7 @@ using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.SpellChecker;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical
 {

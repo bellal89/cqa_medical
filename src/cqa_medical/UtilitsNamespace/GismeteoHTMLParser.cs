@@ -6,7 +6,7 @@ using System.Net;
 using HtmlAgilityPack;
 using NUnit.Framework;
 
-namespace cqa_medical.Utilits
+namespace cqa_medical.UtilitsNamespace
 {
 	class GismeteoWeatherCollection
 	{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace cqa_medical.Utilits
+namespace cqa_medical.UtilitsNamespace
 {
 	class DataActualityChecker
 	{

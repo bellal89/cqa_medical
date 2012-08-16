@@ -5,10 +5,14 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
 
-namespace cqa_medical.Utilits
+namespace cqa_medical.UtilitsNamespace
 {
 	internal static class Utilits
 	{
+		public static DateTime GetWeek(DateTime now)
+		{
+			return now.AddDays(-(int)now.DayOfWeek);
+		}
 		public static string StripHTMLTags(this String s)
 		{
 			return Regex.Replace(s, "<[^>]*?>", string.Empty, RegexOptions.IgnoreCase);

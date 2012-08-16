@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using cqa_medical.DataInput.Stemmers;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.DataInput
 {
@@ -91,7 +91,7 @@ namespace cqa_medical.DataInput
 			var start = DateTime.Now;
 			foreach (var answer in GetAllAnswers())
 			{
-				answer.Text = String.Join(" ", Utilits.Utilits.GetStemmedWords(stemmer, answer.Text));
+				answer.Text = String.Join(" ", UtilitsNamespace.Utilits.GetStemmedWords(stemmer, answer.Text));
 			}
 			Console.WriteLine(String.Format("Answers Stemming Completed in {0}", (DateTime.Now - start).TotalSeconds));
 		}
@@ -101,8 +101,8 @@ namespace cqa_medical.DataInput
 			var start = DateTime.Now;
 			foreach (var question in GetAllQuestions())
 			{
-				question.Text = String.Join(" ", Utilits.Utilits.GetStemmedWords(stemmer, question.Text));
-				question.Title = String.Join(" ", Utilits.Utilits.GetStemmedWords(stemmer, question.Title));
+				question.Text = String.Join(" ", UtilitsNamespace.Utilits.GetStemmedWords(stemmer, question.Text));
+				question.Title = String.Join(" ", UtilitsNamespace.Utilits.GetStemmedWords(stemmer, question.Title));
 			}
 			Console.WriteLine(String.Format("Questions Stemming Completed in {0}", (DateTime.Now - start).TotalSeconds));
 		}

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using cqa_medical.BodyAnalisys;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.Statistics
 {

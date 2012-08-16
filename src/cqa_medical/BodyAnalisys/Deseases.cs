@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
-using cqa_medical.Utilits;
+using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.BodyAnalisys
 {
