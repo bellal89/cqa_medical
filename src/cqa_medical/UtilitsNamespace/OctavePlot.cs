@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+
+namespace cqa_medical.UtilitsNamespace
+{
+	public class OctavePlot
+	{
+		public PlotStyle Style;
+		public string Title;
+		public string XLabel;
+		public string YLabel;
+
+
+
+		private readonly CultureInfo cul =  new CultureInfo("ru") { NumberFormat = { NumberDecimalSeparator = "." } };
+		private readonly string fileToSave;
+		private readonly string dataX;
+		private readonly string dataY;
+
+		public OctavePlot(string fileToSave, double[] dataX, double[] dataY)
+		{
+			this.fileToSave = fileToSave;
+			if (dataX.Count() != dataY.Count())
+				throw new Exception("Data Arrays Count mismatch");
+			this.dataX = String.Join(",", dataX.Select(d => d.ToString(cul)));
+			this.dataY = String.Join(",", dataY.Select(d => d.ToString(cul)));
+		}
+		
+		public string DrawPlot()
+		{
+			string script =
+				String.Format("{2}([{0}],[{1}] {3});",dataX,dataY, Style.PlotType, Style.Stile) +
+				(String.IsNullOrEmpty(Title) ? "" : String.Format("title '{0}';", Title)) +
+				(String.IsNullOrEmpty(XLabel) ? "" : String.Format("xlabel '{0}';", XLabel)) +
+				(String.IsNullOrEmpty(YLabel) ? "" : String.Format("ylabel '{0}';", YLabel)) +
+				String.Format("print -d{0} {1}", fileToSave.Substring(fileToSave.LastIndexOf('.') + 1), fileToSave);
+
+//			Console.WriteLine(script);
+			return OctaveController.Execute(script);
+		}
+	}
+	
+	public class PlotStyle
+	{
+		public static PlotStyle Line = new PlotStyle("plot", ", '-'", ", 'linewidth', 3");
+		public static PlotStyle Dot = new PlotStyle("plot", ", 'o'",", 'markersize', 5");
+		public static PlotStyle Bar = new PlotStyle("bar");
+		public static PlotStyle Stairs = new PlotStyle("stairs");
+
+
+
+
+		public string PlotType{get { return plotType; }}
+		public string Stile { get { return style + width; } }
+
+
+		private readonly string plotType;
+		private readonly string style;
+		private readonly string width;
+
+		private PlotStyle(string plotType, string style = "", string width = "")
+		{
+			this.plotType = plotType;
+			this.style = style;
+			this.width = width;
+		}
+	}
+
+	[TestFixture]
+	internal class PlotDrawerTest
+	{
+		[Test]
+		public void PlotTest()
+		{
+			var q = new OctavePlot("1.png", new[] {1, 2, 3.3, 4.9, 5}, new[] {5.0, 7, 8, 3, 2})
+			        	{
+							Style = PlotStyle.Dot, 
+							XLabel = "линия снизу",
+							YLabel = "Линия сбоку",
+							Title = "trolo"
+			        	}.DrawPlot() ;
+
+			Console.WriteLine(q);
+		}
+	}
+}
