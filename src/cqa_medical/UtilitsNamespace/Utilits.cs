@@ -34,14 +34,18 @@ namespace cqa_medical.UtilitsNamespace
 			return dict.ContainsKey(key) ? dict[key] : defaultValue;
 		}
 
-		public static string ToStringNormal<TKey, TValue>(this IDictionary<TKey, TValue> data)
+		public static string ToStringNormal<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
 		{
-			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + "\t" + data[k].ToString()).ToArray());
+			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + delimiter + data[k].ToString()));
 		}
 
-		public static string ToStringInverted<TKey, TValue>(this IDictionary<TKey, TValue> data)
+		public static string ToStringInverted<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
 		{
-			return string.Join(Environment.NewLine, data.Keys.OrderByDescending(key => data[key]).Select(k => data[k].ToString() + "\t" + k.ToString()).ToArray());
+			return string.Join(Environment.NewLine, data.Keys.OrderByDescending(key => data[key]).Select(k => data[k].ToString() + delimiter + k.ToString()));
+		}
+		public static string ToStringComparable<TValue>(this IDictionary<DateTime, TValue> data, string delimiter = "\t")
+		{
+			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString("yyyy-MM-dd") + delimiter + data[k].ToString()));
 		}
 
 
@@ -60,7 +64,7 @@ namespace cqa_medical.UtilitsNamespace
 				result.Add(w.Key, (double) w.Value/denominator[w.Key]);
 			return result;
 		}
-		public static void UpdateOrAdd<TKey,TValue>(this IDictionary<TKey,TValue> dictionary, TKey key, Func<TValue,TValue> func, TValue deafultValue  )
+		public static void UpdateOrAdd<TKey,TValue>(this IDictionary<TKey,TValue> dictionary, TKey key, Func<TValue,TValue> func, TValue deafultValue  ) 
 		{
 			if (dictionary.ContainsKey(key))
 			{
@@ -85,6 +89,18 @@ namespace cqa_medical.UtilitsNamespace
 			return result;
 		}
 
+		public static SortedDictionary<DateTime, int> SumUpToDays(this IDictionary<DateTime, int> dictionary)
+		{
+			var result = new SortedDictionary<DateTime, int>();
+			foreach (var key in dictionary.Keys)
+			{
+				var q = new DateTime(key.Year,key.Month,key.Day);
+				result.UpdateOrAdd(q, v => v + dictionary[key], dictionary[key]);
+			}
+			return result;
+		}
+
+
 		[TestFixture]
 		internal class DetectTimeTest
 		{
@@ -92,6 +108,17 @@ namespace cqa_medical.UtilitsNamespace
 			public void TestTime()
 			{
 				new Func<int>(() => 1).DetectTime("trolo");
+			}
+			[Test, Explicit]
+			public void TestSumUp()
+			{
+				var q = new SortedDictionary<DateTime, int>();
+				var dateTime = new DateTime(1, 1, 1);
+				q[dateTime.AddHours(1)] = 5;
+				q[dateTime] = 6;
+				var w = SumUpToDays(q);
+				Assert.AreEqual(11, w[dateTime]);
+
 			}
 		}
 

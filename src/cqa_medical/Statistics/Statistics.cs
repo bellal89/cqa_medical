@@ -48,9 +48,10 @@ namespace cqa_medical.Statistics
 			                                  	.Where(a => a.DateAdded >= FirstDate)
 			                                  	.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
 												//.Select(q => GetWeek(q.DateAdded).ToShortDateString()));
-			return UtilitsNamespace.Utilits.DistributionQuotient(enumerator, denumerator);
+			return Utilits.DistributionQuotient(enumerator, denumerator);
 		}
 
+		#region SimpleStatistics
 		[Statistics]
 		public SortedDictionary<int, int> AnswerLengthDistibution()
 		{
@@ -204,6 +205,7 @@ namespace cqa_medical.Statistics
 		{
 			return GetDistribution(answers.GroupBy(a => a.AuthorEmail, (email, qs) => qs.Count()));
 		}
+		#endregion
 
 		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords)
 		{
@@ -268,14 +270,6 @@ namespace cqa_medical.Statistics
 			statistics = new Statistics(ql);
 		}
 
-		[Test,Explicit]
-		public void TestIt()
-		{
-			var q = statistics.QuestionActivityInHoursByDayDistibution();
-			Console.WriteLine(new OctavePlot("2.png", q.Keys.Select(k => (double)k).ToArray(), q.Values.Select(k => (double)k).ToArray()).DrawPlot());
-		}
-
-
 		[Test, Explicit]
 		public void AverageThread()
 		{
@@ -328,9 +322,13 @@ namespace cqa_medical.Statistics
 			var words = new []{"температура"};
 
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", words));
-			var data = statistics.WordIntensityDistributionInDays(words).ToDictionary(item => item.Key, item => item.Value + 700).ToStringNormal();
+			var data = statistics.WordIntensityDistributionInDays(words).ToDictionary(item => item.Key, item => item.Value);
+			var formattedData = data.SumUpToDays().ToStringComparable();
+//			var formattedData = data.ToStringNormal();
 			File.WriteAllText(
-				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", data);
+				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", formattedData);
+
+			Console.WriteLine(new OctavePlot("2.png", data.Keys.ToArray(), data.Values.Select(k => (double)k).ToArray()).DrawPlot());
 		}
 
 		[Test, Explicit, TestCaseSource("DivideCases")]
@@ -348,7 +346,9 @@ namespace cqa_medical.Statistics
 			var cul = CultureInfo.InvariantCulture;
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
 			var data = statistics.WordIntensity(expectedWords);
-			var foramttedData = string.Join(Environment.NewLine, data.Keys.GroupBy(k => k.ToString("yyyy-MM-dd")).Select(k => k.First().ToString("yyyy-MM-dd") + "," + k.Count()));
+//			var formattedData = data.ToStringNormal();
+
+			var foramttedData = string.Join(Environment.NewLine, data.SumUpToDays().ToStringComparable());
 			File.WriteAllText(
 				Program.StatisticsDirectory + "WordIntensityDistributionInWeeks_" + String.Join("_", expectedWords) + ".txt", foramttedData);
 		}
