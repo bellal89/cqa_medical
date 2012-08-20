@@ -218,8 +218,8 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<DateTime, int> WordIntensityDistributionInDays(IEnumerable<string> expectedWords)
 		{
-			var keyWords = expectedWords.Select(s => s.ToLower());
-			return GetDistribution(questions.Where(q => OneOfWordsInsideTheText(q.WholeText, keyWords)).Select(q => q.DateAdded.Date));
+			var keyWords = expectedWords.Select(Program.DefaultMyStemmer.Stem);
+			return GetDistribution(questions.Where(q => q.Category == "illness").Where(q => OneOfWordsInsideTheText(q.WholeText, keyWords)).Select(q => q.DateAdded.Date));
 		}
 
 		private static bool OneOfWordsInsideTheText(string text, IEnumerable<string> keyWords)
@@ -294,12 +294,12 @@ namespace cqa_medical.Statistics
 		[Test, Explicit]
 		public void WordsContainingDistributionInDays()
 		{
-			var words = new []{"температура"};
+			var words = new[] {"сердце", "ишемический", "инсульт", "инфаркт", "нитроглицерин", "валидол", "корвалол", "миокард"};
 
 			Console.WriteLine("calculating WordQuotientDistributionInWeeks, words: " + String.Join(", ", words));
 			var data = statistics.WordIntensityDistributionInDays(words).ToDictionary(item => item.Key, item => item.Value + 700).ToStringNormal();
 			File.WriteAllText(
-				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", data);
+				Program.StatisticsDirectory + "WordIntensityDistributionInDays700_" + String.Join("_", words) + ".txt", data);
 		}
 
 		[Test, Explicit, TestCaseSource("divideCases")]
