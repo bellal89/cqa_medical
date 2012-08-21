@@ -249,7 +249,7 @@ namespace cqa_medical.Statistics
 				File.ReadAllLines(topicsFile).Select(
 					line => double.Parse(line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ElementAt(topicNumber), CultureInfo.InvariantCulture)).ToArray();
 
-			Assert.AreEqual(ids.Length, topic.Count());
+//			Assert.AreEqual(ids.Length, topic.Count());
 
 			return ids.Zip(topic, Tuple.Create)
 					  .GroupBy(doc         => questionList.GetQuestion(doc.Item1).DateAdded.ToShortDateString(),
@@ -308,7 +308,7 @@ namespace cqa_medical.Statistics
 		{
 			var ql = Program.DefaultQuestionList;
 			statistics = new Statistics(ql);
-			Console.WriteLine("Preparations havr been done");
+			Console.WriteLine("Preparations have been done");
 		}
 
 		[Test, Explicit]
@@ -320,7 +320,7 @@ namespace cqa_medical.Statistics
 		{
 			var fluTopicDistrib = statistics.AverageTopicProbabilityDistributionInDays(topicNumber, 
 														  "GibbsDocIds.txt",
-			                                              @"c:\Users\beloborodov\Documents\GibbsLDA\GibbsLDA++-0.2\CQA_LDA\model-00300-300_topics.theta");
+			                                              Program.FilesDirectory + @"model-00300-300_topics.theta");
 			var fileToSave = Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_sm";
 			File.WriteAllText(fileToSave + ".txt",
 				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
@@ -331,19 +331,19 @@ namespace cqa_medical.Statistics
 
 			new OctavePlot(fileToSave + ".png", sortedDistrib.Keys.ToArray(), sortedDistrib.Values.ToArray())
 				{
-					Title = "Распределение топика " + topicNumber + "по дням"
+					Title = "Распределение топика " + topicNumber + " по дням"
 				}.DrawPlot();
 		}
 
 		[Test, Explicit]
-		//[TestCase(196)] // 196 - Flu topic
-		[TestCase(197)]
+		[TestCase(196,Description = "Flu topic")]
+//		[TestCase(197)]
 		public void MaxTopicChanceDocsOverDaysDistribution(int topicNumber)
 		{
 			
 			var fluTopicDistrib = statistics.MaxTopicProbabilityDocsDistributionInDays(topicNumber,
 														  "GibbsDocIds.txt",
-														  @"c:\Users\beloborodov\Documents\GibbsLDA\GibbsLDA++-0.2\CQA_LDA\model-00300-300_topics.theta");
+														  Program.FilesDirectory + @"model-00300-300_topics.theta");
 			File.WriteAllText(Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_max.txt",
 				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
 		}
