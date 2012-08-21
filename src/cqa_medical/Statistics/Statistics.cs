@@ -320,8 +320,18 @@ namespace cqa_medical.Statistics
 			var fluTopicDistrib = statistics.AverageTopicProbabilityDistributionInDays(topicNumber, 
 														  "GibbsDocIds.txt",
 			                                              @"c:\Users\beloborodov\Documents\GibbsLDA\GibbsLDA++-0.2\CQA_LDA\model-00300-300_topics.theta");
-			File.WriteAllText(Program.StatisticsDirectory + "Topic distributions/" + topicNumber + ".txt",
+			var fileToSave = Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_sm";
+			File.WriteAllText(fileToSave + ".txt",
 				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
+
+			var sortedDistrib1 =
+				new SortedDictionary<DateTime, double>(fluTopicDistrib.ToDictionary(f => DateTime.Parse(f.Key), f => f.Value));
+			var sortedDistrib = sortedDistrib1.SumUpToWeeks();
+
+			new OctavePlot(fileToSave + ".png", sortedDistrib.Keys.ToArray(), sortedDistrib.Values.ToArray())
+				{
+					Title = "Распределение топика " + topicNumber + "по дням"
+				}.DrawPlot();
 		}
 
 		[Test, Explicit]
@@ -333,7 +343,7 @@ namespace cqa_medical.Statistics
 			var fluTopicDistrib = statistics.MaxTopicProbabilityDocsDistributionInDays(topicNumber,
 														  "GibbsDocIds.txt",
 														  @"c:\Users\beloborodov\Documents\GibbsLDA\GibbsLDA++-0.2\CQA_LDA\model-00300-300_topics.theta");
-			File.WriteAllText(Program.StatisticsDirectory + "Topic distributions/" + topicNumber + "_max.txt",
+			File.WriteAllText(Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_max.txt",
 				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
 		}
 
@@ -346,11 +356,13 @@ namespace cqa_medical.Statistics
 			Console.WriteLine("AverageQuestionLength in symbols: {0}", Statistics.GetAverage(statistics.QuestionLengthDistibution()));
 			Console.WriteLine("AverageQuesitonLength in words: {0}", Statistics.GetAverage(statistics.QuestionLengthInWordsDistribution()));
 		}
+
 		[Test, Explicit]
 		public void AverageAnswerLength()
 		{
 			
 		}
+
 		[Test, Explicit]
 		public void SymptomsOverTimeDistribution()
 		{
@@ -395,7 +407,17 @@ namespace cqa_medical.Statistics
 			File.WriteAllText(
 				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", formattedData);
 
-			Console.WriteLine(new OctavePlot("2.png", data.Keys.ToArray(), data.Values.Select(k => (double)k).ToArray()).DrawPlot());
+			Console.WriteLine(
+				new OctavePlot(
+					"2.png",
+					data.Keys.ToArray(),
+					data.Values.Select(k => (double) k).ToArray()
+					)
+					{
+						Title = "Про Сердце"
+					}
+					.DrawPlot()
+				);
 		}
 
 		[Test, Explicit, TestCaseSource("DivideCases")]

@@ -77,7 +77,7 @@ namespace cqa_medical.UtilitsNamespace
 				someOtherCommands +
 				String.Format("print -d{0} {1}", fileToSave.Substring(fileToSave.LastIndexOf('.') + 1), fileToSave);
 
-//			Console.WriteLine(script);
+			Console.WriteLine(script);
 			return OctaveController.Execute(script);
 		}
 	}
