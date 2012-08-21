@@ -5,9 +5,8 @@ using System.Linq;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
-using cqa_medical.Statistics;
 
-namespace cqa_medical.Utilits
+namespace cqa_medical.UtilitsNamespace
 {
 	public abstract class LDADataGenerator
 	{

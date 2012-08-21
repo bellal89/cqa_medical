@@ -280,7 +280,7 @@ namespace cqa_medical.Statistics
 
 			var numerator = GetDistribution(docs.Select(d => questionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
 			var denominator = GetDistribution(questions.Select(q => q.DateAdded.ToShortDateString()));
-			return Utilits.Utilits.DistributionQuotient(numerator, denominator);
+			return Utilits.DistributionQuotient(numerator, denominator);
 		}
 		public static double GetAverage(IDictionary<int, int> distribution)
 		{
@@ -292,7 +292,7 @@ namespace cqa_medical.Statistics
 			return GetDistribution(questions
 									.Where(a => a.DateAdded >= FirstDate)
 									.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
-									.Select(q => Utilits.GetWeek(q.DateAdded)));
+									.Select(q => q.DateAdded.GetWeek()));
 		}
 
 	}
@@ -311,8 +311,10 @@ namespace cqa_medical.Statistics
 		}
 
 		[Test, Explicit]
-		//[TestCase(196)] // 196 - Flu topic
-		[TestCase(197)]
+		// 196 - Flu topic
+		// 197 - Mindless, shisophrenia
+		// 159 - Weight
+		[TestCase(159)]
 		public void AverageTopicsOverDaysDistribution(int topicNumber)
 		{
 			var fluTopicDistrib = statistics.AverageTopicProbabilityDistributionInDays(topicNumber, 
