@@ -15,6 +15,7 @@ namespace cqa_medical.UtilitsNamespace
 		public string Title;
 		public string XLabel;
 		public string YLabel;
+		public bool GridVisible;
 
 
 
@@ -74,6 +75,7 @@ namespace cqa_medical.UtilitsNamespace
 				(String.IsNullOrEmpty(Title) ? "" : String.Format("title '{0}';", Title)) +
 				(String.IsNullOrEmpty(XLabel) ? "" : String.Format("xlabel '{0}';", XLabel)) +
 				(String.IsNullOrEmpty(YLabel) ? "" : String.Format("ylabel '{0}';", YLabel)) +
+				(GridVisible? "grid;":"") +
 				someOtherCommands +
 				String.Format("print -d{0} {1}", fileToSave.Substring(fileToSave.LastIndexOf('.') + 1), fileToSave);
 
@@ -119,7 +121,8 @@ namespace cqa_medical.UtilitsNamespace
 							Style = PlotStyle.Bar, 
 							XLabel = "линия снизу",
 							YLabel = "Линия сбоку",
-							Title = "trolo"
+							Title = "trolo",
+							GridVisible = true
 			        	}.DrawPlot() ;
 
 			Console.WriteLine(q);
@@ -132,7 +135,8 @@ namespace cqa_medical.UtilitsNamespace
 							Style = PlotStyle.Bar, 
 							XLabel = "линия снизу",
 							YLabel = "Линия сбоку",
-							Title = "trolo"
+							Title = "trolo",
+							GridVisible = true
 			        	}.DrawPlot() ;
 
 			Console.WriteLine(q);
