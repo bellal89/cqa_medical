@@ -407,17 +407,13 @@ namespace cqa_medical.Statistics
 			File.WriteAllText(
 				Program.StatisticsDirectory + "WordIntensityDistributionInDays_" + String.Join("_", words) + ".txt", formattedData);
 
-			Console.WriteLine(
-				new OctavePlot(
-					"2.png",
-					data.Keys.ToArray(),
-					data.Values.Select(k => (double) k).ToArray()
-					)
-					{
-						Title = "Про Сердце"
-					}
-					.DrawPlot()
-				);
+			var dataX = data.Keys.ToArray();
+			var dataY = data.Values.Select(k => (double) k).ToArray();
+			Console.WriteLine(new OctavePlot("4.png", dataX, dataY)
+			                  	{
+			                  		Style = PlotStyle.LineWithTrendLine(dataX.Select(s => (double) s.Ticks).ToArray(), dataY,4),
+									GridVisible = true
+			                  	}.DrawPlot());
 		}
 
 		[Test, Explicit, TestCaseSource("DivideCases")]
