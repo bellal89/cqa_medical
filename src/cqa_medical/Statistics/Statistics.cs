@@ -308,6 +308,7 @@ namespace cqa_medical.Statistics
 		{
 			var ql = Program.DefaultQuestionList;
 			statistics = new Statistics(ql);
+			Console.WriteLine("Preparations havr been done");
 		}
 
 		[Test, Explicit]
