@@ -133,7 +133,8 @@ namespace cqa_medical.UtilitsNamespace
 			var q = OctaveController.Execute(@"
 			x = [1,2,3,4,5,6,7,8,9,10];
 			y = [3,4,5,6,7,1,8,9,4,5];
-			stairs(x,y);
+			t = [2,3,4,5,6,7,8,9];
+			plot(x,y, '-1');
 			print -dpng 1.png;			                                                                         
 			");
 			Console.WriteLine(q);
