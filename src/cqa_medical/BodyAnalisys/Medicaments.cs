@@ -84,7 +84,7 @@ namespace cqa_medical.BodyAnalisys
 			return medicamentToIds.Select(item => new InvertedIndexUnit(item.Key, item.Value)).ToList();
 		}
 
-		public static IEnumerable<InvertedIndexUnit> GetDefault()
+		public static IEnumerable<InvertedIndexUnit> GetDefaultIndex()
 		{
 
 			return DataActualityChecker.Check(
@@ -96,7 +96,9 @@ namespace cqa_medical.BodyAnalisys
 				                              		return medicaments
 				                              			.FindMedicamentsInTexts(questionList
 				                              			                        	.GetAllAnswers()
-				                              			                        	.Select(a => Tuple.Create(a.QuestionId, a.Text)))
+				                              			                        	.Select(a => Tuple.Create(a.QuestionId, a.Text))
+				                              			)
+														.OrderByDescending(k => k.Ids.Count)
 				                              			.ToArray();
 				                              	}),
 				InvertedIndexUnit.FormatStringWrite,

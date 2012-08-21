@@ -62,7 +62,7 @@ namespace cqa_medical.BodyAnalisys
 			return verbs;
 		}
 
-		public static IEnumerable<InvertedIndexUnit> GetDefault()
+		public static IEnumerable<InvertedIndexUnit> GetDefaultIndex()
 		{
 
 			return DataActualityChecker.Check(
@@ -73,7 +73,9 @@ namespace cqa_medical.BodyAnalisys
 				                              		var questionList = Program.DefaultQuestionList;
 				                              		return searcher.GetSymptoms(questionList
 				                              		                            	.GetAllQuestions()
-				                              		                            	.Select(item => Tuple.Create(item.Id, item.WholeText)))
+				                              		                            	.Select(item => Tuple.Create(item.Id, item.WholeText))
+				                              			)
+				                              			.OrderByDescending(k => k.Ids.Count)
 				                              			.ToArray();
 				                              	}),
 				InvertedIndexUnit.FormatStringWrite,
@@ -107,7 +109,7 @@ namespace cqa_medical.BodyAnalisys
 		public static void GetSymptoms()
 		{
 			var start = DateTime.Now;
-			var symptoms = Symptoms.GetDefault();
+			var symptoms = Symptoms.GetDefaultIndex();
 			Console.WriteLine("Symptoms found at {0} seconds.", (DateTime.Now - start).TotalSeconds);
 			File.WriteAllLines("SymptomIndex.txt", symptoms.Select(s => s.ToString()));
 		}

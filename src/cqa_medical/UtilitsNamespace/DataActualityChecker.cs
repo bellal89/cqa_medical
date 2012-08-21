@@ -18,16 +18,14 @@ namespace cqa_medical.UtilitsNamespace
 				return dataArray;
 			}
 			Console.WriteLine("Taking from " + dependencies.DestinationFile);
-			var start = DateTime.Now;
 			var lines = File.ReadAllLines(dependencies.DestinationFile);
 			var parsedLines = lines.Select(formatStringParse);
-			Console.WriteLine("Took in " + (DateTime.Now - start).TotalSeconds);
 			return parsedLines;
 		}
 		public static bool IsFileActual(string fileName, string[] parentFileNames)
 		{
 			return File.Exists(fileName) && parentFileNames.All(parentFileName =>
-				File.GetLastWriteTime(parentFileName) > File.GetCreationTime(fileName));
+				File.GetLastWriteTime(parentFileName) < File.GetLastWriteTime(fileName));
 		}
 	}
 

@@ -13,21 +13,24 @@ namespace cqa_medical
 	{
 		public const string FilesDirectory = "../../Files/";
 		public const string StatisticsDirectory = "../../StatOutput/";
+
 		public const string QuestionsNoTyposFileName = FilesDirectory + "qst_25.NoTypos.csv";
 		public const string AnswersNoTyposFileName = FilesDirectory + "ans_25.NoTypos.csv";
 		public const string QuestionsFileName = FilesDirectory + "qst_25.csv";
 		public const string AnswersFileName = FilesDirectory + "ans_25.csv";
+
 		public const string DeseasesFileName = FilesDirectory + "Deseases.txt";
+		public const string LazarevaManualFileName = FilesDirectory + "Лазарева - Справочник фельдшера.txt";
 		public const string BodyPartsFileName = FilesDirectory + "BodyParts.txt";
 		public const string MedicamentsFileName = FilesDirectory + "Grls.txt";
+
 		public const string DeseasesIndexFileName = FilesDirectory + "DeseasesIndex.txt";
 		public const string MedicamentsIndexFileName = FilesDirectory + "MedicamentsIndex.txt";
 		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
-		public const string LazarevaManualFileName = FilesDirectory + "Лазарева - Справочник фельдшера.txt";
 
 
-		public const string TestQuestionsFileName = "../../../../files/QuestionsTest.csv";
-		public const string TestAnswersFileName = "../../../../files/AnswersTest.csv";
+		public const string TestQuestionsFileName = "../../../../FilesToCommit/QuestionsTest.csv";
+		public const string TestAnswersFileName = "../../../../FilesToCommit/AnswersTest.csv";
 
 
 		private static readonly Lazy<Vocabulary> DefaultVocabularyLazy =

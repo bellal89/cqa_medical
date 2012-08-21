@@ -288,7 +288,7 @@ namespace cqa_medical.Statistics
 		public void SymptomsOverTimeDistribution()
 		{
 			const int numberOfSyptoms = 10;
-			var symptoms = Symptoms.GetDefault().OrderByDescending(s => s.Ids.Count).Take(numberOfSyptoms);
+			var symptoms = Symptoms.GetDefaultIndex().OrderByDescending(s => s.Ids.Count).Take(numberOfSyptoms);
 			foreach (var symptom in symptoms)
 			{
 				var data = statistics.SymptomIntensityDistributionInDays(symptom);

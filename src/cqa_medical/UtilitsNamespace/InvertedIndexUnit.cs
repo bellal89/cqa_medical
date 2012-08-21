@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace cqa_medical.UtilitsNamespace
 {
+	[Serializable]
 	public class InvertedIndexUnit
 	{
 		public string Word;
@@ -15,18 +18,23 @@ namespace cqa_medical.UtilitsNamespace
 			Word = word;
 			Ids =  new HashSet<long>(ids);
 		}
-		public InvertedIndexUnit (string formattedString)
+		public InvertedIndexUnit (string formattedString, char delimiter = ' ')
 		{
-			var q = formattedString.Split(' ');
+			var q = formattedString.Split(delimiter);
 			Word = q[0];
 			Ids = new HashSet<long>(q.Skip(1).Select(Int64.Parse));
 		}
 		public InvertedIndexUnit(){}
 
-		
-		public override string ToString()
+		public string ToStringCount(string delimiter = " ")
 		{
-			return Word + " " + String.Join(",", Ids);
+			return Word + delimiter + Ids.Count;
+		}
+
+
+		public string ToString(string delimiter = " ", string idDelimiter = ",")
+		{
+			return Word + delimiter + String.Join(idDelimiter, Ids);
 		}
 
 		public static InvertedIndexUnit FormatStringParse(string formattedString)

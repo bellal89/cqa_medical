@@ -36,8 +36,7 @@ namespace cqa_medical.UtilitsNamespace
 			IndicatorAmount = 0;
 			while (text[IndicatorAmount] == '\t')
 				IndicatorAmount++;
-			text = text.Substring(IndicatorAmount);
-			Words = text.Split(' ');
+			Words = text.Substring(IndicatorAmount).SplitIntoWords();
 		}
 	}
 

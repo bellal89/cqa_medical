@@ -8,6 +8,7 @@ using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.DataInput
 {
+	[Serializable]
 	public class QuestionList
 	{
 
