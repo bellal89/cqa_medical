@@ -75,34 +75,42 @@ namespace cqa_medical.Utilits
 
 	public class GibbsFormatLDAGenerator : LDADataGenerator
 	{
-		public GibbsFormatLDAGenerator(QuestionList questionList, string documentsFilePath) : 
+		private readonly string documentIdsFilePath;
+
+		public GibbsFormatLDAGenerator(QuestionList questionList, string documentIdsFilePath, string documentsFilePath) : 
 			base(questionList, "", documentsFilePath)
 		{
+			this.documentIdsFilePath = documentIdsFilePath;
 		}
 
 		public override void GenerateDocuments(int count)
 		{
-			var docTexts = QuestionList.GetAllQuestions()
-				.Take(count)
-				.Select(q => Tuple.Create(q, q.WholeText))
-				.Select(item => item.Item2 + " " + String.Join(" ", item.Item1.GetAnswers().Select(a => a.Text)))
-				.ToArray();
-			var documents = RemovePunctuationAndRareWords(docTexts).ToArray();
+			var documents = GetPureQuestionAnswersTexts(count).ToArray();
+
+			//Storing docIds
+			File.WriteAllText(documentIdsFilePath, String.Join("\n", documents.Select(d => d.Key)));
+
+			// Storing documents
 			File.WriteAllText(DocumentsStorePath,
 			                  documents.Length
 								+ "\n" 
-								+ String.Join("\n", documents));
+								+ String.Join("\n", documents.Select(d => d.Value)));
 		}
 
-		private IEnumerable<string> RemovePunctuationAndRareWords(IEnumerable<string> documents)
+		private Dictionary<long, string> GetPureQuestionAnswersTexts(int count)
 		{
 			var statistics = new Statistics.Statistics(QuestionList);
 			var orderedFrequentWords = statistics.WordFrequency(new EmptyStemmer()).Where(item => item.Value >= 10).OrderBy(item => item.Value);
 			var frequentWords = orderedFrequentWords.Take(orderedFrequentWords.Count() - 70).ToDictionary(item => item.Key, item => item.Value);
 
-			return documents.Select(d => d.SplitInWordsAndStripHTML())
-							.Select(words => String.Join("\t", words.Where(frequentWords.ContainsKey)))
-							.Where(d => d.Length > 0);
+			return QuestionList.GetAllQuestions()
+					.Take(count)
+					.Select(q => Tuple.Create(q, q.WholeText))
+					.Select(item => Tuple.Create(item.Item1, item.Item2 + " " + String.Join(" ", item.Item1.GetAnswers().Select(a => a.Text))))
+					.Select(item => Tuple.Create(item.Item1, item.Item2.SplitInWordsAndStripHTML()))
+					.Select(item => Tuple.Create(item.Item1, String.Join("\t", item.Item2.Where(frequentWords.ContainsKey))))
+					.Where(item => item.Item2.Length > 0)
+					.ToDictionary(item => item.Item1.Id, item => item.Item2);
 		}
 	}
 
@@ -114,7 +122,7 @@ namespace cqa_medical.Utilits
 		{
 			var generators = new LDADataGenerator[2];
 			generators[0] = new InferFormatLDAGenerator(Program.TestDefaultQuestionList, "testVoc.txt", "testCounts.txt");
-			generators[1] = new GibbsFormatLDAGenerator(Program.TestDefaultQuestionList, "testGibbsDocs2.txt");
+			generators[1] = new GibbsFormatLDAGenerator(Program.TestDefaultQuestionList, "testGibbsDocIds2.txt", "testGibbsDocs2.txt");
 			foreach (var gen in generators)
 			{
 				gen.GenerateDocuments();
@@ -124,7 +132,7 @@ namespace cqa_medical.Utilits
 		[Test, Explicit]
 		public static void GibbsStemmedLDADataGeneration()
 		{
-			LDADataGenerator generator = new GibbsFormatLDAGenerator(Program.DefaultQuestionList, "GibbsDocsTab.txt");
+			LDADataGenerator generator = new GibbsFormatLDAGenerator(Program.DefaultQuestionList, "GibbsDocIds.txt", "GibbsDocsTab.txt");
 			generator.GenerateDocuments();
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +11,7 @@ using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.DataInput.Stemmers.AOTLemmatizer;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
+using cqa_medical.Statistics;
 using cqa_medical.Utilits;
 
 
@@ -243,7 +245,46 @@ namespace cqa_medical.Statistics
 			return Utilits.Utilits.DistributionQuotient(numerator, denominator);
 		}
 
+		public Dictionary<string, double> AverageTopicProbabilityDistributionInDays(int topicNumber, string docIdsFile,  string topicsFile)
+		{
+			var ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
+			var topic =
+				File.ReadAllLines(topicsFile).Select(
+					line => double.Parse(line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ElementAt(topicNumber), CultureInfo.InvariantCulture)).ToArray();
 
+			Assert.AreEqual(ids.Length, topic.Count());
+
+			return ids.Zip(topic, Tuple.Create)
+					  .GroupBy(doc         => questionList.GetQuestion(doc.Item1).DateAdded.ToShortDateString(),
+			                   (key, docs) => Tuple.Create(key, docs.Average(doc => doc.Item2)))
+					  .ToDictionary(item => item.Item1, item => item.Item2);
+		}
+
+		public SortedDictionary<string, double> MaxTopicProbabilityDocsDistributionInDays(int topicNumber, string docIdsFile, string topicsFile)
+		{
+			var ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
+			var docs = new List<int>();
+			using (var f = new StreamReader(topicsFile))
+			{
+				var i = 0;
+				while (!f.EndOfStream)
+				{
+					var line = f.ReadLine();
+					if (line == null) break;
+					var doc = line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(
+						el => double.Parse(el, CultureInfo.InvariantCulture)).ToArray();
+					if (Math.Abs(doc[topicNumber] - doc.Max()) < 0.001)
+					{
+						docs.Add(i);
+					}
+					i++;
+				}
+			}
+
+			var numerator = GetDistribution(docs.Select(d => questionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
+			var denominator = GetDistribution(questions.Select(q => q.DateAdded.ToShortDateString()));
+			return Utilits.Utilits.DistributionQuotient(numerator, denominator);
+		}
 	}
 
 
@@ -257,6 +298,31 @@ namespace cqa_medical.Statistics
 		{
 			var ql = Program.DefaultQuestionList;
 			statistics = new Statistics(ql);
+		}
+
+		[Test, Explicit]
+		//[TestCase(196)] // 196 - Flu topic
+		[TestCase(197)]
+		public void AverageTopicsOverDaysDistribution(int topicNumber)
+		{
+			var fluTopicDistrib = statistics.AverageTopicProbabilityDistributionInDays(topicNumber, 
+														  "GibbsDocIds.txt",
+			                                              @"c:\Users\beloborodov\Documents\GibbsLDA\GibbsLDA++-0.2\CQA_LDA\model-00300-300_topics.theta");
+			File.WriteAllText(Program.StatisticsDirectory + "Topic distributions/" + topicNumber + ".txt",
+				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
+		}
+
+		[Test, Explicit]
+		//[TestCase(196)] // 196 - Flu topic
+		[TestCase(197)]
+		public void MaxTopicChanceDocsOverDaysDistribution(int topicNumber)
+		{
+			
+			var fluTopicDistrib = statistics.MaxTopicProbabilityDocsDistributionInDays(topicNumber,
+														  "GibbsDocIds.txt",
+														  @"c:\Users\beloborodov\Documents\GibbsLDA\GibbsLDA++-0.2\CQA_LDA\model-00300-300_topics.theta");
+			File.WriteAllText(Program.StatisticsDirectory + "Topic distributions/" + topicNumber + "_max.txt",
+				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
 		}
 
 		[Test, Explicit]
