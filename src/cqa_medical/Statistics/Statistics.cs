@@ -359,12 +359,6 @@ namespace cqa_medical.Statistics
 		}
 
 		[Test, Explicit]
-		public void AverageAnswerLength()
-		{
-			
-		}
-
-		[Test, Explicit]
 		public void SymptomsOverTimeDistribution()
 		{
 			const int numberOfSyptoms = 10;
@@ -429,7 +423,6 @@ namespace cqa_medical.Statistics
 		[Test, Explicit, TestCaseSource("DivideCases")]
 		public void WordIntensityDistributionInWeeks(string[] expectedWords)
 		{
-			var cul = CultureInfo.InvariantCulture;
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
 			var data = statistics.WordIntensity(expectedWords);
 //			var formattedData = data.ToStringNormal();

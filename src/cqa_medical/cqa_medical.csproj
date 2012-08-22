@@ -71,6 +71,8 @@
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\Stemmers\EmptyStemmer.cs" />
+    <Compile Include="LDA\LDADataGenerator.cs" />
+    <Compile Include="LDA\Topic.cs" />
     <Compile Include="QualityAnalisys\AnswerQuality.cs" />
     <Compile Include="QualityAnalisys\UserQuality.cs" />
     <Compile Include="SpellChecker\TrigramIndex.cs" />
