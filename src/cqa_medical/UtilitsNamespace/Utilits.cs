@@ -88,6 +88,12 @@ namespace cqa_medical.UtilitsNamespace
 			return result;
 		}
 
+		public static string EmptyOrFormat(this string s, string format)
+		{
+			if (string.IsNullOrEmpty(s) ) return "";
+			return String.Format(format, s);
+		}
+
 		#region TimeDetect
 
 		public static void DetectTime(this Action a, string message)

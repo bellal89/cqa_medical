@@ -239,7 +239,7 @@ namespace cqa_medical.Statistics
 		{
 			var numerator = GetDistribution(symptom.Ids.Select(id => questionList.GetQuestion(id).DateAdded.AddDays(-(int)questionList.GetQuestion(id).DateAdded.DayOfWeek).ToShortDateString()));
 			var denominator = GetDistribution(questions.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
-			return UtilitsNamespace.Utilits.DistributionQuotient(numerator, denominator);
+			return Utilits.DistributionQuotient(numerator, denominator);
 		}
 
 		public Dictionary<string, double> AverageTopicProbabilityDistributionInDays(int topicNumber, string docIdsFile,  string topicsFile)

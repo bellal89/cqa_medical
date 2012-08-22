@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using Microsoft.SqlServer.Server;
 using NUnit.Framework;
 
 namespace cqa_medical.UtilitsNamespace
@@ -41,7 +39,7 @@ namespace cqa_medical.UtilitsNamespace
 				"};set(gca(),'xticklabel',datalabels);";
 		}
 
-		private string[] GenerateDateXTicks(int howMany, DateTime[] dates)
+		private static IEnumerable<string> GenerateDateXTicks(int howMany, DateTime[] dates)
 		{
 			var max = dates.Max();
 			var min = dates.Min();
@@ -71,23 +69,23 @@ namespace cqa_medical.UtilitsNamespace
 		public string DrawPlot()
 		{
 			string script =
-				String.Format("{2}([{0}],[{1}] {3});\n",dataX,dataY, Style.PlotType, Style.Style) +
-				(String.IsNullOrEmpty(Title) ? "" : String.Format("title '{0}';\n", Title)) +
-				(String.IsNullOrEmpty(XLabel) ? "" : String.Format("xlabel '{0}';\n", XLabel)) +
-				(String.IsNullOrEmpty(YLabel) ? "" : String.Format("ylabel '{0}';\n", YLabel)) +
+				String.Format("{2}([{0}],[{1}]{3});\n",dataX,dataY, Style.PlotType, Style.Style) +
+				Title.EmptyOrFormat("title '{0}';\n") +
+				XLabel.EmptyOrFormat("xlabel '{0}';\n") +
+				YLabel.EmptyOrFormat("ylabel '{0}';\n") +
 				(GridVisible? "grid;\n":"") +
 				someOtherCommands +
 				String.Format("print -d{0} {1};\n", fileToSave.Substring(fileToSave.LastIndexOf('.') + 1), fileToSave);
 
-			Console.WriteLine(script);
+//			Console.WriteLine(script);
 			return OctaveController.Execute(script);
 		}
 	}
 	
 	public class PlotStyle
 	{
-		public static PlotStyle Line = new PlotStyle("plot", ", '-'", ", 'linewidth', 3");
-		public static PlotStyle Dot = new PlotStyle("plot", ", 'o'",", 'markersize', 5");
+		public static PlotStyle Line = new PlotStyle("plot", "'-'",  "'linewidth', 3");
+		public static PlotStyle Dot = new PlotStyle("plot", "'o'",  "'markersize', 5");
 		public static PlotStyle Bar = new PlotStyle("bar");
 		public static PlotStyle Stairs = new PlotStyle("stairs");
 		public static PlotStyle LineWithTrendLine(double[] dataX, double[] dataY, int count = 1)
@@ -113,28 +111,37 @@ namespace cqa_medical.UtilitsNamespace
 			return new PlotStyle(
 				"plot",
 				String.Format(
-					",[{0}],[{1}]",
-					String.Join(",", dataSmoothX.Select(s => s.ToString(cul))),
-					String.Join(",", dataSmoothY.Select(s => s.ToString(cul)))),
-				", 'r-', 'linewidth', 3"
+					"[{0}],[{1}]",
+					String.Join(",", dataSmoothX.Select(s => s.ToString(Cul))),
+					String.Join(",", dataSmoothY.Select(s => s.ToString(Cul)))),
+				"'r-', 'linewidth', 3"
 				);
 		}
 
 
-		private static CultureInfo cul = new CultureInfo("ru") { NumberFormat = { NumberDecimalSeparator = "." } };
+		private static readonly CultureInfo Cul = new CultureInfo("ru") { NumberFormat = { NumberDecimalSeparator = "." } };
 		public string PlotType{get { return plotType; }}
-		public string Style { get { return style + width; } }
+
+		public string Style
+		{
+			get
+			{
+				return firstModifier.EmptyOrFormat(", {0}") +
+					secondModifier.EmptyOrFormat(", {0}");
+
+			}
+		}
 
 
 		private readonly string plotType;
-		private readonly string style;
-		private readonly string width;
+		private readonly string firstModifier;
+		private readonly string secondModifier;
 
-		private PlotStyle(string plotType, string style = "", string width = "")
+		private PlotStyle(string plotType, string firstModifier = "", string secondModifier = "")
 		{
 			this.plotType = plotType;
-			this.style = style;
-			this.width = width;
+			this.firstModifier = firstModifier;
+			this.secondModifier = secondModifier;
 		}
 	}
 
