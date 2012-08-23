@@ -24,7 +24,7 @@ namespace cqa_medical.LDA
 				{
 					var line = f.ReadLine();
 					if (line == null) throw new Exception("Incorrect topics file!");
-					var chance = double.Parse(line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ElementAt(topicNumber),
+					var chance = double.Parse(line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)[topicNumber],
 					                          CultureInfo.InvariantCulture);
 					distribOverDocs.Add(Tuple.Create(ids[i++], chance));
 				}

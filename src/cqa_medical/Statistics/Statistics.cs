@@ -260,6 +260,25 @@ namespace cqa_medical.Statistics
 		public SortedDictionary<string, double> MaxTopicProbabilityDocsDistributionInDays(int topicNumber, string docIdsFile, string topicsFile)
 		{
 			var ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
+			var docs = ReadTopicFrom(topicNumber, topicsFile, (doc, nTopic) => Math.Abs(doc[nTopic] - doc.Max()) < 0.001);
+
+			var numerator = GetDistribution(docs.Select(d => questionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
+			var denominator = GetDistribution(questions.Select(q => q.DateAdded.ToShortDateString()));
+			return Utilits.DistributionQuotient(numerator, denominator);
+		}
+
+		public SortedDictionary<string, double> ThresholdTopicProbabilityDocsDistributionInDays(int topicNumber, double threshold, string docIdsFile, string topicsFile)
+		{
+			var ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
+			var docs = ReadTopicFrom(topicNumber, topicsFile, (doc, nTopic) => doc[nTopic] > threshold);
+
+			var numerator = GetDistribution(docs.Select(d => questionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
+			var denominator = GetDistribution(questions.Select(q => q.DateAdded.ToShortDateString()));
+			return Utilits.DistributionQuotient(numerator, denominator);
+		}
+
+		private static IEnumerable<int> ReadTopicFrom(int topicNumber, string topicsFile, Func<double[], int, bool> docHandler)
+		{
 			var docs = new List<int>();
 			using (var f = new StreamReader(topicsFile))
 			{
@@ -270,18 +289,16 @@ namespace cqa_medical.Statistics
 					if (line == null) break;
 					var doc = line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(
 						el => double.Parse(el, CultureInfo.InvariantCulture)).ToArray();
-					if (Math.Abs(doc[topicNumber] - doc.Max()) < 0.001)
+					if (docHandler(doc, topicNumber))
 					{
 						docs.Add(i);
 					}
 					i++;
 				}
 			}
-
-			var numerator = GetDistribution(docs.Select(d => questionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
-			var denominator = GetDistribution(questions.Select(q => q.DateAdded.ToShortDateString()));
-			return Utilits.DistributionQuotient(numerator, denominator);
+			return docs;
 		}
+
 		public static double GetAverage(IDictionary<int, int> distribution)
 		{
 			return distribution.Keys.Select(k => k*distribution[k]).Sum()/(double) distribution.Values.Sum();
@@ -345,6 +362,20 @@ namespace cqa_medical.Statistics
 														  "GibbsDocIds.txt",
 														  Program.FilesDirectory + @"model-00300-300_topics.theta");
 			File.WriteAllText(Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_max.txt",
+				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
+		}
+
+		[Test, Explicit]
+		[TestCase(196, Description = "Flu topic")]
+		//		[TestCase(197)]
+		public void ThresholdTopicChanceDocsOverDaysDistribution(int topicNumber)
+		{
+
+			var fluTopicDistrib = statistics.ThresholdTopicProbabilityDocsDistributionInDays(topicNumber,
+														  0.1,
+														  "GibbsDocIds.txt",
+														  Program.FilesDirectory + @"360_topics_1000_iters.theta");
+			File.WriteAllText(Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_threshold.txt",
 				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
 		}
 

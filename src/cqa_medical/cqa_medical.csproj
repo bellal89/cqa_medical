@@ -71,6 +71,8 @@
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\Stemmers\EmptyStemmer.cs" />
+    <Compile Include="LDA\Topic.cs" />
+    <Compile Include="LDA\TopicConverter.cs" />
     <Compile Include="QualityAnalisys\AnswerQuality.cs" />
     <Compile Include="QualityAnalisys\UserQuality.cs" />
     <Compile Include="SpellChecker\TrigramIndex.cs" />
@@ -81,7 +83,7 @@
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
-    <Compile Include="UtilitsNamespace\InferFormatLDAGenerator.cs" />
+    <Compile Include="LDA\LDADataGenerator.cs" />
     <Compile Include="UtilitsNamespace\GismeteoHTMLParser.cs" />
     <Compile Include="UtilitsNamespace\OctaveController.cs" />
     <Compile Include="UtilitsNamespace\OctavePlot.cs" />
