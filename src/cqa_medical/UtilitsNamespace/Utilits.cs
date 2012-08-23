@@ -93,6 +93,10 @@ namespace cqa_medical.UtilitsNamespace
 			if (string.IsNullOrEmpty(s) ) return "";
 			return String.Format(format, s);
 		}
+		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+		{
+			return pairs.ToDictionary(q => q.Key, q => q.Value);
+		}
 
 		#region TimeDetect
 

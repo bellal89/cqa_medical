@@ -79,11 +79,11 @@
     <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="UtilitsNamespace\DataActualityChecker.cs" />
+    <Compile Include="UtilitsNamespace\InferFormatLDAGenerator.cs" />
     <Compile Include="UtilitsNamespace\InvertedIndexUnit.cs" />
     <Compile Include="DataInput\IParser.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
-    <Compile Include="UtilitsNamespace\InferFormatLDAGenerator.cs" />
     <Compile Include="UtilitsNamespace\GismeteoHTMLParser.cs" />
     <Compile Include="UtilitsNamespace\OctaveController.cs" />
     <Compile Include="UtilitsNamespace\OctavePlot.cs" />
