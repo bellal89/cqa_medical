@@ -29,6 +29,10 @@ namespace cqa_medical
 		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
 
 
+		public const string ThetaFileName = FilesDirectory + "model-00600.theta";
+		public const string GibbsDocIdsFileName = "GibbsDocIds.txt";
+
+
 		public const string TestQuestionsFileName = "../../../../FilesToCommit/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../FilesToCommit/AnswersTest.csv";
 

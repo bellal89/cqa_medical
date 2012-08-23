@@ -239,15 +239,20 @@ namespace cqa_medical.Statistics
 		{
 			var numerator = GetDistribution(symptom.Ids.Select(id => questionList.GetQuestion(id).DateAdded.AddDays(-(int)questionList.GetQuestion(id).DateAdded.DayOfWeek).ToShortDateString()));
 			var denominator = GetDistribution(questions.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
-			return UtilitsNamespace.Utilits.DistributionQuotient(numerator, denominator);
+			return Utilits.DistributionQuotient(numerator, denominator);
 		}
 
 		public Dictionary<string, double> AverageTopicProbabilityDistributionInDays(int topicNumber, string docIdsFile,  string topicsFile)
 		{
 			var ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
 			var topic =
-				File.ReadAllLines(topicsFile).Select(
-					line => double.Parse(line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ElementAt(topicNumber), CultureInfo.InvariantCulture)).ToArray();
+				File.ReadAllLines(topicsFile)
+					.Select(
+						line =>
+						double.Parse(
+							line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)[topicNumber],
+							CultureInfo.InvariantCulture))
+					.ToArray();
 
 //			Assert.AreEqual(ids.Length, topic.Count());
 
@@ -335,9 +340,10 @@ namespace cqa_medical.Statistics
 		[TestCase(159)]
 		public void AverageTopicsOverDaysDistribution(int topicNumber)
 		{
+			
 			var fluTopicDistrib = statistics.AverageTopicProbabilityDistributionInDays(topicNumber, 
-														  "GibbsDocIds.txt",
-			                                              Program.FilesDirectory + @"model-00300-300_topics.theta");
+														  Program.GibbsDocIdsFileName,
+			                                              Program.ThetaFileName);
 			var fileToSave = Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_sm";
 			File.WriteAllText(fileToSave + ".txt",
 				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
@@ -359,8 +365,8 @@ namespace cqa_medical.Statistics
 		{
 			
 			var fluTopicDistrib = statistics.MaxTopicProbabilityDocsDistributionInDays(topicNumber,
-														  "GibbsDocIds.txt",
-														  Program.FilesDirectory + @"model-00300-300_topics.theta");
+														  Program.GibbsDocIdsFileName,
+														  Program.ThetaFileName);
 			File.WriteAllText(Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_max.txt",
 				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
 		}
@@ -387,12 +393,6 @@ namespace cqa_medical.Statistics
 			Console.WriteLine("AverageAnswerLength in words: {0}", Statistics.GetAverage(statistics.AnswerLengthInWordsDistribution()));
 			Console.WriteLine("AverageQuestionLength in symbols: {0}", Statistics.GetAverage(statistics.QuestionLengthDistibution()));
 			Console.WriteLine("AverageQuesitonLength in words: {0}", Statistics.GetAverage(statistics.QuestionLengthInWordsDistribution()));
-		}
-
-		[Test, Explicit]
-		public void AverageAnswerLength()
-		{
-			
 		}
 
 		[Test, Explicit]
@@ -460,7 +460,6 @@ namespace cqa_medical.Statistics
 		[Test, Explicit, TestCaseSource("DivideCases")]
 		public void WordIntensityDistributionInWeeks(string[] expectedWords)
 		{
-			var cul = CultureInfo.InvariantCulture;
 			Console.WriteLine("calculating WordIntensityDistributionInWeeks, words: " + String.Join(", ", expectedWords));
 			var data = statistics.WordIntensity(expectedWords);
 //			var formattedData = data.ToStringNormal();
