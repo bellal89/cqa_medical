@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using NUnit.Framework;
 using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.BodyAnalisys
@@ -101,6 +103,18 @@ namespace cqa_medical.BodyAnalisys
 			return human;
 		}
 
+		public IEnumerable<string> GetWords()
+		{
+			foreach (var name in Names)
+			{
+				yield return name;
+			}
+			foreach (var name in subParts.SelectMany(bodyPart => bodyPart.GetWords()))
+			{
+				yield return name;
+			}
+		}
+
 		public Dictionary<string, BodyPart> ToDictionary()
 		{
 			return getDict(new Dictionary<string, BodyPart>(), this);
@@ -154,4 +168,5 @@ namespace cqa_medical.BodyAnalisys
 			return result + String.Join("", subParts.Select(part => part.ToExcelString(allQuestionsCount)));
 		}
 	}
+
 }

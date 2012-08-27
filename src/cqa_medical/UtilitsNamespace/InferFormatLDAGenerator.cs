@@ -99,7 +99,7 @@ namespace cqa_medical.UtilitsNamespace
 		private Dictionary<long, string> GetPureQuestionAnswersTexts(int count)
 		{
 			var statistics = new Statistics.Statistics(QuestionList);
-			var orderedFrequentWords = statistics.WordFrequency(new EmptyStemmer()).Where(item => item.Value >= 10).OrderBy(item => item.Value);
+			var orderedFrequentWords = statistics.WordFrequencyDistribution(new EmptyStemmer()).Where(item => item.Value >= 10).OrderBy(item => item.Value);
 			var frequentWords = orderedFrequentWords.Take(orderedFrequentWords.Count() - 70).ToDictionary(item => item.Key, item => item.Value);
 
 			return QuestionList.GetAllQuestions()

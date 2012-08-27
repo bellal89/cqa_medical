@@ -226,7 +226,7 @@ namespace cqa_medical.Statistics
 			return keyWords.Select(w => w.ToLower()).Any(text.SplitInWordsAndStripHTML().Contains);
 		}
 
-		public SortedDictionary<string, int> WordFrequency(IStemmer stemmer)
+		public SortedDictionary<string, int> WordFrequencyDistribution(IStemmer stemmer)
 		{
 			var statisticGenerator =
 				new DistributionCreator<string>(
@@ -299,6 +299,8 @@ namespace cqa_medical.Statistics
 									.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
 									.Select(q => q.DateAdded.GetWeek()));
 		}
+		
+
 
 	}
 
@@ -456,7 +458,7 @@ namespace cqa_medical.Statistics
 				Console.WriteLine("Считает WordFrequency_" + q.Stemmer);
 				Console.WriteLine("Начало     " + DateTime.Now);
 				Console.WriteLine("Завершить  " + DateTime.Now.AddMinutes( q.TimeToAdd.TotalMinutes));
-				var data = statistics.WordFrequency(q.Stemmer).ToStringInverted();
+				var data = statistics.WordFrequencyDistribution(q.Stemmer).ToStringInverted();
 				File.WriteAllText(
 					Program.StatisticsDirectory + "WordFrequency_" + q.Stemmer + ".txt", data);
 				Console.WriteLine("Свершилось " + DateTime.Now);
@@ -468,7 +470,6 @@ namespace cqa_medical.Statistics
 		{
 			
 		}
-
 
 	}
 	struct CaseT
