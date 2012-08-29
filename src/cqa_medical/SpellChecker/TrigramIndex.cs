@@ -101,7 +101,7 @@ namespace cqa_medical.SpellChecker
 				() =>
 					{
 						var statistics = new Statistics.Statistics(questionList);
-						return statistics.WordFrequency(new EmptyStemmer())
+						return statistics.WordFrequencyDistribution(new EmptyStemmer())
 							.Where(item => item.Value > 10)
 							.Select(item => item.Key)
 							.ToArray();

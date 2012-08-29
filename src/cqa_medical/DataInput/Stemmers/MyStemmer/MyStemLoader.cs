@@ -11,10 +11,11 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
 	class Vocabulary
 	{
-		private readonly Dictionary<string, StemInfo> wordToStemInfo = new Dictionary<string, StemInfo>();
+		private readonly Dictionary<string, StemInfo> wordToStemInfo;
 
 		public Vocabulary(params string[] fileNames)
 		{
+			wordToStemInfo = new Dictionary<string, StemInfo>();
 			wordToStemInfo =
 				(new MyStemLoader(fileNames)).GetStemInfoVocabulary();
 		}
@@ -41,6 +42,10 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		{
 			StemInfo wordInfo;
 			return wordToStemInfo.TryGetValue(word, out wordInfo) ? wordInfo : null;
+		}
+		public IEnumerable<StemInfo> GetAllInfos()
+		{
+			return wordToStemInfo.Values;
 		}
 	}
 

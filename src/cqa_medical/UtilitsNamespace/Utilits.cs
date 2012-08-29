@@ -36,6 +36,10 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + delimiter + data[k].ToString()));
 		}
+		public static string ToStringSortedByValue<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
+		{
+			return string.Join(Environment.NewLine, data.Keys.OrderByDescending(k => data[k]).Select(k => k.ToString() + delimiter + data[k].ToString()));
+		}
 
 		public static string ToStringInverted<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
 		{
