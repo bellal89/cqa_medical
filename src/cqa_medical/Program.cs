@@ -14,6 +14,8 @@ namespace cqa_medical
 		public const string FilesDirectory = "../../Files/";
 		public const string StatisticsDirectory = "../../StatOutput/";
 
+		public const string MailUsesDirectory = StatisticsDirectory + "userInfos/";
+
 		public const string QuestionsNoTyposFileName = FilesDirectory + "qst_25.NoTypos.csv";
 		public const string AnswersNoTyposFileName = FilesDirectory + "ans_25.NoTypos.csv";
 		public const string QuestionsFileName = FilesDirectory + "qst_25.csv";
@@ -29,7 +31,7 @@ namespace cqa_medical
 		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
 
 
-		public const string ThetaFileName = FilesDirectory + "model-00600.theta";
+		public const string ThetaFileName = FilesDirectory + "360_topics_1000_iters.theta";
 		public const string GibbsDocIdsFileName = "GibbsDocIds.txt";
 
 

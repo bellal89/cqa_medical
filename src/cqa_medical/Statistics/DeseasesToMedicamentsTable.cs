@@ -13,12 +13,14 @@ namespace cqa_medical.Statistics
 		public Dictionary<Tuple<string,string>,  int> MedicalGuide;
 		private readonly InvertedIndexUnit[] deseases;
 		private readonly InvertedIndexUnit[] medicaments;
+		private readonly int minAmount;
 
-		public DeseasesToMedicamentsTable( InvertedIndexUnit[] deseases, InvertedIndexUnit[] medicaments)
+		public DeseasesToMedicamentsTable( InvertedIndexUnit[] deseases, InvertedIndexUnit[] medicaments, int minAmount = 50)
 		{
 			MedicalGuide = new Dictionary<Tuple<string, string>, int>();
 			this.deseases = deseases;
 			this.medicaments = medicaments;
+			this.minAmount = minAmount;
 			Initialize();
 		}
 
@@ -31,7 +33,7 @@ namespace cqa_medical.Statistics
 
 		public void AddToMedicalGuide(string desease, string medicament, int howMany = 1)
 		{
-			if (howMany < 50 ) return;
+			if (howMany < minAmount ) return;
 			MedicalGuide.Add(Tuple.Create(desease, medicament), howMany);
 		}
 
@@ -46,13 +48,13 @@ namespace cqa_medical.Statistics
 			[Test, Explicit("Таблица")]
 			public void GetTables()
 			{
-				const int minAmount = 50;
-				var medicaments = Medicaments.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
-				var deseases = Deseases.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
+				const int minAmount = 30;
+				var medicaments = Medicaments.GetDefaultIndex().ToArray();
+				var deseases = Deseases.GetDefaultIndex().ToArray();
 				var symptoms = Symptoms.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
-				var q = new DeseasesToMedicamentsTable(deseases, medicaments);
+				var q = new DeseasesToMedicamentsTable(deseases, medicaments, 1);
 				File.WriteAllText("../../Files/deseases-medicaments.txt", q.ToString());
-				var w = new DeseasesToMedicamentsTable(symptoms, medicaments);
+				var w = new DeseasesToMedicamentsTable(symptoms, medicaments,30);
 				File.WriteAllText("../../Files/symptoms-medicaments.txt", w.ToString());
 			}
 		}

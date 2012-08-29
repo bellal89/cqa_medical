@@ -100,7 +100,7 @@ namespace cqa_medical.LDA
 		{
 			var confidenceDistribution = Topic.GetConfidenceDistribution(Program.GibbsDocIdsFileName, Program.ThetaFileName);
 			var cleanedConfidences = Topic.CleanConfidences(confidenceDistribution);
-			File.WriteAllLines("tr.txt", cleanedConfidences.Select( k => k.Key + "\t"  + String.Join("\t",k.Value.Select(t => t.Item1 + " " + t.Item2)) ));
+			File.WriteAllLines(Program.ThetaFileName + "_tr.txt", cleanedConfidences.Select(k => k.Key + "\t" + String.Join("\t", k.Value.Select(t => t.Item1 + " " + t.Item2))));
 			
 			UserTopicConfidenceDictionary questioners;
 			UserTopicConfidenceDictionary answerers;
@@ -115,7 +115,7 @@ namespace cqa_medical.LDA
 				if (d.Any())
 					result.Add(q.Key,d.OrderByDescending(k => k.Value).ToArray());
 			}
-			File.WriteAllLines("expertAns.txt", result.Select(k => k.Key + "\t" + String.Join("\t", k.Value.Select(t => t.Key + " " + t.Value))));
+			File.WriteAllLines(Program.ThetaFileName + "_expertAns.txt", result.Select(k => k.Key + "\t" + String.Join("\t", k.Value.Select(t => t.Key + " " + t.Value))));
 		}
 	}
 }

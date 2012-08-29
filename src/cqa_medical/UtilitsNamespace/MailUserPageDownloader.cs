@@ -10,7 +10,7 @@ namespace cqa_medical.UtilitsNamespace
 {
 	static class MailUserPageDownloader
 	{
-		private static string DownloadUserPageString(string userName)
+		private static byte[] DownloadUserPageBytes(string userName)
 		{
 			var parts = userName.Split(new[]{'@'}, StringSplitOptions.RemoveEmptyEntries);
 			if (parts.Length != 2) Console.WriteLine("User name is not correct: " + userName);
@@ -24,9 +24,9 @@ namespace cqa_medical.UtilitsNamespace
 //			webClient.Encoding = Encoding.GetEncoding("unicode")
 			webClient.Headers.Add(
 				HttpRequestHeader.Cookie,
-				"t=obLD1AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAABAAAAAAgAAABdAAUIxAcA; p=XmcAANX/1wAA; hses=1; VID=0LmJtv3mHIH0; b=zzwbAEDeoAEAAKMxMB/34MnfA2UeD6j8PbgI9iCT0QNYRg8ClThIVOJgF3uDNSUOkr5YjEOZ8Px0Qic/CZVXK3RCmZAoZcQftQi9IysMDBtR/mTILT8hC8MmBACAEFEtAmrjVmQ3LKhBtp/WIONPa5DupzVIU84K5PtpjVJTr0KZvVihvBEtYur1VQAA; mrcu=5688502CE27D6881E52FBBC9112E; Mpop=1345120771:7b0242604406726319050219081d00051c0c024f6a5d5e465e05030207021e0901711e4d5c4b451e455246435a471a060b105d57515e1c4a4c:test.testov.12@mail.ru:"
+				"p=XmcAANX/1wAA; searchuid=1684819721341830973; __utma=56108983.898779550.1345184118.1345184118.1345184118.1; __utmc=56108983; __utmz=56108983.1345184118.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); i=AQCsES5QAQATAAgHAh8AASEAAQ==; s=dpr=1|rt=0; c=+hEuUAEAAJtZAAAiAAAAAwAI; t=obLD1AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAABAAAAAAgAAABdAAUIxAcA; b=1jwDAEAiygQACmwyBAAA0WIQRChPJIQW4o5RFiqKKA0VRZypfjJ8sjYJ; Mpop=1345724146:71524141657f767f19050219081d00051c0c024f6a5d5e465e05030207021e0901711e4d5c4b451e455246435a471a060b105d57515e1c4a4c:test.testov.12@mail.ru:;"
 			);
-			return webClient.DownloadString(url);
+			return webClient.DownloadData(url);
 		}
 
 		public static void DownloadUsersInto(IEnumerable<string> userList, string directoryToSave)
@@ -36,7 +36,7 @@ namespace cqa_medical.UtilitsNamespace
 			{
 				try
 				{
-					File.WriteAllText(directoryToSave + userName + ".html", DownloadUserPageString(userName));
+					File.WriteAllBytes(directoryToSave + userName + ".html", DownloadUserPageBytes(userName));
 				}
 				catch(WebException e)
 				{
@@ -44,7 +44,7 @@ namespace cqa_medical.UtilitsNamespace
 				}
 				Console.WriteLine(i++);
 				var r = new Random();
-				Thread.Sleep(r.Next(300, 500));
+				Thread.Sleep(r.Next(2000, 4000));
 			}
 		}
 	}
@@ -62,7 +62,7 @@ namespace cqa_medical.UtilitsNamespace
 				.Concat(questionList.GetAllAnswers().Select(a => a.AuthorEmail))
 				.Distinct();
 
-			MailUserPageDownloader.DownloadUsersInto(userList, Program.StatisticsDirectory + "userInfos/");
+			MailUserPageDownloader.DownloadUsersInto(userList.Skip(500), Program.StatisticsDirectory + "userInfos2/");
 		}
 	}
 }

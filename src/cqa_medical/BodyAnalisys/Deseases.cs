@@ -45,7 +45,7 @@ namespace cqa_medical.BodyAnalisys
 			var nonDeseasesWords = File.ReadAllLines(notDeseasesFileName);
 			var notDeseases = new HashSet<string>(nonDeseasesWords.Select(stemmer.Stem).Concat(nonDeseasesWords));
 			var russianWordRedex = new Regex(@"[^йцукенгшшщзхъфывапролджэячсмитьбю]");
-			var nonAdjectiveWordRegex = new Regex(@"(ый|ой|ая|ий|ого)$");
+			var adjectiveWordRegex = new Regex(@"(ый|ой|ая|ий|ого)$");
 			var laboratoryMethodWordRegex = new Regex(@"(скопия|графия|лечение)$");
 
 			var deseases = candidateDeseases
@@ -53,7 +53,7 @@ namespace cqa_medical.BodyAnalisys
 				.Where(t => !(
 								t.Length < 3 ||
 								russianWordRedex.IsMatch(t) ||
-								nonAdjectiveWordRegex.IsMatch(t) ||
+								adjectiveWordRegex.IsMatch(t) ||
 								laboratoryMethodWordRegex.IsMatch(t) ||
 								notDeseases.Contains(t)
 							 ));
@@ -180,6 +180,7 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var des = Deseases.GetFromInternet(Program.DefaultMyStemmer);
 		}
+
 		[Test]
 		public void JustNothing()
 		{

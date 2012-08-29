@@ -72,13 +72,15 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 				foreach (var name in QAFileNames)
 					InvokeMystem(name, name + StemmedFileSuffix);
 
-			foreach (var parts in stemmedFileNames
-									.Select(File.ReadAllLines)
-									.SelectMany(lines => lines, (lines, line) => line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries))
-									.Where(parts => parts.Length > 2 && !wordToStemInfo.ContainsKey(parts[0])))
-			{
-				wordToStemInfo.Add(parts[0], new StemInfo(parts[1], parts[2]));
-			}
+			foreach (var lines in stemmedFileNames.Select(File.ReadAllLines))
+				foreach (var line in lines)
+				{
+					var parts = line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries);
+					if (parts.Length > 2 && !wordToStemInfo.ContainsKey(parts[0]))
+					{
+						wordToStemInfo.Add(parts[0], new StemInfo(parts[1], parts[2]));
+					}
+				}
 			return wordToStemInfo;
 		}
 

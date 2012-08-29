@@ -76,11 +76,13 @@ namespace cqa_medical.LDA
 	public class GibbsFormatLDAGenerator : LDADataGenerator
 	{
 		private readonly string documentIdsFilePath;
+		private readonly string[] categories;
 
-		public GibbsFormatLDAGenerator(QuestionList questionList, string documentIdsFilePath, string documentsFilePath) : 
+		public GibbsFormatLDAGenerator(QuestionList questionList, string documentIdsFilePath, string documentsFilePath, params string[] categories) : 
 			base(questionList, "", documentsFilePath)
 		{
 			this.documentIdsFilePath = documentIdsFilePath;
+			this.categories = categories;
 		}
 
 		public override void GenerateDocuments(int count)
@@ -104,6 +106,7 @@ namespace cqa_medical.LDA
 			var frequentWords = orderedFrequentWords.Take(orderedFrequentWords.Count() - 70).ToDictionary(item => item.Key, item => item.Value);
 
 			return QuestionList.GetAllQuestions()
+					.Where(q => (categories.Any() && categories.Contains(q.Category)))
 					.Take(count)
 					.Select(q => Tuple.Create(q, q.WholeText))
 					.Select(item => Tuple.Create(item.Item1, item.Item2 + " " + String.Join(" ", item.Item1.GetAnswers().Select(a => a.Text))))
@@ -132,7 +135,7 @@ namespace cqa_medical.LDA
 		[Test, Explicit]
 		public static void GibbsStemmedLDADataGeneration()
 		{
-			LDADataGenerator generator = new GibbsFormatLDAGenerator(Program.DefaultQuestionList, "GibbsDocIds.txt", "GibbsDocsTab.txt");
+			LDADataGenerator generator = new GibbsFormatLDAGenerator(Program.DefaultQuestionList, "GibbsDocIdsCat.txt", "GibbsDocsCat.txt", "illness", "treatment", "kidhealth", "doctor");
 			generator.GenerateDocuments();
 		}
 

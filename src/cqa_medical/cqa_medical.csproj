@@ -86,6 +86,7 @@
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
     <Compile Include="LDA\LDADataGenerator.cs" />
     <Compile Include="UtilitsNamespace\GismeteoHTMLParser.cs" />
+    <Compile Include="UtilitsNamespace\MailUserPageParser.cs" />
     <Compile Include="UtilitsNamespace\OctaveController.cs" />
     <Compile Include="UtilitsNamespace\OctavePlot.cs" />
     <Compile Include="UtilitsNamespace\TabulationParser.cs" />

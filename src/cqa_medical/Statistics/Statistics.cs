@@ -272,10 +272,14 @@ namespace cqa_medical.Statistics
 			return Utilits.DistributionQuotient(numerator, denominator);
 		}
 
-		public SortedDictionary<string, double> ThresholdTopicProbabilityDocsDistributionInDays(int topicNumber, double threshold, string docIdsFile, string topicsFile)
+		public SortedDictionary<string, double> ThresholdTopicProbabilityDocsDistributionInDays(List<double>[] topicsTransposed, int topicNumber, double threshold, string docIdsFile)
 		{
 			var ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
-			var docs = ReadTopicFrom(topicNumber, topicsFile, (doc, nTopic) => doc[nTopic] > threshold);
+			//var docs = ReadTopicFrom(topicNumber, topicsFile, (doc, nTopic) => doc[nTopic] > threshold);
+			var docs = topicsTransposed[topicNumber]
+						.Select((t, i) => Tuple.Create(i, t))
+						.Where(tpl => tpl.Item2 > threshold)
+						.Select(tpl => tpl.Item1);
 
 			var numerator = GetDistribution(docs.Select(d => questionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
 			var denominator = GetDistribution(questions.Select(q => q.DateAdded.ToShortDateString()));
@@ -317,6 +321,39 @@ namespace cqa_medical.Statistics
 									.Select(q => q.DateAdded.GetWeek()));
 		}
 
+
+		public List<double>[] ReadTopics(string topicsFile, int nTopics)
+		{
+			var docs = new List<double>[nTopics];
+			for (int i = 0; i < nTopics; i++)
+			{
+				docs[i] = new List<double>();
+			}
+			var lines = File.ReadLines(topicsFile);
+			foreach (var line in lines)
+			{
+				var doubles = line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(
+					el => double.Parse(el, CultureInfo.InvariantCulture)).ToArray();
+				for (var i = 0; i < doubles.Length; i++)
+				{
+					docs[i].Add(doubles[i]);
+				}
+			}
+			return docs;
+		}
+
+		public void GetTopicDocuments(int topicNumber, string topicsFile, string docIdsFile, string fileToSave)
+		{
+			var ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
+			var topics = ReadTopics(topicsFile, 100);
+
+			var docs = topics[topicNumber].Select((t, i) => Tuple.Create(i, t)).OrderByDescending(d => d.Item2).ToArray();
+
+			Console.WriteLine(docs.Length);
+			Console.WriteLine("---");
+			File.WriteAllLines(topicNumber + "_topic_docs.txt", docs.Select((d, i) => i + "\t" + ids[d.Item1] + "\t" + d.Item2));
+			
+		}
 	}
 
 
@@ -333,6 +370,13 @@ namespace cqa_medical.Statistics
 			Console.WriteLine("Preparations have been done");
 		}
 
+		[Test]
+		[TestCase(2)]
+		public static void TestTopicDocs(int topicNumber)
+		{
+			statistics.GetTopicDocuments(topicNumber, @"c:\Users\beloborodov\Documents\GibbsLDA\GibbsLDA++-0.2\CQA_LDA\100_topics_health.theta", "GibbsDocIdsCat.txt", topicNumber + ".txt");
+		}
+
 		[Test, Explicit]
 		// 196 - Flu topic
 		// 197 - Mindless, shisophrenia
@@ -340,7 +384,6 @@ namespace cqa_medical.Statistics
 		[TestCase(159)]
 		public void AverageTopicsOverDaysDistribution(int topicNumber)
 		{
-			
 			var fluTopicDistrib = statistics.AverageTopicProbabilityDistributionInDays(topicNumber, 
 														  Program.GibbsDocIdsFileName,
 			                                              Program.ThetaFileName);
@@ -359,7 +402,7 @@ namespace cqa_medical.Statistics
 		}
 
 		[Test, Explicit]
-		[TestCase(196,Description = "Flu topic")]
+		[TestCase(196)]
 //		[TestCase(197)]
 		public void MaxTopicChanceDocsOverDaysDistribution(int topicNumber)
 		{
@@ -372,17 +415,26 @@ namespace cqa_medical.Statistics
 		}
 
 		[Test, Explicit]
-		[TestCase(196, Description = "Flu topic")]
-		//		[TestCase(197)]
-		public void ThresholdTopicChanceDocsOverDaysDistribution(int topicNumber)
+		public void SearchInterestingThresholdDistribs()
 		{
+			const int allTopicsNumber = 360;
 
-			var fluTopicDistrib = statistics.ThresholdTopicProbabilityDocsDistributionInDays(topicNumber,
-														  0.1,
-														  "GibbsDocIds.txt",
-														  Program.FilesDirectory + @"360_topics_1000_iters.theta");
-			File.WriteAllText(Program.StatisticsDirectory + "Topic_distributions/" + topicNumber + "_threshold.txt",
-				String.Join("\n", fluTopicDistrib.Select(t => t.Key + "\t" + t.Value)));
+			var topics = statistics.ReadTopics(Program.ThetaFileName, allTopicsNumber);
+			var interesting = new List<Tuple<int, double>>();
+
+			for (int i = 0; i < allTopicsNumber; i++)
+			{
+				var fluTopicDistrib = statistics.ThresholdTopicProbabilityDocsDistributionInDays(topics, i,
+															  0.1,
+															  Program.GibbsDocIdsFileName);
+
+				if (fluTopicDistrib.Any())
+					interesting.Add(Tuple.Create(i, fluTopicDistrib.Max(it => it.Value) - fluTopicDistrib.Min(it => it.Value)));
+				else 
+					Console.Write("Distrib is empty: ");
+				Console.WriteLine(i);
+			}
+			Console.WriteLine(String.Join("\n", interesting.OrderByDescending(t => t.Item2).Select(t => t.Item1 + "\t" + t.Item2)));
 		}
 
 		[Test, Explicit]

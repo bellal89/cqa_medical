@@ -35,10 +35,16 @@ namespace cqa_medical.BodyAnalisys
 			return Filter(index);
 		}
 
-		private static Dictionary<string, HashSet<int>> Filter(Dictionary<string, HashSet<int>> index)
+		private Dictionary<string, HashSet<int>> Filter(Dictionary<string, HashSet<int>> index)
 		{
-			return index.Where(item => item.Value.Count <= 85 && item.Key.Length > 2).ToDictionary(item => item.Key,
-			                                                                                       item => item.Value);
+			const string notMedicamentsFileName = "../../BodyAnalisys/notMedicaments.txt";
+			var notMedicamentsWords = File.ReadAllLines(notMedicamentsFileName);
+			var notMedicaments = new HashSet<string>(notMedicamentsWords.Select(stemmer.Stem).Concat(notMedicamentsWords));
+
+			return index
+					.Where(item => item.Value.Count <= 85 && item.Key.Length > 2)
+					.Where(m => !notMedicaments.Contains(m.Key))
+					.ToDictionary(item => item.Key, item => item.Value);
 		}
 
 		private void AddToIndex(IDictionary<string, HashSet<int>> index, string medicamentFullName, int medicamentId)
@@ -132,6 +138,7 @@ namespace cqa_medical.BodyAnalisys
 				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text))).ToList();
 			Console.WriteLine(String.Join("\n", meds.Select(s => s.ToString())));
 		}
+
 		[Test, Explicit]
 		public void IndexCreation()
 		{
@@ -142,7 +149,7 @@ namespace cqa_medical.BodyAnalisys
 			var meds =
 				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text))).ToList();
 			//File.WriteAllLines("MedicamentsIndex.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.ToString()));
-			File.WriteAllLines("MedicamentsIndex.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.Word + "\t" + s.Ids.Count));
+			File.WriteAllLines("MedicamentsIndexCounts.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.Word + "\t" + s.Ids.Count));
 		}
 	}
 }
