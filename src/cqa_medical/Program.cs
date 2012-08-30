@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -30,11 +31,10 @@ namespace cqa_medical
 		public const string MedicamentsIndexFileName = FilesDirectory + "MedicamentsIndex.txt";
 		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
 
-
+		public const int TopicsCount = 360;
 		public const string TopicsFileName = FilesDirectory + "360_topics_1000_iters.theta";
-		public const string DocIdsFileName = "GibbsDocIds.txt";
-
-
+		public const string DocIdsFileName = FilesDirectory + "GibbsDocIds_health.txt";
+		
 		public const string TestQuestionsFileName = "../../../../FilesToCommit/QuestionsTest.csv";
 		public const string TestAnswersFileName = "../../../../FilesToCommit/AnswersTest.csv";
 
@@ -45,6 +45,21 @@ namespace cqa_medical
 		{
 			get { return DefaultVocabularyLazy.Value; }
 		}
+		
+
+		private static readonly Lazy<Dictionary<string, MailUser>> DefaultMailUsersLazy =
+		new Lazy<Dictionary<string, MailUser>>(() =>
+		{
+			var parser = new MailUserPageParser(MailUsersDirectory);
+			return parser.ParseUsers().ToDictionary(u => u.Email, u => u);
+		});
+		public static Dictionary<string, MailUser> DefaultMailUsers
+		{
+			get { return DefaultMailUsersLazy.Value; }
+		}
+
+		
+
 
 		private static readonly Lazy<MyStemmer> DefaultMyStemmerLazy =
 			new Lazy<MyStemmer>(() => new MyStemmer(DefaultVocabulary));
