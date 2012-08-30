@@ -31,8 +31,8 @@ namespace cqa_medical
 		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
 
 
-		public const string ThetaFileName = FilesDirectory + "360_topics_1000_iters.theta";
-		public const string GibbsDocIdsFileName = "GibbsDocIds.txt";
+		public const string TopicsFileName = FilesDirectory + "360_topics_1000_iters.theta";
+		public const string DocIdsFileName = "GibbsDocIds.txt";
 
 
 		public const string TestQuestionsFileName = "../../../../FilesToCommit/QuestionsTest.csv";

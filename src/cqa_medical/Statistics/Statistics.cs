@@ -27,7 +27,7 @@ namespace cqa_medical.Statistics
 		public SortedDictionary<string, double> WordQuotientDistributionInWeeks(IEnumerable<string> expectedWords)
 		{
 			var enumerator = WordIntensityDistributionInWeeks(expectedWords);
-			var denumerator = GetDistribution(questions
+			var denumerator = GetDistribution(Questions
 			                                  	.Where(a => a.DateAdded >= FirstDate)
 			                                  	.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
 												//.Select(q => GetWeek(q.DateAdded).ToShortDateString()));
@@ -38,13 +38,13 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<int, int> AnswerLengthDistibution()
 		{
-			return GetDistribution(answers.Select(t => t.Text.Length));
+			return GetDistribution(Answers.Select(t => t.Text.Length));
 		}
 
 		[Statistics]
 		public SortedDictionary<int, int> AnswersAmountDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.GetAnswers().Count));
+			return GetDistribution(Questions.Select(t => t.GetAnswers().Count));
 		}
 
 		[Statistics]
@@ -52,78 +52,78 @@ namespace cqa_medical.Statistics
 		{
 			return
 				GetDistribution(
-					answers.Select(t => (int) Math.Floor((t.DateAdded - questionList.GetQuestion(t.QuestionId).DateAdded).TotalMinutes)));
+					Answers.Select(t => (int) Math.Floor((t.DateAdded - QuestionList.GetQuestion(t.QuestionId).DateAdded).TotalMinutes)));
 		}
 
 		[Statistics]
 		public SortedDictionary<int, int> QuestionLengthDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.WholeText.Length));
+			return GetDistribution(Questions.Select(t => t.WholeText.Length));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> QuestionActivityInDaysDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.DateAdded.ToShortDateString()));
+			return GetDistribution(Questions.Select(t => t.DateAdded.ToShortDateString()));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> AnswerActivityInDaysDistibution()
 		{
-			return GetDistribution(answers.Select(t => t.DateAdded.ToShortDateString()));
+			return GetDistribution(Answers.Select(t => t.DateAdded.ToShortDateString()));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> QuestionActivityInDaysByWeekDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.DateAdded.DayOfWeek.ToString()));
+			return GetDistribution(Questions.Select(t => t.DateAdded.DayOfWeek.ToString()));
 		}
 
 		[Statistics]
 		public SortedDictionary<int, int> QuestionActivityInHoursByDayDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.DateAdded.Hour));
+			return GetDistribution(Questions.Select(t => t.DateAdded.Hour));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> UserActivityInQuestionsDistibution()
 		{
-			return GetDistribution(questions.Select(t => t.AuthorEmail));
+			return GetDistribution(Questions.Select(t => t.AuthorEmail));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> UserActivityInAnswersDistibution()
 		{
-			return GetDistribution(answers.Select(t => t.AuthorEmail));
+			return GetDistribution(Answers.Select(t => t.AuthorEmail));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> UserActivityInMessagesDistibution()
 		{
-			var statisticGenerator = new DistributionCreator<string>(questions.Select(t => t.AuthorEmail));
-			statisticGenerator.AddData(answers.Select(t => t.AuthorEmail));
+			var statisticGenerator = new DistributionCreator<string>(Questions.Select(t => t.AuthorEmail));
+			statisticGenerator.AddData(Answers.Select(t => t.AuthorEmail));
 			return statisticGenerator.GetData();
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> CategoryQuestionsDistribution()
 		{
-			return GetDistribution(questions.Select(q => q.Category));
+			return GetDistribution(Questions.Select(q => q.Category));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> CategoryAnswersDistribution()
 		{
-			return GetDistribution(answers.Select(a => questionList.GetQuestion(a.QuestionId).Category));
+			return GetDistribution(Answers.Select(a => QuestionList.GetQuestion(a.QuestionId).Category));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> CategoryUsersDistribution()
 		{
 			var categories = new HashSet<Tuple<string, string>>();
-			foreach (var answer in answers)
+			foreach (var answer in Answers)
 			{
-				var question = questionList.GetQuestion(answer.QuestionId);
+				var question = QuestionList.GetQuestion(answer.QuestionId);
 				categories.Add(new Tuple<string, string>(question.Category, question.AuthorEmail));
 				categories.Add(new Tuple<string, string>(question.Category, answer.AuthorEmail));
 			}
@@ -133,21 +133,21 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<int, int> AnswerLengthInWordsDistribution()
 		{
-			return GetDistribution(answers
+			return GetDistribution(Answers
 			                       	.Select(a => a.Text.SplitInWordsAndStripHTML().ToArray().Length));
 		}
 
 		[Statistics]
 		public SortedDictionary<int, int> QuestionLengthInWordsDistribution()
 		{
-			return GetDistribution(questions
+			return GetDistribution(Questions
 			                       	.Select(a => a.WholeText.SplitInWordsAndStripHTML().ToArray().Length));
 		}
 
 		[Statistics]
 		public SortedDictionary<string, int> CategoryUserQuestionsDistribution()
 		{
-			return GetDistribution(questions.Select(q => new Tuple<string, string>(q.Category, q.AuthorEmail))
+			return GetDistribution(Questions.Select(q => new Tuple<string, string>(q.Category, q.AuthorEmail))
 			                       	.Distinct()
 			                       	.Select(item => item.Item1));
 		}
@@ -156,8 +156,8 @@ namespace cqa_medical.Statistics
 		public SortedDictionary<string, int> CategoryUserAnswersDistribution()
 		{
 			return
-				GetDistribution(answers.Select(
-					a => new Tuple<string, string>(questionList.GetQuestion(a.QuestionId).Category, a.AuthorEmail))
+				GetDistribution(Answers.Select(
+					a => new Tuple<string, string>(QuestionList.GetQuestion(a.QuestionId).Category, a.AuthorEmail))
 				                	.Distinct()
 				                	.Select(item => item.Item1));
 		}
@@ -180,19 +180,19 @@ namespace cqa_medical.Statistics
 		[Statistics]
 		public SortedDictionary<int, int> QuestionsAmountPerUserDistribution()
 		{
-			return GetDistribution(questions.GroupBy(q => q.AuthorEmail, (email, qs) => qs.Count()));
+			return GetDistribution(Questions.GroupBy(q => q.AuthorEmail, (email, qs) => qs.Count()));
 		}
 
 		[Statistics]
 		public SortedDictionary<int, int> AnswersAmountPerUserDistribution()
 		{
-			return GetDistribution(answers.GroupBy(a => a.AuthorEmail, (email, qs) => qs.Count()));
+			return GetDistribution(Answers.GroupBy(a => a.AuthorEmail, (email, qs) => qs.Count()));
 		}
 		#endregion
 
 		public SortedDictionary<string, int> WordIntensityDistributionInWeeks(IEnumerable<string> expectedWords)
 		{
-			return GetDistribution(questions
+			return GetDistribution(Questions
 			                       	.Where(a => a.DateAdded >= FirstDate)
 			                       	.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
 									.Select(q => Utilits.GetWeek(q.DateAdded).ToShortDateString()));
@@ -201,7 +201,7 @@ namespace cqa_medical.Statistics
 		public SortedDictionary<DateTime, int> WordIntensityDistributionInDays(IEnumerable<string> expectedWords)
 		{
 			var keyWords = expectedWords.Select(Program.DefaultMyStemmer.Stem);
-			return GetDistribution(questions.Where(q => q.Category == "illness").Where(q => OneOfWordsInsideTheText(q.WholeText, keyWords)).Select(q => q.DateAdded.Date));
+			return GetDistribution(Questions.Where(q => q.Category == "illness").Where(q => OneOfWordsInsideTheText(q.WholeText, keyWords)).Select(q => q.DateAdded.Date));
 		}
 
 		private static bool OneOfWordsInsideTheText(string text, IEnumerable<string> keyWords)
@@ -213,15 +213,15 @@ namespace cqa_medical.Statistics
 		{
 			var statisticGenerator =
 				new DistributionCreator<string>(
-					questions.SelectMany(t => t.WholeText.SplitInWordsAndStripHTML()).Select(stemmer.Stem));
-			statisticGenerator.AddData(answers.SelectMany(t => t.Text.SplitInWordsAndStripHTML()).Select(stemmer.Stem));
+					Questions.SelectMany(t => t.WholeText.SplitInWordsAndStripHTML()).Select(stemmer.Stem));
+			statisticGenerator.AddData(Answers.SelectMany(t => t.Text.SplitInWordsAndStripHTML()).Select(stemmer.Stem));
 			return statisticGenerator.GetData();
 		}
 
 		public SortedDictionary<string, double> SymptomIntensityDistributionInDays(InvertedIndexUnit symptom)
 		{
-			var numerator = GetDistribution(symptom.Ids.Select(id => questionList.GetQuestion(id).DateAdded.AddDays(-(int)questionList.GetQuestion(id).DateAdded.DayOfWeek).ToShortDateString()));
-			var denominator = GetDistribution(questions.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
+			var numerator = GetDistribution(symptom.Ids.Select(id => QuestionList.GetQuestion(id).DateAdded.AddDays(-(int)QuestionList.GetQuestion(id).DateAdded.DayOfWeek).ToShortDateString()));
+			var denominator = GetDistribution(Questions.Select(q => q.DateAdded.AddDays(-(int)q.DateAdded.DayOfWeek).ToShortDateString()));
 			return Utilits.DistributionQuotient(numerator, denominator);
 		}
 
@@ -232,7 +232,7 @@ namespace cqa_medical.Statistics
 
 		public SortedDictionary<DateTime, int> WordIntensity(IEnumerable<string> expectedWords)
 		{
-			return GetDistribution(questions
+			return GetDistribution(Questions
 									.Where(a => a.DateAdded >= FirstDate)
 									.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
 									.Select(q => q.DateAdded.GetWeek()));
