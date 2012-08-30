@@ -77,7 +77,9 @@
     <Compile Include="QualityAnalisys\UserQuality.cs" />
     <Compile Include="SpellChecker\TrigramIndex.cs" />
     <Compile Include="SpellChecker\TypoDetecter.cs" />
+    <Compile Include="Statistics\BaseStatistics.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
+    <Compile Include="Statistics\TopicsStatistics.cs" />
     <Compile Include="UtilitsNamespace\DataActualityChecker.cs" />
     <Compile Include="UtilitsNamespace\InferFormatLDAGenerator.cs" />
     <Compile Include="UtilitsNamespace\InvertedIndexUnit.cs" />

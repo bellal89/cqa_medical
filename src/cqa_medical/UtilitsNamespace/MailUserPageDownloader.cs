@@ -58,11 +58,10 @@ namespace cqa_medical.UtilitsNamespace
 			var questionList = Program.DefaultQuestionList;
 			var userList = questionList.GetAllQuestions()
 				.Select(q => q.AuthorEmail)
-				.Take(1)
-				.Concat(questionList.GetAllAnswers().Select(a => a.AuthorEmail))
-				.Distinct();
-
-			MailUserPageDownloader.DownloadUsersInto(userList.Skip(500), Program.StatisticsDirectory + "userInfos2/");
+				//.Concat(questionList.GetAllAnswers().Select(a => a.AuthorEmail))
+				.Distinct().ToList();
+			Console.WriteLine(userList.Count());
+			MailUserPageDownloader.DownloadUsersInto(userList, Program.StatisticsDirectory + "userInfos2/");
 		}
 	}
 }

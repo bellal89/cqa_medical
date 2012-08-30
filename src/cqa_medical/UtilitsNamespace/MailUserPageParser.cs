@@ -65,6 +65,11 @@ namespace cqa_medical.UtilitsNamespace
 
 			var user = new MailUser(userEmail);
 
+			var userNameSpan =
+				content.SelectSingleNode("../../../div[@id='fix_navigation']/div/div/div/div/div[@class='nav-user right-border']/a/span[@class='name_pos']");
+			if (userNameSpan != null)
+				user.Name = userNameSpan.InnerText;
+
 			for (var i = 0; i < fields.Count - 1; i += 2)
 			{
 				var name = fields[i].InnerText.ToLower(CultureInfo.InvariantCulture).Trim(':', ' ', '"', '\t', '\n');
@@ -72,7 +77,7 @@ namespace cqa_medical.UtilitsNamespace
 				switch (name)
 				{
 					case "откуда":
-						user.Geo = value;
+						user.Geo = value.Split(',').Last().Trim();
 						break;
 					case "день рождения":
 						user.BirthDate = DateTime.Parse(value.Split(new[] {'(', '"'}, StringSplitOptions.RemoveEmptyEntries)[0].Trim());
@@ -104,7 +109,7 @@ namespace cqa_medical.UtilitsNamespace
 			
 			var geo = mainInfo.SelectSingleNode("div/span");
 			if (geo != null)
-				user.Geo = geo.GetAttributeValue("title", "");
+				user.Geo = geo.GetAttributeValue("title", "").Split(',').Last().Trim();
 
 			return user;
 		}
@@ -116,11 +121,20 @@ namespace cqa_medical.UtilitsNamespace
 		[Test, Explicit]
 		public static void MailUsersParsing()
 		{
-			var parser = new MailUserPageParser(Program.MailUsesDirectory);
-			var mailUsers = parser.ParseUsers().ToArray();
+			var parser = new MailUserPageParser(Program.MailUsersDirectory);
+			var mailUsers = parser.ParseUsers().ToList();
 
+			Console.WriteLine("Any information: " + ((double)mailUsers.Count()) / Directory.GetFiles(Program.MailUsersDirectory).Count());
+			Console.WriteLine("Name filled: " + ((double)mailUsers.Count(u => !string.IsNullOrEmpty(u.Name))) / mailUsers.Count());
 			Console.WriteLine("Geo filled: " + ((double)mailUsers.Count(u => u.Geo != null)) / mailUsers.Count());
-			Console.WriteLine(String.Join("\n", mailUsers.Where(u => u.Geo != null).GroupBy(u => u.Geo.Split(',').Last().Trim(), (key, keyUsers) => Tuple.Create(key, keyUsers.Count())).OrderByDescending(it => it.Item2).Select(it => it.Item1 + "\t" + it.Item2)));
+			Console.WriteLine(String.Join("\n",
+			                              mailUsers.Where(u => u.Geo != null).GroupBy(u => u.Geo,
+			                                                                          (key, keyUsers) =>
+			                                                                          Tuple.Create(key, keyUsers.Count())).
+			                              	OrderByDescending(it => it.Item2).Select(
+			                              		it =>
+			                              		it.Item1 + "\t" + it.Item2 + "\t" +
+			                              		((double) it.Item2/mailUsers.Count(u => u.Geo != null)))));
 		}
 	}
 }

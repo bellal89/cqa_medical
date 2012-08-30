@@ -14,7 +14,7 @@ namespace cqa_medical
 		public const string FilesDirectory = "../../Files/";
 		public const string StatisticsDirectory = "../../StatOutput/";
 
-		public const string MailUsesDirectory = StatisticsDirectory + "userInfos/";
+		public const string MailUsersDirectory = StatisticsDirectory + "userInfos/";
 
 		public const string QuestionsNoTyposFileName = FilesDirectory + "qst_25.NoTypos.csv";
 		public const string AnswersNoTyposFileName = FilesDirectory + "ans_25.NoTypos.csv";
@@ -152,7 +152,6 @@ namespace cqa_medical
 				File.WriteAllLines(AnswersFileName + "ol.txt", ql.GetAllAnswers().Select(Answer.FormatStringWrite));
 				File.WriteAllLines(QuestionsFileName + "ol.txt", ql.GetAllQuestions().Select(Question.FormatStringWrite));
 			}
-
 		}
 		
 	}
