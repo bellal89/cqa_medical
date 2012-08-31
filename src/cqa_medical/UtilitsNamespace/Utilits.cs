@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
@@ -30,7 +31,7 @@ namespace cqa_medical.UtilitsNamespace
 		#endregion
 
 
-		#region DictionaryFormatString
+		#region FormatString
 
 		public static string ToStringNormal<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
 		{
@@ -54,7 +55,37 @@ namespace cqa_medical.UtilitsNamespace
 			                   data.Keys.Select(k => k.ToString("yyyy-MM-dd") + delimiter + data[k].ToString()));
 		}
 
+		public static string EmptyOrFormat(this string s, string format)
+		{
+			if (string.IsNullOrEmpty(s)) return "";
+			return String.Format(format, s);
+		}
+
+		#region HeadTailStructureFormat
+
+		public static string FormatString<THead, TValues>(this KeyValuePair<THead, IEnumerable<TValues>> headListPair,
+		                                                  string delimiter = "\t", string valuesDelimiter = ", ")
+		{
+			return headListPair.Key + delimiter + String.Join(valuesDelimiter, headListPair.Value);
+		}
+		public static string FormatString<THead, TValues>(this Tuple<THead, IEnumerable<TValues>> headListPair,
+		                                                  string delimiter = "\t", string valuesDelimiter = ", ")
+		{
+			return headListPair.Item1 + delimiter + String.Join(valuesDelimiter, headListPair.Item2);
+		}
+
+		public static string FormatString<THead, TValues>(this KeyValuePair<THead, HashSet<TValues>> headListPair,
+		                                                  string delimiter = "\t", string valuesDelimiter = ", ")
+		{
+			return headListPair.Key + delimiter + String.Join(valuesDelimiter, headListPair.Value);
+		}
+
 		#endregion
+		
+		
+		#endregion
+
+		#region DictionaryDataWork
 
 		public static TValue GetOrDefault<TKey, TValue>(this SortedDictionary<TKey, TValue> dict, TKey key,
 		                                                TValue defaultValue)
@@ -75,14 +106,6 @@ namespace cqa_medical.UtilitsNamespace
 			}
 		}
 
-
-		public static string[] GetStemmedWords(IStemmer stemmer, string text)
-		{
-			var noHTMLWords = text.SplitInWordsAndStripHTML();
-			var words = noHTMLWords.Select(stemmer.Stem).ToArray();
-			return words;
-		}
-
 		public static SortedDictionary<TKey, double> DistributionQuotient<TKey>(SortedDictionary<TKey, int> numerator,
 		                                                                        SortedDictionary<TKey, int> denominator)
 		{
@@ -92,14 +115,34 @@ namespace cqa_medical.UtilitsNamespace
 			return result;
 		}
 
-		public static string EmptyOrFormat(this string s, string format)
-		{
-			if (string.IsNullOrEmpty(s) ) return "";
-			return String.Format(format, s);
-		}
 		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> pairs)
 		{
 			return pairs.ToDictionary(q => q.Key, q => q.Value);
+		}
+
+		#endregion
+
+
+
+		public static string[] GetStemmedWords(IStemmer stemmer, string text)
+		{
+			var wordsWithoutHTML = text.SplitInWordsAndStripHTML();
+			var words = wordsWithoutHTML.Select(stemmer.Stem).ToArray();
+			return words;
+		}
+
+	
+		public static byte[] ReadAllBytes(this Stream source)
+		{
+			var answer = new List<byte>();
+
+			while (true)
+			{
+				int currentByte = source.ReadByte();
+				if (currentByte == -1) break;
+				answer.Add((byte)currentByte);
+			}
+			return answer.ToArray();
 		}
 
 		#region TimeDetect
@@ -184,39 +227,38 @@ namespace cqa_medical.UtilitsNamespace
 		#endregion
 
 
-		[TestFixture]
-		internal class DetectTimeTest
+	}
+	[TestFixture]
+	internal class DetectTimeTest
+	{
+		[Test]
+		public void TestTime()
 		{
-			[Test]
-			public void TestTime()
-			{
-				Console.WriteLine(new Func<long>(
-					() =>
-						{
-							long q = 0;
-							for (int i = 0; i < 50590000; i++)
-							{
-								q += i;
-							}
-							return q;
-						}
-					).DetectTime("trolo"));
-			}
-
-			[Test]
-			public void TestSumUp()
-			{
-				var q = new SortedDictionary<DateTime, int>();
-				var dateTime = new DateTime(2, 1, 1);
-				q[dateTime.AddHours(1)] = 5;
-				q[dateTime] = 6;
-				var w = SumUpToWeeks(q);
-				Assert.AreEqual(11, w[dateTime.GetWeek()]);
-
-			}
+			Console.WriteLine(new Func<long>(
+				() =>
+				{
+					long q = 0;
+					for (int i = 0; i < 50590000; i++)
+					{
+						q += i;
+					}
+					return q;
+				}
+				).DetectTime("trolo"));
 		}
 
+		[Test]
+		public void TestSumUp()
+		{
+			var q = new SortedDictionary<DateTime, int>();
+			var dateTime = new DateTime(2, 1, 1);
+			q[dateTime.AddHours(1)] = 5;
+			q[dateTime] = 6;
+			var w = q.SumUpToWeeks();
+			Assert.AreEqual(11, w[dateTime.GetWeek()]);
 
+		}
 
 	}
+
 }

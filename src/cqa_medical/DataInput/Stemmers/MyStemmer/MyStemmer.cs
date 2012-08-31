@@ -16,6 +16,27 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			var wordInfo = vocabulary.FindWordInfo(word.ToLower());
 			return wordInfo != null ? wordInfo.Stem : word.ToLower();
 		}
+		public AdditionalInfo StemWithInfo(string word)
+		{
+			var lword = word.ToLower();
+			var wordInfo = vocabulary.FindWordInfo(lword);
+			return wordInfo != null ? new AdditionalInfo(wordInfo.Stem, true) : new AdditionalInfo(lword, false);
+		}
+	}
+
+	internal class AdditionalInfo
+	{
+		public bool IsStemmed { get; private set; }
+		public string StemmedWord { get; private set; }
+
+
+		public string StemmedCheckedWord { get { return IsStemmed ? StemmedWord : ""; } }
+
+		public AdditionalInfo(string stemmedWord, bool isStemmed)
+		{
+			IsStemmed = isStemmed;
+			StemmedWord = stemmedWord;
+		}
 	}
 
 	internal class StemInfo

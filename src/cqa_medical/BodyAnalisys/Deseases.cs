@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
@@ -91,16 +92,17 @@ namespace cqa_medical.BodyAnalisys
 			// not working yet
 			// проблема с русскими буквами
 			var urlName = "http://www.neuronet.ru/bibliot/bme/menu.html";
-			//			var urlName = "http://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%A1%D0%BF%D0%B8%D1%81%D0%BA%D0%B8:%D0%9C%D0%B5%D0%B4%D0%B8%D1%86%D0%B8%D0%BD%D0%B0";
-			//			var urlName = "http://www.med-spravochnik.ru/bolezni/index.php";
-			//			var urlName = "http://www.vidal.ru/patsientam/spisok-boleznei-po-alfavitu/";
+//			var urlName = "http://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%A1%D0%BF%D0%B8%D1%81%D0%BA%D0%B8:%D0%9C%D0%B5%D0%B4%D0%B8%D1%86%D0%B8%D0%BD%D0%B0";
+//			var urlName = "http://www.med-spravochnik.ru/bolezni/index.php";
+//			var urlName = "http://www.vidal.ru/patsientam/spisok-boleznei-po-alfavitu/";
 
 			var response = WebRequest.Create(urlName).GetResponse();
-			using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+			using (var  sr = (response.GetResponseStream()))
 			{
-				var text = sr.ReadToEnd();
-				Console.Write(text);
-				File.WriteAllText("1.html", text);
+				var bytes = sr.ReadAllBytes();
+				File.WriteAllBytes("1.html", bytes);
+				var text = File.ReadAllText("1.html", Encoding.GetEncoding(1251));
+				Console.WriteLine(text);
 			}
 
 			return null;
@@ -144,6 +146,27 @@ namespace cqa_medical.BodyAnalisys
 					Program.DeseasesIndexFileName,
 					Program.DeseasesFileName));
 		}
+		public static IEnumerable<InvertedIndexUnit> GetIndexFromAnswers()
+		{
+			return DataActualityChecker.Check(
+				new Lazy<InvertedIndexUnit[]>(
+					() =>
+						{
+							var ql = Program.DefaultQuestionList;
+							var des = GetFullDeseases(Program.DefaultMyStemmer);
+							return des.GetIndex(ql
+							                    	.GetAllAnswers()
+							                    	.Select(t => Tuple.Create(t.QuestionId, t.Text))
+								)
+								.OrderByDescending(k => k.Ids.Count)
+								.ToArray();
+						}),
+				InvertedIndexUnit.FormatStringWrite,
+				InvertedIndexUnit.FormatStringParse,
+				new FileDependencies(
+					Program.FilesDirectory + "DeseasesIndexFromAnswers.txt",
+					Program.DeseasesFileName));
+		}
 	}
 
 	[TestFixture]
@@ -180,7 +203,6 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var des = Deseases.GetFromInternet(Program.DefaultMyStemmer);
 		}
-
 		[Test]
 		public void JustNothing()
 		{
