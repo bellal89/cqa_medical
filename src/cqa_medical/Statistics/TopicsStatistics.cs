@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using cqa_medical.DataInput;
+using cqa_medical.LDA;
 using cqa_medical.UtilitsNamespace;
 using LinqLib.Sequence;
 
@@ -117,7 +118,7 @@ namespace cqa_medical.Statistics
 			Assert.Greater(topics.Length, 0);
 			var docTopics = GetDocTopics(threshold);
 
-			return GetDistribution(topicExclusions != null ? docTopics.Where(topicExclusions.Contains) : docTopics);
+			return GetDistribution(topicExclusions != null ? docTopics.Where(t => !topicExclusions.Contains(t)) : docTopics);
 		}
 
 		private IEnumerable<int> GetDocTopics(double threshold)
@@ -157,7 +158,7 @@ namespace cqa_medical.Statistics
 		public void DistributionInit()
 		{
 			var q1 = Program.DefaultQuestionList;
-			topicsStatistics = new TopicsStatistics(q1, Program.DocIdsFileName, Program.TopicsFileName, Program.TopicsCount);
+			topicsStatistics = new TopicsStatistics(q1, Program.DocIdsFileName);
 
 			Console.WriteLine("Preparations have been done");
 		}
@@ -171,7 +172,11 @@ namespace cqa_medical.Statistics
 			                      		77, 78, 83, 87, 89
 			                      	};
 			var distrib = topicsStatistics.MaxThresholdDocsOverTopicsDistribution(0.1, topicExclusions);
-			Console.WriteLine(String.Join("\n", distrib.OrderByDescending(it => it.Value).Select(it => it.Key + "\t" + it.Value)));
+			var converter = new TopicConverter(Program.TopicsWordsFileName);
+
+			File.WriteAllLines(Program.StatisticsDirectory + "DocsOverTopicsDistrib.txt",
+			                   distrib.OrderByDescending(it => it.Value).Select(
+			                   	it => it.Key + "\t" + String.Join(", ", converter.ConvertTopicToWords(it.Key).Take(5)) + "\t" + it.Value));
 		}
 
 		[Test]

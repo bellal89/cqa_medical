@@ -14,7 +14,7 @@ namespace cqa_medical.LDA
 	{
 		private readonly Dictionary<string, int> topicWords = new Dictionary<string, int>();
 		private readonly List<Tuple<int, int, double>> topicWordChances = new List<Tuple<int, int, double>>();
-		private readonly int topicsNumber;
+		private readonly int topicsCount;
 
 		public TopicConverter(string topicsByWordsFileName)
 		{
@@ -40,13 +40,13 @@ namespace cqa_medical.LDA
 					topicWordChances.Add(Tuple.Create(nTopic, topicWords[word], chance));
 				}
 			}
-			topicsNumber = nTopic + 1;
+			topicsCount = nTopic + 1;
 		}
 
 		public void SaveTopicWordVectors(string fileToSave)
 		{
-			var vectors = new double[topicsNumber][];
-			for (int i = 0; i < topicsNumber; i++)
+			var vectors = new double[topicsCount][];
+			for (int i = 0; i < topicsCount; i++)
 			{
 				vectors[i] = new double[topicWords.Count];
 				for (int j = 0; j < topicWords.Count; j++)
@@ -98,6 +98,13 @@ namespace cqa_medical.LDA
 		{
 			var eDict = e2.ToDictionary(item => item.Item1, item => item.Item2);
 			return e1.Where(chance => eDict.ContainsKey(chance.Item1)).Sum(chance => chance.Item2*eDict[chance.Item1]);
+		}
+
+		public IEnumerable<string> ConvertTopicToWords(int topicNumber)
+		{
+			Assert.Greater(topicsCount, topicNumber);
+			return topicWordChances.Where(it => it.Item1 == topicNumber).OrderByDescending(it => it.Item3).Select(
+				it => topicWords.ElementAt(it.Item2).Key);
 		}
 	}
 
