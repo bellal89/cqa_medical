@@ -60,7 +60,7 @@ namespace cqa_medical.Statistics
 		[Test]
 		public void GenerateGraph()
 		{
-			var g = new Graph(Program.DefaultQuestionList);
+			var g = new Graph(Program.DefaultQuestionList.NewQuestionListFilteredByTopics(196));
 			var adjacencyList = g.AdjacencyList;
 			var allVertexes = adjacencyList.SelectMany(k => new[] {k.Key}.Concat(k.Value.Keys)).Distinct().ToList();
 //			adjacencyList
@@ -68,7 +68,7 @@ namespace cqa_medical.Statistics
 //				.OrderByDescending(k => k.Value.Count)
 //				.Select(k => k.FormatString())
 			var nameToNumber = new VertexCoder(allVertexes).NameToNumber;
-			File.WriteAllText("ggraph.net",
+			File.WriteAllText("ggraphFlu.net",
 			                  string.Format("*Vertices      {0}\n{1}\n*Arcs\n{2}",
 			                                allVertexes.Count,
 			                                nameToNumber.ToStringInverted("   "),

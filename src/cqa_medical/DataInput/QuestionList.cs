@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
 using cqa_medical.UtilitsNamespace;
+using cqa_medical.Statistics;
 
 namespace cqa_medical.DataInput
 {
@@ -16,6 +18,14 @@ namespace cqa_medical.DataInput
 		/// Change 'questionList' signature to Dictionary questionList[id] => Question
 		/// </summary>
 		private readonly Dictionary<long, Question> questionList = new Dictionary<long, Question>();
+
+		public QuestionList(IEnumerable<Question> questions)
+		{
+			foreach (var question in questions)
+			{
+				AddQuestion(question);
+			}
+		}
 
 		public IEnumerable<Question> GetAllQuestions()
 		{
@@ -112,6 +122,19 @@ namespace cqa_medical.DataInput
 		{
 			return (questionList != null ? questionList.Keys.Select(k => k.GetHashCode()).Aggregate(0, (i1, i2) => i1 + i2) : 0);
 		}
+
+		public QuestionList NewQuestionListFilteredByCategories(params string[] subcategories)
+		{
+			var qst = GetAllQuestions().Where(q => subcategories.Contains(q.Category));
+			return new QuestionList(qst);
+		}
+		public QuestionList NewQuestionListFilteredByTopics(params int[] topics)
+		{
+			var ts = new TopicsStatistics(this, Program.DocIdsFileName);
+			var qst = topics.SelectMany(topic => ts.GetQuestionsByTopic(topic)).Distinct();
+			return new QuestionList(qst);
+		}
 	}
 
+	
 }
