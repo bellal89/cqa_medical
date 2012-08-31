@@ -20,7 +20,7 @@ namespace cqa_medical.Statistics
 			return topics.Length;
 		}
 
-		public TopicsStatistics(QuestionList questionList, string docIdsFile, string topicsFile, int allTopicsNumber) : base(questionList)
+		public TopicsStatistics(QuestionList questionList, string docIdsFile, string topicsFile = Program.TopicsFileName, int allTopicsNumber = Program.TopicsCount) : base(questionList)
 		{
 			ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
 			topics = ReadTopicsFrom(topicsFile, allTopicsNumber);
@@ -134,9 +134,9 @@ namespace cqa_medical.Statistics
 			return docTopics;
 		}
 
-		public IEnumerable<Question> GetQuestionsByTopic(QuestionList questionList, int topicNumber, double threshold)
+		public IEnumerable<Question> GetQuestionsByTopic(int topicNumber, double threshold = 0.1)
 		{
-			return GetDocTopics(threshold).Where(t => t == topicNumber).Select((t, d) => questionList.GetQuestion(ids[d]));
+			return GetDocTopics(threshold).Where(t => t == topicNumber).Select((t, d) => QuestionList.GetQuestion(ids[d]));
 		}
 
 		private static int GetTopicByDoc(IEnumerable<double> doc, double threshold)
