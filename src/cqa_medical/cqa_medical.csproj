@@ -71,6 +71,7 @@
     <Compile Include="BodyAnalisys\Medicaments.cs" />
     <Compile Include="BodyAnalisys\Symptoms.cs" />
     <Compile Include="BodyAnalisys\Deseases.cs" />
+    <Compile Include="BodyAnalisys\SymptomsFromFeldsher.cs" />
     <Compile Include="DataInput\Answer.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\Stemmers\EmptyStemmer.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="SpellChecker\TrigramIndex.cs" />
     <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\BaseStatistics.cs" />
+    <Compile Include="Statistics\Graph.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="Statistics\TopicsStatistics.cs" />
     <Compile Include="UtilitsNamespace\DataActualityChecker.cs" />
@@ -141,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BodyAnalisys\notDeseases.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BodyAnalisys\Symptoms.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,17 +21,19 @@ namespace cqa_medical.UtilitsNamespace
 			Word = q[0];
 			Ids = new HashSet<long>(q.Skip(1).Select(Int64.Parse));
 		}
-		public InvertedIndexUnit(){}
 
 		public string ToStringCount(string delimiter = " ")
 		{
 			return Word + delimiter + Ids.Count;
 		}
 
-
 		public string ToString(string delimiter = " ", string idDelimiter = ",")
 		{
 			return Word + delimiter + String.Join(idDelimiter, Ids);
+		}
+		public override string ToString()
+		{
+			return ToString();
 		}
 
 		public static InvertedIndexUnit FormatStringParse(string formattedString)
@@ -48,26 +50,6 @@ namespace cqa_medical.UtilitsNamespace
 			return unit.Word + " " + String.Join(" ", unit.Ids);
 		}
 
-		//		public InvertedIndexUnit(InvertedIndexUnitWrap unit)
-		//		{
-		//			Word = unit.Word;
-		//			Ids = new HashSet<long>(unit.Ids.Split(',').Select(Int64.Parse));
-		//		}
 	}
 
-//	public class InvertedIndexUnitWrap
-//	{
-//		[CsvField(Index = 0)]
-//		public string Word { get; set; }
-//		[CsvField(Index = 1)]
-//		public string Ids { get; set; }
-//
-//		public InvertedIndexUnitWrap (InvertedIndexUnit unit)
-//		{
-//			Word = unit.Word;
-//			Ids = String.Join(",", unit.Ids);
-//		}
-//		public InvertedIndexUnitWrap (){}
-//
-//	}
 }

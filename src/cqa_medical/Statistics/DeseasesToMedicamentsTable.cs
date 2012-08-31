@@ -42,6 +42,45 @@ namespace cqa_medical.Statistics
 			return String.Join("\n", MedicalGuide.OrderByDescending(a => a.Value).Select(t => String.Join("\t", t.Key.Item1 , t.Key.Item2 , t.Value)));
 		}
 
+		public string CapitulatoryStringBySecond()
+		{
+			var q = new Dictionary<string, HashSet<Tuple<string, int>>>();
+			foreach (var s in MedicalGuide.Keys.Select(key => key.Item2).Distinct())
+			{
+				q.Add(s,new HashSet<Tuple<string, int>>());
+				foreach (var w in MedicalGuide.Keys.Where(key => key.Item2 == s))
+				{
+					q[s].Add(Tuple.Create(w.Item1, MedicalGuide[w]));
+				} 
+			}
+			return String.Join("\n",
+			                   q.OrderByDescending(k => k.Value.Sum(w => w.Item2))
+			                   	.Select(
+			                   		k =>
+			                   		k.Key + "\t" +
+			                   		String.Join(", ", k.Value.OrderByDescending(t => t.Item2).Select(t => String.Format("{0}({1})", t.Item1, t.Item2)))));
+		}
+		public string CapitulatoryStringByFirst()
+		{
+			var q = new Dictionary<string, HashSet<Tuple<string, int>>>();
+			foreach (var s in MedicalGuide.Keys.Select(key => key.Item1).Distinct())
+			{
+				q.Add(s,new HashSet<Tuple<string, int>>());
+				foreach (var w in MedicalGuide.Keys.Where(key => key.Item1 == s))
+				{
+					q[s].Add(Tuple.Create(w.Item2, MedicalGuide[w]));
+				} 
+			}
+			return String.Join("\n",
+			                   q.OrderByDescending(k => k.Value.Sum(w => w.Item2))
+			                   	.Select(
+			                   		k =>
+			                   		k.Key + "\t" +
+			                   		String.Join(", ", k.Value.OrderByDescending(t => t.Item2).Select(t => String.Format("{0}({1})", t.Item1, t.Item2)))));
+		}
+
+
+
 		[TestFixture]
 		public class TestTable
 		{
@@ -51,11 +90,14 @@ namespace cqa_medical.Statistics
 				const int minAmount = 30;
 				var medicaments = Medicaments.GetDefaultIndex().ToArray();
 				var deseases = Deseases.GetDefaultIndex().ToArray();
+				var deseasesFromAnswers = Deseases.GetIndexFromAnswers().ToArray();
 				var symptoms = Symptoms.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
 				var q = new DeseasesToMedicamentsTable(deseases, medicaments, 1);
 				File.WriteAllText("../../Files/deseases-medicaments.txt", q.ToString());
-				var w = new DeseasesToMedicamentsTable(symptoms, medicaments,30);
+				var w = new DeseasesToMedicamentsTable(symptoms, medicaments,10);
 				File.WriteAllText("../../Files/symptoms-medicaments.txt", w.ToString());
+				var e = new DeseasesToMedicamentsTable(symptoms, deseasesFromAnswers, 10);
+				File.WriteAllText("../../Files/symptoms-deseases.txt", e.CapitulatoryStringByFirst());
 			}
 		}
 

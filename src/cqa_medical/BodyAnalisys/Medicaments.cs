@@ -29,7 +29,7 @@ namespace cqa_medical.BodyAnalisys
 				.Where(item => item.Length == 3))
 			{
 				AddToIndex(index, parts[0], i);
-				//AddToIndex(index, parts[1], i);
+//				AddToIndex(index, parts[1], i);
 				i++;
 			}
 			return Filter(index);
@@ -37,13 +37,21 @@ namespace cqa_medical.BodyAnalisys
 
 		private Dictionary<string, HashSet<int>> Filter(Dictionary<string, HashSet<int>> index)
 		{
+			                                                                                      
 			const string notMedicamentsFileName = "../../BodyAnalisys/notMedicaments.txt";
 			var notMedicamentsWords = File.ReadAllLines(notMedicamentsFileName);
 			var notMedicaments = new HashSet<string>(notMedicamentsWords.Select(stemmer.Stem).Concat(notMedicamentsWords));
 
+			var commonWords = new HashSet<string>(
+				File.ReadAllLines(Program.FilesDirectory + "1grams-3.txt")
+					.Select(s => s.Split(new[] {'\t'}))
+					.TakeWhile(a => int.Parse(a[0]) > 30)
+					.Select(a => Program.DefaultMyStemmer.Stem(a[1])));
+
 			return index
 					.Where(item => item.Value.Count <= 85 && item.Key.Length > 2)
 					.Where(m => !notMedicaments.Contains(m.Key))
+					.Where(m => !commonWords.Contains(m.Key))
 					.ToDictionary(item => item.Key, item => item.Value);
 		}
 
@@ -150,6 +158,17 @@ namespace cqa_medical.BodyAnalisys
 				medicaments.FindMedicamentsInTexts(questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text))).ToList();
 			//File.WriteAllLines("MedicamentsIndex.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.ToString()));
 			File.WriteAllLines("MedicamentsIndexCounts.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.Word + "\t" + s.Ids.Count));
+		}
+		[Test, Explicit]
+		public void IndexCreation2()
+		{
+			var questionList = Program.DefaultQuestionList;
+
+			var medicaments = new Medicaments(Program.DefaultMyStemmer, Program.MedicamentsFileName);
+
+			var meds =
+				medicaments.FindMedicamentsInTexts(questionList.GetAllQuestions().Select(a => Tuple.Create(a.Id, a.WholeText))).ToList();
+			File.WriteAllLines("MedicamentsIndexQuestionsCount.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.Word + "\t" + s.Ids.Count));
 		}
 	}
 }
