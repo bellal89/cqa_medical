@@ -73,6 +73,7 @@
     <Compile Include="BodyAnalisys\Deseases.cs" />
     <Compile Include="BodyAnalisys\SymptomsFromFeldsher.cs" />
     <Compile Include="DataInput\Answer.cs" />
+    <Compile Include="DataInput\ObjectSerializer.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\Stemmers\EmptyStemmer.cs" />
     <Compile Include="LDA\Topic.cs" />

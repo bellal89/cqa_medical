@@ -137,6 +137,7 @@ namespace cqa_medical.Statistics
 
 		public IEnumerable<Question> GetQuestionsByTopic(int topicNumber, double threshold = 0.1)
 		{
+			Assert.That(topicNumber,Is.LessThan(topics.Length));
 			return GetDocTopics(threshold).Where(t => t == topicNumber).Select((t, d) => QuestionList.GetQuestion(ids[d]));
 		}
 
