@@ -60,7 +60,7 @@ namespace cqa_medical.Statistics
 		[Test]
 		public void GenerateGraph()
 		{
-			var g = new Graph(Program.DefaultQuestionList.NewQuestionListFilteredByTopics(196));
+			var g = new Graph(Program.DefaultQuestionList.NewQuestionListFilteredByTopics(26));
 			var adjacencyList = g.AdjacencyList;
 			var allVertexes = adjacencyList.SelectMany(k => new[] {k.Key}.Concat(k.Value.Keys)).Distinct().ToList();
 //			adjacencyList

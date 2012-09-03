@@ -6,9 +6,11 @@ using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using cqa_medical.DataInput;
 
 namespace cqa_medical.UtilitsNamespace
 {
+	[Serializable]
 	public class MailUser
 	{
 		public string Email { get; private set; }
@@ -26,16 +28,36 @@ namespace cqa_medical.UtilitsNamespace
 	class MailUserPageParser
 	{
 		private readonly string usersDirectory;
+		private readonly string directoryForSerialization;
 		private readonly HtmlDocument html = new HtmlDocument();
 
 		public MailUserPageParser(string usersDirectory)
 		{
 			this.usersDirectory = usersDirectory;
+			directoryForSerialization = usersDirectory + "serialized/";
+			if (!Directory.Exists(directoryForSerialization))
+				Directory.CreateDirectory(directoryForSerialization);
 		}
 
 		public IEnumerable<MailUser> ParseUsers()
 		{
 			return Directory.GetFiles(usersDirectory).Select(ParseUser).Where(u => u != null).ToList();
+		}
+		public IEnumerable<MailUser> GetSerializedUsers()
+		{
+			return Directory.GetFiles(directoryForSerialization).Select(ObjectSerializer.GetFromFile<MailUser>).Where(u => u != null).ToList();
+		}
+		public void ConvertUsers()
+		{
+			foreach (var file in Directory.GetFiles(usersDirectory))
+			{
+				var user = ParseUser(file);
+				if (user != null)
+				{
+					ObjectSerializer.SaveToFile(user, file + ".serialized");
+				}
+			}
+			
 		}
 
 		private MailUser ParseUser(string fileName)
@@ -136,5 +158,26 @@ namespace cqa_medical.UtilitsNamespace
 			                              		it.Item1 + "\t" + it.Item2 + "\t" +
 			                              		((double) it.Item2/mailUsers.Count(u => u.Geo != null)))));
 		}
+		[Test, Explicit]
+		public void SerializeUsers()
+		{
+			var parser = new MailUserPageParser(Program.MailUsersDirectory);
+			parser.ConvertUsers();
+			var mailUsers = parser.GetSerializedUsers().ToList();
+			Console.WriteLine("Any information: " + ((double)mailUsers.Count()) / Directory.GetFiles(Program.MailUsersDirectory).Count());
+			Console.WriteLine("Name filled: " + ((double)mailUsers.Count(u => !string.IsNullOrEmpty(u.Name))) / mailUsers.Count());
+			Console.WriteLine("Geo filled: " + ((double)mailUsers.Count(u => u.Geo != null)) / mailUsers.Count());
+			Console.WriteLine(String.Join("\n",
+										  mailUsers.Where(u => u.Geo != null).GroupBy(u => u.Geo,
+																					  (key, keyUsers) =>
+																					  Tuple.Create(key, keyUsers.Count())).
+											OrderByDescending(it => it.Item2).Select(
+												it =>
+												it.Item1 + "\t" + it.Item2 + "\t" +
+												((double)it.Item2 / mailUsers.Count(u => u.Geo != null)))));
+
+		}
 	}
+
+
 }
