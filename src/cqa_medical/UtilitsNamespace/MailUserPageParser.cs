@@ -43,21 +43,25 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			return Directory.GetFiles(usersDirectory).Select(ParseUser).Where(u => u != null).ToList();
 		}
-		public IEnumerable<MailUser> GetSerializedUsers()
+		
+		public IEnumerable<MailUser> GetUsers()
 		{
-			return Directory.GetFiles(directoryForSerialization).Select(ObjectSerializer.GetFromFile<MailUser>).Where(u => u != null).ToList();
+			if (Directory.Exists(directoryForSerialization))
+				return Directory.GetFiles(directoryForSerialization).Select(ObjectSerializer.GetFromFile<MailUser>).Where(u => u != null).ToList();
+			
+			return ParseUsers();
 		}
-		public void ConvertUsers()
+
+		public void SerializeUsers()
 		{
 			foreach (var file in Directory.GetFiles(usersDirectory))
 			{
 				var user = ParseUser(file);
 				if (user != null)
 				{
-					ObjectSerializer.SaveToFile(user, file + ".serialized");
+					ObjectSerializer.SaveToFile(user, directoryForSerialization + Path.GetFileName(file) + ".serialized");
 				}
 			}
-			
 		}
 
 		private MailUser ParseUser(string fileName)
@@ -141,29 +145,17 @@ namespace cqa_medical.UtilitsNamespace
 	public class MailParsingTest
 	{
 		[Test, Explicit]
-		public static void MailUsersParsing()
-		{
-			var parser = new MailUserPageParser(Program.MailUsersDirectory);
-			var mailUsers = parser.ParseUsers().ToList();
-
-			Console.WriteLine("Any information: " + ((double)mailUsers.Count()) / Directory.GetFiles(Program.MailUsersDirectory).Count());
-			Console.WriteLine("Name filled: " + ((double)mailUsers.Count(u => !string.IsNullOrEmpty(u.Name))) / mailUsers.Count());
-			Console.WriteLine("Geo filled: " + ((double)mailUsers.Count(u => u.Geo != null)) / mailUsers.Count());
-			Console.WriteLine(String.Join("\n",
-			                              mailUsers.Where(u => u.Geo != null).GroupBy(u => u.Geo,
-			                                                                          (key, keyUsers) =>
-			                                                                          Tuple.Create(key, keyUsers.Count())).
-			                              	OrderByDescending(it => it.Item2).Select(
-			                              		it =>
-			                              		it.Item1 + "\t" + it.Item2 + "\t" +
-			                              		((double) it.Item2/mailUsers.Count(u => u.Geo != null)))));
-		}
-		[Test, Explicit]
 		public void SerializeUsers()
 		{
 			var parser = new MailUserPageParser(Program.MailUsersDirectory);
-			parser.ConvertUsers();
-			var mailUsers = parser.GetSerializedUsers().ToList();
+			parser.SerializeUsers();
+		}
+
+		[Test, Explicit]
+		public void GetSerializedUsers()
+		{
+			var parser = new MailUserPageParser(Program.MailUsersDirectory);
+			var mailUsers = parser.GetUsers().ToList();
 			Console.WriteLine("Any information: " + ((double)mailUsers.Count()) / Directory.GetFiles(Program.MailUsersDirectory).Count());
 			Console.WriteLine("Name filled: " + ((double)mailUsers.Count(u => !string.IsNullOrEmpty(u.Name))) / mailUsers.Count());
 			Console.WriteLine("Geo filled: " + ((double)mailUsers.Count(u => u.Geo != null)) / mailUsers.Count());
@@ -175,7 +167,6 @@ namespace cqa_medical.UtilitsNamespace
 												it =>
 												it.Item1 + "\t" + it.Item2 + "\t" +
 												((double)it.Item2 / mailUsers.Count(u => u.Geo != null)))));
-
 		}
 	}
 
