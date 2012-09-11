@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using cqa_medical.DataInput;
@@ -14,7 +15,7 @@ namespace cqa_medical.Statistics
 		[TestFixtureSetUp]
 		public void Init()
 		{
-			var questionList = new QuestionList(Program.TestQuestionsFileName, Program.TestAnswersFileName);
+			var questionList = new QuestionList(Program.QuestionsFileName, Program.AnswersFileName);
 			statistics = new Statistics(questionList);
 		}
 
@@ -32,12 +33,12 @@ namespace cqa_medical.Statistics
 		public void TestGetWeekFromRange()
 		{
 			var now = new DateTime(2011, 9, 26, 1, 2, 3);
-			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(1)));
-			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(2)));
-			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(3)));
-			Assert.AreEqual(now.AddDays(-1), Utilits.GetWeek(now.AddDays(4)));
-			Assert.AreEqual(now.AddDays(6), Utilits.GetWeek(now.AddDays(7)));
-			Assert.AreEqual(now.AddDays(6), Utilits.GetWeek(now.AddDays(8)));
+			Assert.AreEqual(now.AddDays(-1), now.AddDays(1).GetWeek());
+			Assert.AreEqual(now.AddDays(-1), now.AddDays(2).GetWeek());
+			Assert.AreEqual(now.AddDays(-1), now.AddDays(3).GetWeek());
+			Assert.AreEqual(now.AddDays(-1), now.AddDays(4).GetWeek());
+			Assert.AreEqual(now.AddDays(6), now.AddDays(7).GetWeek());
+			Assert.AreEqual(now.AddDays(6), now.AddDays(8).GetWeek());
 		}
 
 		[Test]
@@ -81,7 +82,8 @@ namespace cqa_medical.Statistics
 		public void TestQuestionActivity()
 		{
 			var distibution = statistics.QuestionActivityInDaysDistibution();
-			Assert.AreEqual(2, distibution.Keys.ToArray().Length);
+			File.WriteAllLines("Illness_questions_distrib.txt", distibution.Select(kv => kv.Key + "\t" + kv.Value));
+			//Assert.AreEqual(2, distibution.Keys.ToArray().Length);
 			//Assert.AreEqual(1, distibution[92]);
 			//Assert.AreEqual(2, distibution[353]);
 		}

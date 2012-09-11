@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using cqa_medical.UtilitsNamespace;
+using cqa_medical.Statistics;
 
 
 namespace cqa_medical.LDA
 {
 	class TopicConverter
 	{
-		private readonly Dictionary<string, int> topicWords = new Dictionary<string, int>();
-		private readonly List<Tuple<int, int, double>> topicWordChances = new List<Tuple<int, int, double>>();
+		private readonly Dictionary<string, int> words = new Dictionary<string, int>();
+		private readonly Dictionary<int, List<Tuple<int, double>>> topicToWords = new Dictionary<int, List<Tuple<int, double>>>();
 		private readonly int topicsCount;
 
 		public TopicConverter(string topicsByWordsFileName)
@@ -33,11 +32,14 @@ namespace cqa_medical.LDA
 					var word = parts[0];
 					var chance = double.Parse(parts[1], CultureInfo.InvariantCulture);
 					
-					if (!topicWords.ContainsKey(word))
+					if (!words.ContainsKey(word))
 					{
-						topicWords[word] = i++;
+						words[word] = i++;
 					}
-					topicWordChances.Add(Tuple.Create(nTopic, topicWords[word], chance));
+					
+					if(!topicToWords.ContainsKey(nTopic))
+						topicToWords[nTopic] = new List<Tuple<int, double>>();
+					topicToWords[nTopic].Add(Tuple.Create(words[word], chance));
 				}
 			}
 			topicsCount = nTopic + 1;
@@ -46,52 +48,33 @@ namespace cqa_medical.LDA
 		public void SaveTopicWordVectors(string fileToSave)
 		{
 			var vectors = new double[topicsCount][];
-			for (int i = 0; i < topicsCount; i++)
+			
+			for (var i = 0; i < topicsCount; i++)
 			{
-				vectors[i] = new double[topicWords.Count];
-				for (int j = 0; j < topicWords.Count; j++)
-				{
-					vectors[i][j] = 0;
-				}
+				vectors[i] = new double[words.Count];
+				vectors[i].Initialize();
 			}
-			foreach (var chance in topicWordChances)
+			
+			foreach (var nTopic in topicToWords.Keys)
 			{
-				vectors[chance.Item1][chance.Item2] = chance.Item3;
+				foreach (var wordChance in topicToWords[nTopic])
+				{
+					vectors[nTopic][wordChance.Item1] = wordChance.Item2;
+				}
 			}
 
 			File.WriteAllText(fileToSave, String.Join("\n", vectors.Select(v => String.Join(" ", v.Select(d => d.ToString(CultureInfo.InvariantCulture))))));
 		}
 
-		public void SaveTopicGraph(string fileToSave, int nLabels)
+		public void SaveTopicGraph(string fileToSave, int nWords)
 		{
-			var topicToWords = new Dictionary<int, List<Tuple<int, double>>>();
-			foreach (var twc in topicWordChances)
-			{
-				if (!topicToWords.ContainsKey(twc.Item1))
-				{
-					topicToWords[twc.Item1] = new List<Tuple<int, double>>();
-				}
-				topicToWords[twc.Item1].Add(Tuple.Create(twc.Item2, twc.Item3));
-			}
+			var vertices = topicToWords.Select(t => new Vertex {Id = t.Key, Label = String.Join(", ", GetTopicWords(t.Key, nWords)), Weight = 1});
+			var edges = from e1 in topicToWords.Keys 
+						from e2 in topicToWords.Keys 
+						select new Edge {SourceId = e1, DestinationId = e2, Weight = GetWeight(topicToWords[e1], topicToWords[e2])};
 
-			var edges = (from e1 in topicToWords.Keys
-			             from e2 in topicToWords.Keys
-			             select Tuple.Create(e1, e2, GetWeight(topicToWords[e1], topicToWords[e2]))).ToList();
-
-			File.WriteAllText(fileToSave,
-			                  "graph Sample" + Environment.NewLine + "{" + Environment.NewLine +
-							  GetLabels(topicToWords, nLabels) + Environment.NewLine +
-								String.Join(Environment.NewLine,
-			                        edges.Select(e => "\t" + e.Item1 + " -- " + e.Item2 + "[weight=" + e.Item3 + "]")) +
-									Environment.NewLine + "}");
-		}
-
-		private string GetLabels(Dictionary<int, List<Tuple<int, double>>> topicToWords, int n)
-		{
-			return String.Join(Environment.NewLine,
-			            topicToWords.Select(
-			            	t => "\t" + t.Key + " [label=" + String.Join("_", t.Value.OrderByDescending(v => v.Item2).Take(n).Select(v => topicWords.ElementAt(v.Item1).Key)) + "]"));
-
+			var graph = new GraphBuilder(vertices, edges);
+			graph.ExportToGVFormat(fileToSave, "TopicGraph", isOriented:false);
 		}
 
 		private static double GetWeight(IEnumerable<Tuple<int, double>> e1, IEnumerable<Tuple<int, double>> e2)
@@ -100,11 +83,13 @@ namespace cqa_medical.LDA
 			return e1.Where(chance => eDict.ContainsKey(chance.Item1)).Sum(chance => chance.Item2*eDict[chance.Item1]);
 		}
 
-		public IEnumerable<string> ConvertTopicToWords(int topicNumber)
+		public IEnumerable<string> GetTopicWords(int topicNumber, int nWords)
 		{
 			Assert.Greater(topicsCount, topicNumber);
-			return topicWordChances.Where(it => it.Item1 == topicNumber).OrderByDescending(it => it.Item3).Select(
-				it => topicWords.ElementAt(it.Item2).Key);
+			return topicToWords[topicNumber]
+					.OrderByDescending(t => t.Item2)
+					.Take(nWords)
+					.Select(t => words.ElementAt(t.Item1).Key);
 		}
 	}
 

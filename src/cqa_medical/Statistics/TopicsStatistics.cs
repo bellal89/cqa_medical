@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -13,7 +14,8 @@ namespace cqa_medical.Statistics
 {
 	class TopicsStatistics : BaseStatistics
 	{
-		private readonly long[] ids;
+		private readonly long[] questionIds;
+		private readonly Dictionary<long, int> questionsToDocs;
 		private readonly List<double>[] topics;
 
 		public int GetTopicsCount()
@@ -21,9 +23,11 @@ namespace cqa_medical.Statistics
 			return topics.Length;
 		}
 
-		public TopicsStatistics(QuestionList questionList, string docIdsFile, string topicsFile = Program.TopicsFileName, int allTopicsNumber = Program.TopicsCount) : base(questionList)
+		public TopicsStatistics(QuestionList questionList, string docIdsFile = Program.DocIdsFileName, string topicsFile = Program.TopicsFileName, int allTopicsNumber = Program.TopicsCount) : base(questionList)
 		{
-			ids = File.ReadAllLines(docIdsFile).Select(long.Parse).ToArray();
+			questionIds = File.ReadAllLines(docIdsFile).Select(Int64.Parse).ToArray();
+			questionsToDocs = questionIds.Select((id, i) => new {docId = i, questionId = id})
+										 .ToDictionary(doc => doc.questionId, doc => doc.docId);
 			topics = ReadTopicsFrom(topicsFile, allTopicsNumber);
 		}
 
@@ -38,7 +42,7 @@ namespace cqa_medical.Statistics
 					var line = f.ReadLine();
 					if (line == null) break;
 					var doc = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(
-						el => double.Parse(el, CultureInfo.InvariantCulture)).ToArray();
+						el => Double.Parse(el, CultureInfo.InvariantCulture)).ToArray();
 					if (docHandler(doc, topicNumber))
 					{
 						docs.Add(i);
@@ -60,7 +64,7 @@ namespace cqa_medical.Statistics
 			foreach (var line in lines)
 			{
 				var doubles = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(
-					el => double.Parse(el, CultureInfo.InvariantCulture)).ToArray();
+					el => Double.Parse(el, CultureInfo.InvariantCulture)).ToArray();
 				for (var i = 0; i < doubles.Length; i++)
 				{
 					topicList[i].Add(doubles[i]);
@@ -71,12 +75,12 @@ namespace cqa_medical.Statistics
 
 		public IEnumerable<Tuple<long, double>> GetTopicDocuments(int topicNumber)
 		{
-			return topics[topicNumber].Select((t, i) => Tuple.Create(ids[i], t)).OrderByDescending(d => d.Item2);
+			return topics[topicNumber].Select((t, i) => Tuple.Create(questionIds[i], t)).OrderByDescending(d => d.Item2);
 		}
 
 		public Dictionary<string, double> AverageTopicProbabilityDistributionInDays(int topicNumber, string topicsFile)
 		{
-			var topic = topics[topicNumber].Select((t, i) => Tuple.Create(ids[i], t));
+			var topic = topics[topicNumber].Select((t, i) => Tuple.Create(questionIds[i], t));
 
 			return topic.GroupBy(doc => QuestionList.GetQuestion(doc.Item1).DateAdded.ToShortDateString(),
 							   (key, docs) => Tuple.Create(key, docs.Average(doc => doc.Item2)))
@@ -87,7 +91,7 @@ namespace cqa_medical.Statistics
 		{
 			var docs = GetMaxTopicDocs(topicNumber, topicsFile);
 
-			var numerator = GetDistribution(docs.Select(d => QuestionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
+			var numerator = GetDistribution(docs.Select(d => QuestionList.GetQuestion(questionIds[d]).DateAdded.ToShortDateString()));
 			var denominator = GetDistribution(Questions.Select(q => q.DateAdded.ToShortDateString()));
 			return Utilits.DistributionQuotient(numerator, denominator);
 		}
@@ -110,8 +114,8 @@ namespace cqa_medical.Statistics
 			}
 
 			MailUser user;
-			var numerator = GetDistribution(docs.Where(d => userGeo == null || (mailUsers.TryGetValue(QuestionList.GetQuestion(ids[d]).AuthorEmail, out user) && user.Geo == userGeo))
-												.Select(d => QuestionList.GetQuestion(ids[d]).DateAdded.ToShortDateString()));
+			var numerator = GetDistribution(docs.Where(d => userGeo == null || (mailUsers.TryGetValue(QuestionList.GetQuestion(questionIds[d]).AuthorEmail, out user) && user.Geo == userGeo))
+												.Select(d => QuestionList.GetQuestion(questionIds[d]).DateAdded.ToShortDateString()));
 			var denominator = GetDistribution(Questions.Where(q => userGeo == null || (mailUsers.TryGetValue(q.AuthorEmail, out user) && user.Geo == userGeo))
 													   .Select(q => q.DateAdded.ToShortDateString()));
 			return Utilits.DistributionQuotient(numerator, denominator);
@@ -134,9 +138,7 @@ namespace cqa_medical.Statistics
 			for (var i = 0; i < docsCount; i++)
 			{
 				var i1 = i;
-				var doc = topics.Select(t => t[i1]);
-				
-				var topicByDoc = GetTopicByDoc(doc, threshold);
+				var topicByDoc = GetTopicByDoc(i1, threshold);
 				docItems.Add(Tuple.Create(i1, topicByDoc.Item1, topicByDoc.Item2));
 
 				docTopics[i1] = topicByDoc.Item1;
@@ -147,15 +149,54 @@ namespace cqa_medical.Statistics
 		public IEnumerable<Question> GetQuestionsByTopic(int topicNumber, double threshold = 0.1)
 		{
 			Assert.That(topicNumber,Is.LessThan(topics.Length));
-			return GetDocTopics(threshold).Where(t => t == topicNumber).Select((t, d) => QuestionList.GetQuestion(ids[d]));
+			return GetDocTopics(threshold).Where(t => t == topicNumber).Select((t, d) => QuestionList.GetQuestion(questionIds[d]));
 		}
 
-		private static Tuple<int, double> GetTopicByDoc(IEnumerable<double> doc, double threshold)
+		private Tuple<int, double> GetTopicByDoc(int docNumber, double threshold)
 		{
+			var doc = topics.Select(t => t[docNumber]);
 			var topic = doc.Select((t, i) => new {value=t, index=i}).ElementAtMax(v => v.value);
-			if (topic.value > threshold)
-				return Tuple.Create(topic.index, topic.value);
-			return Tuple.Create(-1, topic.value);
+			return topic.value > threshold ? Tuple.Create(topic.index, topic.value) : Tuple.Create(-1, topic.value);
+		}
+
+		public Tuple<int, double> GetTopicByQuestionId(long questionId, double threshold)
+		{
+			return questionsToDocs.ContainsKey(questionId) ? GetTopicByDoc(questionsToDocs[questionId], threshold) : null;
+		}
+
+		public Dictionary<Sequence, int> GetUsersTopicSequences(Dictionary<string, IEnumerable<Question>> userQuestions, int sequenceLength, double threshold)
+		{
+			var userTopicSequences = new Dictionary<Sequence, int>();
+			foreach (var questions in userQuestions)
+			{
+				var topicSequence = questions.Value.OrderBy(q => q.DateAdded)
+											  .Select(q => GetTopicByQuestionId(q.Id, threshold))
+											  .Where(t => t != null)
+											  .ToList();
+				AddUserSequencesTo(userTopicSequences, topicSequence, sequenceLength);
+			}
+			return userTopicSequences;
+		}
+
+		private static void AddUserSequencesTo(IDictionary<Sequence, int> userTopicSequences, IList<Tuple<int, double>> topicSequence, int sequenceLength)
+		{
+			for (var i = 0; i < topicSequence.Count - sequenceLength + 1; i++)
+			{
+				var seq = new Sequence(sequenceLength);
+				for (var j = i; j < i + sequenceLength; j++)
+				{
+					seq.Items[j - i] = topicSequence[j].Item1;
+				}
+				if (seq.Items.Contains(-1) || (int)Math.Round(seq.Items.Average()) == seq.Items[0]) continue;
+				if (userTopicSequences.ContainsKey(seq))
+				{
+					userTopicSequences[seq]++;
+				}
+				else
+				{
+					userTopicSequences[seq] = 1;
+				}
+			}
 		}
 	}
 
@@ -167,8 +208,7 @@ namespace cqa_medical.Statistics
 		[SetUp]
 		public void DistributionInit()
 		{
-			var q1 = Program.DefaultQuestionList;
-			topicsStatistics = new TopicsStatistics(q1, Program.DocIdsFileName);
+			topicsStatistics = new TopicsStatistics(Program.DefaultQuestionList);
 
 			Console.WriteLine("Preparations have been done");
 		}
@@ -188,7 +228,7 @@ namespace cqa_medical.Statistics
 
 			File.WriteAllLines(Program.StatisticsDirectory + "DocsOverTopicsDistrib.txt",
 			                   distrib.OrderByDescending(it => it.Value).Select(
-			                   	it => it.Key + "\t" + String.Join(", ", converter.ConvertTopicToWords(it.Key).Take(5)) + "\t" + it.Value));
+			                   	it => it.Key + "\t" + String.Join(", ", converter.GetTopicWords(it.Key, 5)) + "\t" + it.Value));
 		}
 
 		[Test]
@@ -235,14 +275,16 @@ namespace cqa_medical.Statistics
 		}
 
 		[Test, Explicit]
-		[TestCase(new[] { 4, 86 }, 0.25)]
+		[TestCase(new[] { 26 }, 0.1)]
 		public void ThresholdTopicDistribution(int[] topicNumbers, double threshold = 0.1)
 		{
 			var distr = topicsStatistics
 				.ThresholdTopicProbabilityDocsDistributionInDays(topicNumbers, threshold, Program.DefaultMailUsers);
 
+			var weekDistr = (new SortedDictionary<DateTime, double>(distr.ToDictionary(kv => DateTime.Parse(kv.Key), kv => kv.Value))).SumUpToWeeks();
+
 			File.WriteAllText(Program.StatisticsDirectory + "Topic_distributions/" + String.Join("_", topicNumbers) + "_" + threshold.ToString(CultureInfo.InvariantCulture) + ".txt",
-			                  String.Join("\n", distr.Select(it => it.Key + '\t' + it.Value)));
+							  String.Join("\n", weekDistr.Select(it => it.Key.ToShortDateString() + '\t' + it.Value)));
 		}
 
 		[Test, Explicit]

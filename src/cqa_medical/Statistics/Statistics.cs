@@ -62,9 +62,9 @@ namespace cqa_medical.Statistics
 		}
 
 		[Statistics]
-		public SortedDictionary<string, int> QuestionActivityInDaysDistibution()
+		public SortedDictionary<string, int> QuestionActivityInDaysDistibution(string[] categories = null)
 		{
-			return GetDistribution(Questions.Select(t => t.DateAdded.ToShortDateString()));
+			return GetDistribution(Questions.Where(q => categories == null || categories.Contains(q.Category)).Select(t => t.DateAdded.ToShortDateString()));
 		}
 
 		[Statistics]

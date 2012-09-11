@@ -61,7 +61,7 @@ namespace cqa_medical.UtilitsNamespace
 				//.Concat(questionList.GetAllAnswers().Select(a => a.AuthorEmail))
 				.Distinct().ToList();
 			Console.WriteLine(userList.Count());
-			MailUserPageDownloader.DownloadUsersInto(userList.Skip(16800), Program.StatisticsDirectory + "userInfos2/");
+			MailUserPageDownloader.DownloadUsersInto(userList.Skip(63000), Program.StatisticsDirectory + "userInfos3/");
 		}
 	}
 }

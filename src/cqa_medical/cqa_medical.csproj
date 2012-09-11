@@ -86,6 +86,7 @@
     <Compile Include="Statistics\Graph.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="Statistics\TopicsStatistics.cs" />
+    <Compile Include="Statistics\UserStatistics.cs" />
     <Compile Include="UtilitsNamespace\DataActualityChecker.cs" />
     <Compile Include="UtilitsNamespace\InferFormatLDAGenerator.cs" />
     <Compile Include="UtilitsNamespace\InvertedIndexUnit.cs" />
