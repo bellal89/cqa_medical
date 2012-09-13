@@ -53,12 +53,17 @@ namespace cqa_medical.Statistics
 		}
 
 		public GraphBuilder(IEnumerable<string> vertexLabels, IEnumerable<Tuple<string, string>> edges)
+			: this(vertexLabels, edges.Select(q => Tuple.Create(q.Item1, q.Item2, 1d)))
+		{
+			
+		}
+		public GraphBuilder(IEnumerable<string> vertexLabels, IEnumerable<Tuple<string, string, double>> edges)
 		{
 			var labelToVertex = vertexLabels.Select((label, id) => new Vertex {Id = id, Label = label, Weight = 1}).ToDictionary(v => v.Label, v => v);
 			vertices = labelToVertex.Values.ToList();
 
 			this.edges =
-				edges.Select(e => new Edge {SourceId = labelToVertex[e.Item1].Id, DestinationId = labelToVertex[e.Item2].Id, Weight = 1}).ToList();
+				edges.Select(e => new Edge {SourceId = labelToVertex[e.Item1].Id, DestinationId = labelToVertex[e.Item2].Id, Weight = e.Item3}).ToList();
 		}
 
 		public void ExportToGVFormat(string fileToSave, string graphName, bool isOriented)
@@ -74,41 +79,41 @@ namespace cqa_medical.Statistics
 
 		public void ExportToPajecFormat(string fileToSave)
 		{
-			throw new NotImplementedException();
+
+			File.WriteAllText(fileToSave,
+			                  string.Format("*Vertices      {0}\n{1}\n*Arcs\n{2}",
+			                                vertices.Count,
+			                                String.Join("\n", vertices.Select(q => q.Id + " " + q.Label)),
+			                                String.Join("\n", edges.Select(k => k.SourceId + " " + k.DestinationId + " " +  k.Weight))));
 		}
 	}
 
-	class Graph
+	class UserGraph  : GraphBuilder
 	{
-		public Dictionary<string, Dictionary<string,int>> AdjacencyList;
 
-		public Graph(QuestionList ql)
+		public UserGraph(QuestionList ql)
+			: base(GetAllVertices(ql), GetAllEdges(ql))
 		{
-			AdjacencyList = new Dictionary<string, Dictionary<string, int>>();
+		}
+
+		private static IEnumerable<string> GetAllVertices(QuestionList ql)
+		{
+			return ql.GetAllQuestions().Select(q => q.AuthorEmail).Concat(ql.GetAllAnswers().Select(q => q.AuthorEmail)).Distinct();
+		}
+
+		private static IEnumerable<Tuple<string, string, double>> GetAllEdges(QuestionList ql)
+		{
+			var edges = new Dictionary<Tuple<string, string>, double>();
 			foreach (var question in ql.GetAllQuestions())
 			{
 				foreach (var answer in question.GetAnswers())
 				{
 					var from = answer.AuthorEmail;
 					var to = question.AuthorEmail;
-					if (!AdjacencyList.ContainsKey(from))
-						AdjacencyList.Add(from, new Dictionary<string, int>());
-					AdjacencyList[from].UpdateOrAdd(to, v => v + 1, 1);
+					edges.UpdateOrAdd(Tuple.Create(from,to), v => v + 1d, 1d);
 				}
 			}
-		}
-	}
-
-	internal class VertexCoder
-	{
-		public Dictionary<string, int> NameToNumber = new Dictionary<string, int>();
-		public VertexCoder(IEnumerable<string> names )
-		{
-			int i = 1;
-			foreach (var name in names)
-			{
-				NameToNumber.Add(name, i++);
-			}
+			return edges.Select(q => Tuple.Create(q.Key.Item1,q.Key.Item2, q.Value));
 		}
 	}
 
@@ -118,51 +123,21 @@ namespace cqa_medical.Statistics
 	[TestFixture]
 	internal class GraphProgram
 	{
-		private IEnumerable<Tuple<string,string,int>> GetEdges(Dictionary<string, Dictionary<string,int>> adjList)
-		{
-			foreach (var pair in adjList)
-				foreach (var v in pair.Value)
-					yield return new Tuple<string, string, int >(pair.Key, v.Key, v.Value);
-		}
-
 		[Test]
 		public void GenerateGraph()
 		{
-			var g = new Graph(Program.DefaultQuestionList.NewQuestionListFilteredByTopics(26));
-			var adjacencyList = g.AdjacencyList;
-			var allVertexes = adjacencyList.SelectMany(k => new[] {k.Key}.Concat(k.Value.Keys)).Distinct().ToList();
-//			adjacencyList
-//				.Where(k => k.Value.Count > 10)
-//				.OrderByDescending(k => k.Value.Count)
-//				.Select(k => k.FormatString())
-			var nameToNumber = new VertexCoder(allVertexes).NameToNumber;
-			File.WriteAllText("ggraphFlu.net",
-			                  string.Format("*Vertices      {0}\n{1}\n*Arcs\n{2}",
-			                                allVertexes.Count,
-			                                nameToNumber.ToStringInverted("   "),
-			                                string.Join("\n",
-			                                            GetEdges(adjacencyList).Select(
-															k => nameToNumber[k.Item1] + "   " + nameToNumber[k.Item2] + "  " + k.Item3))
-
-			                  	));
+			var g = new UserGraph(Program.DefaultQuestionList.NewQuestionListFilteredByTopics(26));
+			g.ExportToPajecFormat("ggraphFlu2.net");
+			
+		}
+		[Test]
+		public void qwe(IEnumerable<string> a )
+		{
+			var q = Tuple.Create(5, 500);
+			var w = Tuple.Create(5, 4);
+			Assert.That(q, Is.LessThan(w));
 		}
 	}
 
-//	internal class NodeNameGenerator
-//	{
-//		private Dictionary<string, int> nodeName;
-//		private Dictionary<string, int> node;
-//		private int i;
-//
-//		public NodeNameGenerator()
-//		{
-//			nodeName = new Dictionary<string, int>();
-//			i = 0;
-//		}
-//		public string GetName(int codeNumber)
-//		{
-//			if (nodeName.ContainsKey())
-//			return 
-//		}
-//	}
+
 }
