@@ -49,24 +49,23 @@ namespace cqa_medical.Statistics
 
 	class UserTopicsWalking
 	{
-		private readonly QuestionList questionList;
 		private readonly TopicsStatistics topicStatistics;
-		private readonly Dictionary<string, IEnumerable<Question>> userQuestions;
+		public Dictionary<string, IEnumerable<Question>> UserQuestions { get; private set; }
 		private readonly Dictionary<Sequence, int> topicMoves;
 		private readonly Dictionary<int, int> topicDistribution = new Dictionary<int, int>();
 		private readonly int userQuestionsCount;
 		private const double Threshold = 0.1;
+		private const int HoursBetween = 72;
 
 		public UserTopicsWalking(QuestionList questionList, ICollection<string> categories, TopicsStatistics topicStatistics)
 		{
-			this.questionList = questionList;
 			this.topicStatistics = topicStatistics;
 
-			userQuestions = questionList.GetAllQuestions().Where(q => categories.Contains(q.Category))
+			UserQuestions = questionList.GetAllQuestions().Where(q => categories.Contains(q.Category))
 				.GroupBy(q => q.AuthorEmail, (userEmail, hisQuestions) => new { userEmail, hisQuestions })
 				.Where(u => u.hisQuestions.Count() >= 2)
 				.ToDictionary(u => u.userEmail, u => u.hisQuestions);
-			foreach (var questions in userQuestions.Values)
+			foreach (var questions in UserQuestions.Values)
 			{
 				foreach (var question in questions)
 				{
@@ -84,12 +83,113 @@ namespace cqa_medical.Statistics
 				}
 			}
 			userQuestionsCount = topicDistribution.Sum(it => it.Value);
-			topicMoves = topicStatistics.GetUsersTopicSequences(userQuestions, 2, Threshold);
+			topicMoves = GetTopicSequenceFrequences(2);
 		}
 
-		public Dictionary<string, IEnumerable<Question>> GetUserQuestions()
+		private static IEnumerable<List<Question>> GetSubSequences(IList<Question> sequence, int sequenceLength)
 		{
-			return userQuestions;
+			var subSequences = new List<List<Question>>();
+			for (var i = 0; i < sequence.Count - sequenceLength + 1; i++)
+			{
+				var subSequence = new List<Question>();
+				for (var j = i; j < i + sequenceLength; j++)
+				{
+					subSequence.Add(sequence[j]);
+				}
+				subSequences.Add(subSequence);
+			}
+			return subSequences;
+		}
+
+		private static IEnumerable<IEnumerable<Question>> GetSessionSequences(IEnumerable<Question> questions, int hoursBetween)
+		{
+			var timedQuestions = questions.OrderBy(q => q.DateAdded).ToList();
+			var sessions = new List<Tuple<int, int>>();
+			var sessionBegin = 0;
+
+			for (var i = 1; i < timedQuestions.Count; i++)
+			{
+				if ((timedQuestions[i].DateAdded - timedQuestions[i - 1].DateAdded).TotalHours <= hoursBetween)
+					continue;
+				if (i - 1 != sessionBegin)
+				{
+					sessions.Add(Tuple.Create(sessionBegin, i - 1));
+				}
+				sessionBegin = i;
+			}
+
+			if (timedQuestions.Count - 1 != sessionBegin)
+			{
+				sessions.Add(Tuple.Create(sessionBegin, timedQuestions.Count));
+			}
+
+			return sessions.Select(s => timedQuestions.TakeWhile((q, i) => (i >= s.Item1 && i <= s.Item2)));
+		}
+
+
+		public List<List<Question>> GetUserSessionQuestionSequences(int sequenceLength)
+		{
+			var userQuestionSequences = new List<List<Question>>();
+			foreach (var questions in UserQuestions)
+			{
+				var sessionQuestionSequencies = GetSessionSequences(questions.Value, HoursBetween);
+				foreach (var sequence in sessionQuestionSequencies)
+				{
+
+					var subSequences = GetSubSequences(sequence.ToList(), sequenceLength);
+					userQuestionSequences.AddRange(subSequences);
+				}
+			}
+			return userQuestionSequences;
+		}
+
+		public IEnumerable<List<Tuple<int, Question>>> GetTopicQuestionPairSequences(int sequenceLength)
+		{
+			var questionSequences = GetUserSessionQuestionSequences(sequenceLength);
+			var topicLists =
+				questionSequences.Select(
+					seq => seq.Select(q => Tuple.Create(topicStatistics.GetTopicByQuestionId(q.Id, Threshold), q))
+					       	.Where(t => t.Item1 != null)
+					       	.Select(t => Tuple.Create(t.Item1.Item1, t.Item2))
+					       	.ToList())
+					.Where(
+						seq => !seq.Select(it => it.Item1).Contains(-1) && seq.Count != seq.Count(it => it.Item1 == seq.First().Item1));
+			return topicLists;
+		}
+
+		public Dictionary<Sequence, int> GetTopicSequenceFrequences(int sequenceLength)
+		{
+			var topicQuestionPairsSequences =
+				GetTopicQuestionPairSequences(sequenceLength).Select(seq => seq.Select(pair => pair.Item1).ToList());
+			var topicSequences = new Dictionary<Sequence, int>();
+			foreach (var topicList in topicQuestionPairsSequences)
+			{
+				var seq = new Sequence(topicList.Count, topicList);
+				if (!topicSequences.ContainsKey(seq))
+				{
+					topicSequences[seq] = 0;
+				}
+				topicSequences[seq]++;
+			}
+			return topicSequences;
+		}
+
+		public Dictionary<Sequence, List<List<Question>>> GetTopicMoveQuestions(int lowFrequencyBoundary)
+		{
+			var moveQuestions = new Dictionary<Sequence, List<List<Question>>>();
+			if (topicMoves.Count == 0) return moveQuestions;
+			var sequenceLength = topicMoves.First().Key.Items.Length;
+			
+			var topicQuestionPairSequences = GetTopicQuestionPairSequences(sequenceLength);
+			var res = new Dictionary<Sequence, List<List<Question>>>();
+			foreach (var sequence in topicQuestionPairSequences)
+			{
+				var topicSequence = new Sequence(sequence.Count, sequence.Select(pair => pair.Item1).ToList());
+				if (!res.ContainsKey(topicSequence))
+					res[topicSequence] = new List<List<Question>>();
+				res[topicSequence].Add(sequence.Select(pair => pair.Item2).ToList());
+			}
+			return res.Where(kv => kv.Value.Count >= lowFrequencyBoundary).ToDictionary(kv => kv.Key, kv => kv.Value);
 		}
 
 		public double[,] GetStochasticMatrix()
@@ -174,14 +274,6 @@ namespace cqa_medical.Statistics
 
 			graph.ExportToGVFormat(fileToSave, "TopikWalkingGraph", isOriented:true);
 		}
-
-		public Dictionary<Sequence, IEnumerable<Tuple<Question, Question>>> GetMoveQuestions(IEnumerable<Sequence> moves)
-		{
-			var questionToTopic = userQuestions.Values.Select(
-				qs => qs.Select(q => new {id = q.Id, topic = topicStatistics.GetTopicByQuestionId(q.Id, Threshold)}));
-
-			throw new NotImplementedException();
-		}
 	}
 
 	[TestFixture]
@@ -208,20 +300,33 @@ namespace cqa_medical.Statistics
 			                    77, 78, 83, 87, 89
 			                };
 
-			topicStatistics = new TopicsStatistics(Program.DefaultQuestionList);
-			userTopicsWalking = new UserTopicsWalking(Program.DefaultQuestionList, categories, topicStatistics);
+			topicStatistics = new TopicsStatistics(Program.DefaultNotStemmedQuestionList);
+			userTopicsWalking = new UserTopicsWalking(Program.DefaultNotStemmedQuestionList, categories, topicStatistics);
 		}
 
 		[Test]
 		public void TestCreation()
 		{
-			Assert.AreEqual(10965, userTopicsWalking.GetUserQuestions().Count);
+			Assert.AreEqual(10965, userTopicsWalking.UserQuestions.Count);
 		}
 
+		[Test, Explicit]
+		public void GenerateUserTopicsWalkingGraph()
+		{
+			userTopicsWalking.GenerateTopicWalkingGraph("UserTopicsWalkingGraph.gv", new HashSet<int>(topicExclusions), 3);
+		}
+		
 		[Test]
 		public void TestQuestionSequencies()
 		{
-			throw new NotImplementedException();
+			const int bottomFrequencyThreshold = 7;
+			File.WriteAllText("topicMovesQuestions_" + bottomFrequencyThreshold + ".txt",
+			                  String.Join("\n\n\n",
+			                              userTopicsWalking.GetTopicMoveQuestions(bottomFrequencyThreshold).Select(
+			                              	mq =>
+			                              	mq.Key + "\n\n" +
+			                              	String.Join("\n\n",
+			                              	            mq.Value.Select(qs => String.Join("\n", qs.Select(q => q.WholeText)))))));
 		}
 
 		[Test]
@@ -233,12 +338,6 @@ namespace cqa_medical.Statistics
 			Assert.AreEqual(1042, product[0, 1]);
 			Assert.AreEqual(2084, product[1, 0]);
 			Assert.AreEqual(2083, product[1, 1]);
-		}
-
-		[Test, Explicit]
-		public void GenerateUserTopicsWalkingGraph()
-		{
-			userTopicsWalking.GenerateTopicWalkingGraph("UserTopicsWalkingGraph.gv", new HashSet<int>(topicExclusions), 20);
 		}
 
 		[Test, Explicit]

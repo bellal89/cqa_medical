@@ -163,41 +163,6 @@ namespace cqa_medical.Statistics
 		{
 			return questionsToDocs.ContainsKey(questionId) ? GetTopicByDoc(questionsToDocs[questionId], threshold) : null;
 		}
-
-		public Dictionary<Sequence, int> GetUsersTopicSequences(Dictionary<string, IEnumerable<Question>> userQuestions, int sequenceLength, double threshold)
-		{
-			var userTopicSequences = new Dictionary<Sequence, int>();
-			foreach (var questions in userQuestions)
-			{
-				var topicSequence = questions.Value.OrderBy(q => q.DateAdded)
-											  .Select(q => GetTopicByQuestionId(q.Id, threshold))
-											  .Where(t => t != null)
-											  .ToList();
-				AddUserSequencesTo(userTopicSequences, topicSequence, sequenceLength);
-			}
-			return userTopicSequences;
-		}
-
-		private static void AddUserSequencesTo(IDictionary<Sequence, int> userTopicSequences, IList<Tuple<int, double>> topicSequence, int sequenceLength)
-		{
-			for (var i = 0; i < topicSequence.Count - sequenceLength + 1; i++)
-			{
-				var seq = new Sequence(sequenceLength);
-				for (var j = i; j < i + sequenceLength; j++)
-				{
-					seq.Items[j - i] = topicSequence[j].Item1;
-				}
-				if (seq.Items.Contains(-1) || (int)Math.Round(seq.Items.Average()) == seq.Items[0]) continue;
-				if (userTopicSequences.ContainsKey(seq))
-				{
-					userTopicSequences[seq]++;
-				}
-				else
-				{
-					userTopicSequences[seq] = 1;
-				}
-			}
-		}
 	}
 
 	[TestFixture]
