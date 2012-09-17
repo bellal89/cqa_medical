@@ -1,0 +1,23 @@
+﻿body,
+html {
+    margin:0;
+    padding:0;
+}
+
+#wrap {
+    width: 1300px;
+    margin: 0 auto;
+    background:#99c;
+}
+
+#functional {
+   float:left;
+    width:300px;
+    background:#47c07d;
+    
+}
+
+#mailFrame {
+   float:right;
+    width:1000px;
+}
