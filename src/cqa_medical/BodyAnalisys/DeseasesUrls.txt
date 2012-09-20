@@ -1,4 +1,6 @@
-﻿http://www.med-spravochnik.ru/bolezni/a/index.php
+﻿/html[1]/body[1]/div[1]/div[1]/div[1]/div[4]/div[2]/div[1]/div[2]/div[1]/table[1]/tr[1]/td[1]/table[1]
+tr[{0}]/td[1]/a[1]
+http://www.med-spravochnik.ru/bolezni/a/index.php
 http://www.med-spravochnik.ru/bolezni/b/index.php
 http://www.med-spravochnik.ru/bolezni/v/index.php
 http://www.med-spravochnik.ru/bolezni/g/index.php

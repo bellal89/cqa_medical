@@ -147,6 +147,7 @@
     <None Include="BodyAnalisys\notDeseases.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BodyAnalisys\DeseasesByHand.txt" />
     <Content Include="BodyAnalisys\DeseasesUrls.txt" />
     <Content Include="BodyAnalisys\Symptoms.txt" />
   </ItemGroup>
