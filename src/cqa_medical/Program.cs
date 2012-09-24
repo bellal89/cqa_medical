@@ -33,6 +33,7 @@ namespace cqa_medical
 		public const string DeseasesIndexFileName = FilesDirectory + "DeseasesIndex.txt";
 		public const string MedicamentsIndexFileName = FilesDirectory + "MedicamentsIndex.txt";
 		public const string SymptomsIndexFileName = FilesDirectory + "SymptomsIndex.txt";
+		public const string CitiesFileName = "../../UtilitsNamespace/cities.txt";
 
 		public const int TopicsCount = 100;
 		public const string TopicsWordsFileName = FilesDirectory + "100_topics_health.twords";
