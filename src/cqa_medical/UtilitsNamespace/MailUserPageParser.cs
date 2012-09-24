@@ -10,21 +10,6 @@ using cqa_medical.DataInput;
 
 namespace cqa_medical.UtilitsNamespace
 {
-	[Serializable]
-	public class MailUser
-	{
-		public string Email { get; private set; }
-		public DateTime BirthDate { get; set; }
-		public string Name { get; set; }
-		public string Geo { get; set; }
-		public Dictionary<string, string> Info = new Dictionary<string, string>();
-
-		public MailUser(string email)
-		{
-			Email = email;
-		}
-	}
-
 	class MailUserPageParser
 	{
 		private readonly string usersDirectory;
@@ -35,8 +20,6 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			this.usersDirectory = usersDirectory;
 			directoryForSerialization = usersDirectory + "serialized/";
-			if (!Directory.Exists(directoryForSerialization))
-				Directory.CreateDirectory(directoryForSerialization);
 		}
 
 		public IEnumerable<MailUser> ParseUsers()
@@ -46,14 +29,17 @@ namespace cqa_medical.UtilitsNamespace
 		
 		public IEnumerable<MailUser> GetUsers()
 		{
-			if (Directory.Exists(directoryForSerialization))
-				return Directory.GetFiles(directoryForSerialization).Select(ObjectSerializer.GetFromFile<MailUser>).Where(u => u != null).ToList();
+			if (!Directory.Exists(directoryForSerialization) || Directory.GetFiles(directoryForSerialization).Length == 0)
+				SerializeUsers();
 			
-			return ParseUsers();
+			return Directory.GetFiles(directoryForSerialization).Select(ObjectSerializer.GetFromFile<MailUser>).Where(u => u != null).ToList();
 		}
 
 		public void SerializeUsers()
 		{
+			if (!Directory.Exists(directoryForSerialization))
+				Directory.CreateDirectory(directoryForSerialization);
+
 			foreach (var file in Directory.GetFiles(usersDirectory))
 			{
 				var user = ParseUser(file);
@@ -83,7 +69,7 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			var bio = content.SelectSingleNode("dl[@class='cc_bio']");
 			if (bio == null)
-				throw new Exception("Detailed profile format is not correct!");
+				return null;
 
 			var fields = bio.SelectNodes("dt|dd");
 			if (fields == null || fields.Count == 0)

@@ -83,10 +83,12 @@
     <Compile Include="SpellChecker\TrigramIndex.cs" />
     <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\BaseStatistics.cs" />
+    <Compile Include="Statistics\GenderDetector.cs" />
     <Compile Include="Statistics\Graph.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="Statistics\TopicsStatistics.cs" />
     <Compile Include="Statistics\UserStatistics.cs" />
+    <Compile Include="Statistics\UserTopicsWalking.cs" />
     <Compile Include="UtilitsNamespace\DataActualityChecker.cs" />
     <Compile Include="UtilitsNamespace\InferFormatLDAGenerator.cs" />
     <Compile Include="UtilitsNamespace\InvertedIndexUnit.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
     <Compile Include="LDA\LDADataGenerator.cs" />
     <Compile Include="UtilitsNamespace\GismeteoHTMLParser.cs" />
+    <Compile Include="UtilitsNamespace\MailUser.cs" />
     <Compile Include="UtilitsNamespace\MailUserPageParser.cs" />
     <Compile Include="UtilitsNamespace\OctaveController.cs" />
     <Compile Include="UtilitsNamespace\OctavePlot.cs" />

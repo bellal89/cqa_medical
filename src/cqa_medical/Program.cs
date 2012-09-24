@@ -15,7 +15,7 @@ namespace cqa_medical
 		public const string FilesDirectory = "../../Files/";
 		public const string StatisticsDirectory = "../../StatOutput/";
 
-		public const string MailUsersDirectory = StatisticsDirectory + "userInfos/";
+		public const string MailUsersDirectory = StatisticsDirectory + "userInfos2/";
 
 		public const string QuestionsNoTyposFileName = FilesDirectory + "qst_25.NoTypos.csv";
 		public const string AnswersNoTyposFileName = FilesDirectory + "ans_25.NoTypos.csv";
@@ -26,6 +26,9 @@ namespace cqa_medical
 		public const string LazarevaManualFileName = FilesDirectory + "Лазарева - Справочник фельдшера.txt";
 		public const string BodyPartsFileName = FilesDirectory + "BodyParts.txt";
 		public const string MedicamentsFileName = FilesDirectory + "Grls.txt";
+
+		public const string FemaleNamesFileName = FilesDirectory + "Female_names.txt";
+		public const string MaleNamesFileName = FilesDirectory + "Male_names.txt";
 
 		public const string DeseasesIndexFileName = FilesDirectory + "DeseasesIndex.txt";
 		public const string MedicamentsIndexFileName = FilesDirectory + "MedicamentsIndex.txt";
