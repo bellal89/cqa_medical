@@ -99,6 +99,7 @@
     <Compile Include="LDA\LDADataGenerator.cs" />
     <Compile Include="UtilitsNamespace\GismeteoHTMLParser.cs" />
     <Compile Include="UtilitsNamespace\MailUser.cs" />
+    <Compile Include="UtilitsNamespace\MailSender.cs" />
     <Compile Include="UtilitsNamespace\MailUserPageParser.cs" />
     <Compile Include="UtilitsNamespace\OctaveController.cs" />
     <Compile Include="UtilitsNamespace\OctavePlot.cs" />
