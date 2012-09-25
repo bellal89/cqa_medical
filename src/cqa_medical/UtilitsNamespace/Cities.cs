@@ -9,36 +9,44 @@ namespace cqa_medical.UtilitsNamespace
 {
 	class Cities
 	{
-		private readonly Dictionary<string, string> cities;
+		private readonly Dictionary<string, string> cities = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> domains = new Dictionary<string, string>(); 
 
-		private Cities(Dictionary<string, string> cities)
+		public Cities(string filename)
 		{
-			this.cities = cities;
+			var lines = File.ReadAllLines(filename).Select(l => l.ToLower());
+			foreach (var line in lines)
+			{
+				var parts = line.Split(new[] {'(', ')'}, StringSplitOptions.RemoveEmptyEntries);
+				if (parts.Length < 2) continue;
+
+				var city = parts[0].Trim();
+				var domain = parts[1].Trim();
+				var domainName = domain.Replace("республика", "").Replace("край", "").Replace("область", "").Trim();
+
+				if (!domains.ContainsKey(domainName))
+					domains[domainName] = domain;
+
+				while (cities.ContainsKey(city))
+					city += "!";
+				cities.Add(city, domain);
+			}
 		}
 
 		public static Cities GetRussianCities()
 		{
-			var dict = new Dictionary<string, string>();
-			var lines = File.ReadAllLines(Program.CitiesFileName)
-				.Select(l => l.ToLower());
-			foreach (var line in lines)
-			{
-				var openParenthesis = line.LastIndexOf('(');
-				var closeParenthesis = line.LastIndexOf(')');
-				var city = line.Substring(0, openParenthesis - 1);
-				var domain = line.Substring(openParenthesis + 1, closeParenthesis - openParenthesis - 1);
-				while (dict.ContainsKey(city))
-					city += "!";
-				dict.Add(city, domain);
-
-			}
-			return new Cities(dict);
+			return new Cities(Program.RussianCitiesFileName);
 		}
 
 		// here is a problem with non-unique city name
-		public  string GetDomain(string city)
+		public  string GetDomain(string place)
 		{
-			return cities[city.ToLower()];
+			var city = place.Trim().ToLower();
+			if(cities.ContainsKey(city))
+				return cities[city];
+			if (domains.ContainsKey(city))
+				return domains[city];
+			return null;
 		}
 
 		/// <summary>

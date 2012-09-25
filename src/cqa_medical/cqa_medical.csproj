@@ -154,7 +154,9 @@
     <Content Include="BodyAnalisys\DeseasesByHand.txt" />
     <Content Include="BodyAnalisys\DeseasesUrls.txt" />
     <Content Include="BodyAnalisys\Symptoms.txt" />
-    <Content Include="UtilitsNamespace\cities.txt" />
+    <Content Include="UtilitsNamespace\cities.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

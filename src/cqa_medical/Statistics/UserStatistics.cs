@@ -20,9 +20,20 @@ namespace cqa_medical.Statistics
 			users = parser.GetUsers().ToList();
 		}
 
+		public List<MailUser> GetUsers()
+		{
+			return users;
+		}
+
 		public SortedDictionary<string, int> GetUserNames()
 		{
 			return GetDistribution(users.Select(u => u.Name).Where(n => !String.IsNullOrEmpty(n)));
+		}
+
+		public SortedDictionary<string, int> GetUsersByRegionDistribution()
+		{
+			var cities = Cities.GetRussianCities();
+			return GetDistribution(users.Where(u => u.Geo != null).Select(u => cities.GetDomain(u.Geo)).Where(domain => domain != null));
 		}
 	}
 
@@ -67,6 +78,21 @@ namespace cqa_medical.Statistics
 
 			File.WriteAllLines(malePath, genders.Where(n => n.Item3 == GenderDetector.Gender.Male).Select(n => n.Item1 + "\t" + n.Item2)); 
 			File.WriteAllLines(femalePath, genders.Where(n => n.Item3 == GenderDetector.Gender.Female).Select(n => n.Item1 + "\t" + n.Item2));
+		}
+
+		[Test, Explicit]
+		public static void SaveUsersByRegionDistribution()
+		{
+			const string fileToSave = "";
+
+			var userStatistics = new UserStatistics(Program.DefaultQuestionList);
+			var userRegions = userStatistics.GetUsersByRegionDistribution().OrderByDescending(kv => kv.Value);
+
+			Console.WriteLine(userStatistics.GetUsers().Count);
+			Console.WriteLine(userStatistics.GetUserNames().Count);
+			Console.WriteLine(userRegions.Sum(r => r.Value));
+			
+			Console.WriteLine(String.Join("\n", userRegions.Select(kv => kv.Key + "\t" + kv.Value)));
 		}
 	}
 }
