@@ -83,6 +83,7 @@
     <Compile Include="SpellChecker\TrigramIndex.cs" />
     <Compile Include="SpellChecker\TypoDetecter.cs" />
     <Compile Include="Statistics\BaseStatistics.cs" />
+    <Compile Include="Statistics\ExpertUsers.cs" />
     <Compile Include="Statistics\GraphBuilder.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="Statistics\TopicsStatistics.cs" />

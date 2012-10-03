@@ -243,15 +243,17 @@ namespace cqa_medical.Statistics
 	[TestFixture]
 	internal class GetDistributions
 	{
+		private QuestionList ql;
 		private Statistics statistics;
 
 		[SetUp]
 		public void DistributionInit()
 		{
-			var q1 = Program.DefaultQuestionList;
-			statistics = new Statistics(q1);
+			ql = Program.DefaultQuestionList;
+			statistics = new Statistics(ql);
 			Console.WriteLine("Preparations have been done");
 		}
+		
 
 		[Test, Explicit]
 		public void AverageThread()
