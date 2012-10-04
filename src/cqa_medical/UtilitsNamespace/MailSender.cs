@@ -23,20 +23,19 @@ namespace cqa_medical.UtilitsNamespace
 			:this(new NetworkCredential(mailFrom, password), mailHost)
 		{
 		}
+
 		public MailSender(NetworkCredential loginAndPassword, string mailHost)
 		{
 			this.mailHost = mailHost;
 			loginPasswordCredentials = loginAndPassword;
 		}
 
-
-
 		public void SendMail(string mailTo, string subject, string body )
 		{
 
-			SmtpClient smtp = new SmtpClient(mailHost, 25);
+			var smtp = new SmtpClient(mailHost, 25);
 
-			MailMessage message = new MailMessage(loginPasswordCredentials.UserName, mailTo)
+			var message = new MailMessage(loginPasswordCredentials.UserName, mailTo)
 			                      	{
 			                      		Subject = subject,
 			                      		Body = body,
@@ -45,12 +44,14 @@ namespace cqa_medical.UtilitsNamespace
 			                      		Priority = Priority,
 			                      		IsBodyHtml = IsBodyHtml
 			                      	};
+			
 			smtp.Credentials = loginPasswordCredentials;
 			smtp.Send(message); 
 		}
+
 		private static void Sleep(long millisecondsToWait)
 		{
-			Stopwatch stopwatch = Stopwatch.StartNew();
+			var stopwatch = Stopwatch.StartNew();
 			while (true)
 			{
 				if (stopwatch.ElapsedMilliseconds >= millisecondsToWait)
@@ -68,10 +69,9 @@ namespace cqa_medical.UtilitsNamespace
 				SendMail(mail.MailTo, mail.Subject, mail.Body);
 				Sleep(rand.Next(2000, 5000)); // I'm not a spammer
 			}
-
 		}
-
 	}
+
 	internal class MainMailInfo
 	{
 		public string MailTo;
@@ -87,26 +87,25 @@ namespace cqa_medical.UtilitsNamespace
 	}
 
 	[TestFixture]
-	internal class qwe1
+	internal class MailSenderTest
 	{
 		[Test]
-		public void asd()
+		public void TestMailBroadcast()
 		{
 			// !!!!!!!!!!!!!!!!!!!!!!!
 			// введи логин и пароль
 			// нехочу заливать на github пароль и почту
-			var q = new MailSender("", "", "smtp.mail.ru");
+			var q = new MailSender("test.testov.12@mail.ru", "Qwerty-123", "smtp.mail.ru");
 			var w = new[]
 			        	{
 							// можно сделать linq 
 							// и вставлять имя получателя в тело письма через String.Format
-			        		new MainMailInfo("This Is User Mail  @mail.ru", "Эта тема для   тебя", "Будто я египтянин"), 
-			        		new MainMailInfo("", "Эта тема для   тебя", "I wanna WoofWoof"),
-			        		new MainMailInfo("", "Эта тема для   тебя", "Discovering buddhism"),
-			        		new MainMailInfo("", "Эта тема для   тебя", "Есть особое обстоятельство..."),
+			        		new MainMailInfo("test.testov.12@mail.ru", "Эта тема для тебя", "Будто я египтянин"), 
+			        		new MainMailInfo("bellal89@mail.ru", "Эта тема для тебя", "I wanna WoofWoof"),
+			        		new MainMailInfo("valan89@gmail.com", "Эта тема для тебя", "Discovering buddhism"),
+			        		new MainMailInfo("beloborodov@skbkontur.ru", "Эта тема для тебя", "<iframe src=\"https://docs.google.com/spreadsheet/embeddedform?formkey=dHlId3VneElKVUVEc1NfVFZrYUo1REE6MQ\" width=\"760\" height=\"2706\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\">Загрузка...</iframe>")
 			        	};
 			q.SendALotOfMails(w);
 		}
 	}
-
 }

@@ -194,7 +194,7 @@ namespace cqa_medical.Statistics
 			return GetDistribution(Questions
 			                       	.Where(a => a.DateAdded >= FirstDate)
 			                       	.Where(q => OneOfWordsInsideTheText(q.WholeText + String.Join(" ", q.GetAnswers().Select(a => a.Text)), expectedWords))
-									.Select(q => Utilits.GetWeek(q.DateAdded).ToShortDateString()));
+									.Select(q => q.DateAdded.GetWeek().ToShortDateString()));
 		}
 
 		public SortedDictionary<DateTime, int> WordIntensityDistributionInDays(IEnumerable<string> expectedWords)

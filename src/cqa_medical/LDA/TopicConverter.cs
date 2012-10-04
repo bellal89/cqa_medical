@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using NUnit.Framework;
 using cqa_medical.Statistics;
 
@@ -19,7 +20,7 @@ namespace cqa_medical.LDA
 		{
 			var i = 0;
 			var nTopic = -1;
-			var lines = File.ReadAllLines(topicsByWordsFileName);
+			var lines = File.ReadAllLines(topicsByWordsFileName, Encoding.UTF8);
 			foreach(var line in lines)
 			{
 				if(line.StartsWith("Topic"))

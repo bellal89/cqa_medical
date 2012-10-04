@@ -149,7 +149,9 @@ namespace cqa_medical.Statistics
 		public IEnumerable<Question> GetQuestionsByTopic(int topicNumber, double threshold = 0.1)
 		{
 			Assert.That(topicNumber,Is.LessThan(topics.Length));
-			return GetDocTopics(threshold).Where(t => t == topicNumber).Select((t, d) => QuestionList.GetQuestion(questionIds[d]));
+			return
+				GetDocTopics(threshold).Select((t, d) => Tuple.Create(t, d)).Where(t => t.Item1 == topicNumber).Select(
+					t => QuestionList.GetQuestion(questionIds[t.Item2]));
 		}
 
 		private Tuple<int, double> GetTopicByDoc(int docNumber, double threshold)
@@ -162,6 +164,11 @@ namespace cqa_medical.Statistics
 		public Tuple<int, double> GetTopicByQuestionId(long questionId, double threshold)
 		{
 			return questionsToDocs.ContainsKey(questionId) ? GetTopicByDoc(questionsToDocs[questionId], threshold) : null;
+		}
+
+		public Dictionary<long, double> GetQuestionTopicsProbabilitySums(params int[] topicNumbers)
+		{
+			return topics[topicNumbers[0]].Select((t, i) => Tuple.Create(questionIds[i], topicNumbers.Sum(n => topics[n][i]))).ToDictionary(it => it.Item1, it => it.Item2);
 		}
 	}
 

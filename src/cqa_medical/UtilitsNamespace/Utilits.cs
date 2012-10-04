@@ -15,7 +15,7 @@ namespace cqa_medical.UtilitsNamespace
 
 		public static string StripHTMLTags(this String s)
 		{
-			return Regex.Replace(s, "<[^>]*?>", string.Empty, RegexOptions.IgnoreCase);
+			return Regex.Replace(s, "<[^>]*?>", String.Empty, RegexOptions.IgnoreCase);
 		}
 
 		public static IEnumerable<string> SplitIntoWords(this string s)
@@ -35,29 +35,29 @@ namespace cqa_medical.UtilitsNamespace
 
 		public static string ToStringNormal<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
 		{
-			return string.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + delimiter + data[k].ToString()));
+			return String.Join(Environment.NewLine, data.Keys.Select(k => k.ToString() + delimiter + data[k].ToString()));
 		}
 		public static string ToStringSortedByValue<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
 		{
-			return string.Join(Environment.NewLine, data.Keys.OrderByDescending(k => data[k]).Select(k => k.ToString() + delimiter + data[k].ToString()));
+			return String.Join(Environment.NewLine, data.Keys.OrderByDescending(k => data[k]).Select(k => k.ToString() + delimiter + data[k].ToString()));
 		}
 
 		public static string ToStringInverted<TKey, TValue>(this IDictionary<TKey, TValue> data, string delimiter = "\t")
 		{
-			return string.Join(Environment.NewLine,
+			return String.Join(Environment.NewLine,
 			                   data.Keys.OrderByDescending(key => data[key]).Select(
 			                   	k => data[k].ToString() + delimiter + k.ToString()));
 		}
 
 		public static string ToStringComparable<TValue>(this IDictionary<DateTime, TValue> data, string delimiter = "\t")
 		{
-			return string.Join(Environment.NewLine,
+			return String.Join(Environment.NewLine,
 			                   data.Keys.Select(k => k.ToString("yyyy-MM-dd") + delimiter + data[k].ToString()));
 		}
 
 		public static string EmptyOrFormat(this string s, string format)
 		{
-			if (string.IsNullOrEmpty(s)) return "";
+			if (String.IsNullOrEmpty(s)) return "";
 			return String.Format(format, s);
 		}
 
@@ -118,6 +118,27 @@ namespace cqa_medical.UtilitsNamespace
 		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> pairs)
 		{
 			return pairs.ToDictionary(q => q.Key, q => q.Value);
+		}
+
+		public static SortedDictionary<DateTime, double> NormalizeByMax(this SortedDictionary<DateTime, int> dictionary)
+		{
+			return new SortedDictionary<DateTime, double>(dictionary.ToDictionary(kv => kv.Key, kv => (double)kv.Value).NormalizeByMax());
+		}
+
+		public static SortedDictionary<DateTime, double> NormalizeByMax(this SortedDictionary<DateTime, double> dictionary)
+		{
+			return new SortedDictionary<DateTime, double>(dictionary.ToDictionary(kv => kv.Key, kv => kv.Value).NormalizeByMax());
+		}
+		
+		public static Dictionary<DateTime, double> NormalizeByMax(this Dictionary<DateTime, int> dictionary)
+		{
+			return dictionary.ToDictionary(kv => kv.Key, kv => (double) kv.Value).NormalizeByMax();
+		}
+
+		public static Dictionary<DateTime, double> NormalizeByMax(this Dictionary<DateTime, double> dictionary)
+		{
+			var max = dictionary.Max(kv => kv.Value);
+			return dictionary.ToDictionary(kv => kv.Key, kv => kv.Value / max);
 		}
 
 		#endregion
@@ -226,7 +247,33 @@ namespace cqa_medical.UtilitsNamespace
 
 		#endregion
 
+		#region Statistics
 
+		public static double GetTimeCorrelation(IDictionary<DateTime, double> range1, IDictionary<DateTime, double> range2)
+		{
+			var range = new Dictionary<DateTime, Tuple<double, double>>();
+			foreach (var key in range1.Keys.Where(range2.ContainsKey))
+			{
+				range[key] = Tuple.Create(range1[key], range2[key]);
+			}
+
+			var mean1 = range.Average(kv => kv.Value.Item1);
+			var mean2 = range.Average(kv => kv.Value.Item2);
+
+			var interimValues =
+				range.Select(kv => InterimCalc(kv.Value.Item1, kv.Value.Item2, mean1, mean2))
+					 .Aggregate((it1, it2) => Tuple.Create(it1.Item1 + it2.Item1, it1.Item2 + it2.Item2, it1.Item3 + it2.Item3));
+			return interimValues.Item1/Math.Sqrt(interimValues.Item2*interimValues.Item3);
+		}
+
+		private static Tuple<double, double, double> InterimCalc(double val1, double val2, double mean1, double mean2)
+		{
+			var dif1 = val1 - mean1;
+			var dif2 = val2 - mean2;
+			return Tuple.Create(dif1*dif2, dif1 * dif1, dif2 * dif2);
+		}
+
+		#endregion
 	}
 	[TestFixture]
 	internal class DetectTimeTest
@@ -258,7 +305,6 @@ namespace cqa_medical.UtilitsNamespace
 			Assert.AreEqual(11, w[dateTime.GetWeek()]);
 
 		}
-
 	}
 
 }

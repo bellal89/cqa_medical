@@ -89,7 +89,7 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			var q = Cities.GetRussianCities();
 			var w = q.GetAllCitiesInDomain("московская область");
-
+			Console.WriteLine(w.Count);
 		}
 	}
 }
