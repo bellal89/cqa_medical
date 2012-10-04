@@ -108,10 +108,10 @@ namespace cqa_medical.UtilitsNamespace
 			        	{
 							// можно сделать linq 
 							// и вставлять имя получателя в тело письма через String.Format
-			        		new MainMailInfo("test.testov.12@mail.ru", "Эта тема для тебя", "Будто я египтянин"), 
-			        		new MainMailInfo("bellal89@mail.ru", "Эта тема для тебя", "I wanna WoofWoof"),
-			        		new MainMailInfo("valan89@gmail.com", "Эта тема для тебя", "Discovering buddhism"),
-			        		new MainMailInfo("beloborodov@skbkontur.ru", "Эта тема для тебя", "<iframe src=\"https://docs.google.com/spreadsheet/embeddedform?formkey=dHlId3VneElKVUVEc1NfVFZrYUo1REE6MQ\" width=\"760\" height=\"2706\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\">Загрузка...</iframe>")
+			        		new MainMailInfo("", "Эта тема для тебя", "Будто я египтянин"), 
+			        		new MainMailInfo("", "Эта тема для тебя", "I wanna WoofWoof"),
+			        		new MainMailInfo("", "Эта тема для тебя", "Discovering buddhism"),
+			        		new MainMailInfo("", "Эта тема для тебя", "<iframe src=\"https://docs.google.com/spreadsheet/embeddedform?formkey=dHlId3VneElKVUVEc1NfVFZrYUo1REE6MQ\" width=\"760\" height=\"2706\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\">Загрузка...</iframe>")
 			        	};
 			q.SendALotOfMails(w);
 		}
