@@ -13,28 +13,27 @@ namespace cqa_medical.UtilitsNamespace
 
 		public Encoding MailEncoding = Encoding.UTF8;
 		public MailPriority Priority = MailPriority.High;
-		public bool IsBodyHtml = true;
+		public bool IsBodyHtml = false;
+
+		public Dictionary<string, string> AdditionalHeaders; 
 
 
 		private readonly NetworkCredential loginPasswordCredentials;
-		private readonly string mailHost;
+		private readonly SmtpClient smtp;
 
 		public MailSender(string mailFrom, string password, string mailHost)
 			:this(new NetworkCredential(mailFrom, password), mailHost)
 		{
 		}
-
-		public MailSender(NetworkCredential loginAndPassword, string mailHost)
+		public MailSender(NetworkCredential loginAndPassword, string mailHost, int port = 25)
 		{
-			this.mailHost = mailHost;
 			loginPasswordCredentials = loginAndPassword;
+			smtp = new SmtpClient(mailHost, port) {Credentials = loginPasswordCredentials};
+			AdditionalHeaders = new Dictionary<string, string>();
 		}
 
 		public void SendMail(string mailTo, string subject, string body )
 		{
-
-			var smtp = new SmtpClient(mailHost, 25);
-
 			var message = new MailMessage(loginPasswordCredentials.UserName, mailTo)
 			                      	{
 			                      		Subject = subject,
@@ -42,10 +41,12 @@ namespace cqa_medical.UtilitsNamespace
 			                      		SubjectEncoding = MailEncoding,
 			                      		BodyEncoding = MailEncoding,
 			                      		Priority = Priority,
-			                      		IsBodyHtml = IsBodyHtml
+			                      		IsBodyHtml = IsBodyHtml,
 			                      	};
-			
-			smtp.Credentials = loginPasswordCredentials;
+			foreach (var pair in AdditionalHeaders)
+			{
+				message.Headers.Add(pair.Key, pair.Value);
+			}
 			smtp.Send(message); 
 		}
 
@@ -63,12 +64,19 @@ namespace cqa_medical.UtilitsNamespace
 
 		public void SendALotOfMails(IEnumerable<MainMailInfo> mails)
 		{
+			AdditionalHeaders.Add("Precedence", "bulk");
+			AdditionalHeaders.Add("X-Mailru-Msgtype", "Statistics");
+			AdditionalHeaders.Add("X-Mailer", "statistics");
+
 			var rand = new Random(1);
 			foreach (var mail in mails)
 			{
 				SendMail(mail.MailTo, mail.Subject, mail.Body);
 				Sleep(rand.Next(2000, 5000)); // I'm not a spammer
 			}
+			AdditionalHeaders.Remove("X-Mailer");
+			AdditionalHeaders.Remove("Precedence");
+			AdditionalHeaders.Remove("X-Mailru-Msgtype");
 		}
 	}
 
@@ -95,7 +103,7 @@ namespace cqa_medical.UtilitsNamespace
 			// !!!!!!!!!!!!!!!!!!!!!!!
 			// введи логин и пароль
 			// нехочу заливать на github пароль и почту
-			var q = new MailSender("test.testov.12@mail.ru", "Qwerty-123", "smtp.mail.ru");
+			var q = new MailSender("SenDer mail @mail.ru", "sender password", "smtp.mail.ru");
 			var w = new[]
 			        	{
 							// можно сделать linq 
