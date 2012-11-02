@@ -37,6 +37,15 @@ namespace cqa_medical.Statistics
 			MedicalGuide.Add(Tuple.Create(desease, medicament), howMany);
 		}
 
+		public string ToStringOneToMany(int howMany)
+		{
+			return String.Join("\n", MedicalGuide.GroupBy(it => it.Key.Item1,
+			                                       (key, items) =>
+			                                       Tuple.Create(key, items.Select(it => Tuple.Create(it.Key.Item2, it.Value)))).
+			                  	OrderByDescending(it => it.Item2.Sum(med => med.Item2)).Select(
+			                  		it => it.Item1 + "\t" + String.Join("\n\t", it.Item2.OrderByDescending(med => med.Item2).Take(howMany).Select(med => med.Item1 + "\t" + med.Item2))));
+		}
+
 		public override string ToString()
 		{
 			return String.Join("\n", MedicalGuide.OrderByDescending(a => a.Value).Select(t => String.Join("\t", t.Key.Item1 , t.Key.Item2 , t.Value)));
@@ -88,16 +97,32 @@ namespace cqa_medical.Statistics
 			public void GetTables()
 			{
 				const int minAmount = 30;
-				var medicaments = Medicaments.GetDefaultIndex().ToArray();
-				var deseases = Deseases.GetDefaultIndex().ToArray();
+				//var deseases = Deseases.GetDefaultIndex().ToArray();
+				var deseases = Deseases.GetFuzzyIndex().ToArray();
+				//var medicaments = Medicaments.GetDefaultIndex().ToArray();
+				var medicaments = Medicaments.GetFuzzyIndex().ToArray();
 				var deseasesFromAnswers = Deseases.GetIndexFromAnswers().ToArray();
 				var symptoms = Symptoms.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
 				var q = new DeseasesToMedicamentsTable(deseases, medicaments, 1);
-				File.WriteAllText("../../Files/deseases-medicaments.txt", q.ToString());
+
+				File.WriteAllText(Program.FilesDirectory + "deseases-medicaments.txt", q.ToStringOneToMany(10));
 				var w = new DeseasesToMedicamentsTable(symptoms, medicaments,10);
-				File.WriteAllText("../../Files/symptoms-medicaments.txt", w.ToString());
+				File.WriteAllText(Program.FilesDirectory + "symptoms-medicaments.txt", w.ToString());
 				var e = new DeseasesToMedicamentsTable(symptoms, deseasesFromAnswers, 10);
-				File.WriteAllText("../../Files/symptoms-deseases.txt", e.CapitulatoryStringByFirst());
+				File.WriteAllText(Program.FilesDirectory + "symptoms-deseases.txt", e.CapitulatoryStringByFirst());
+			}
+
+			[Test, Explicit]
+			public void TestFuzzyDeseaseMedicamentQuestionsCount()
+			{
+				var deseaseMedicamentQuestions = new List<long>();
+
+				var medicaments = Medicaments.GetFuzzyIndex().ToArray();
+				var deseases = Deseases.GetFuzzyIndex().ToArray();
+
+				foreach (var desMedQuests in from desease in deseases from medicament in medicaments select desease.Ids.Intersect(medicament.Ids).ToList())
+					deseaseMedicamentQuestions.AddRange(desMedQuests);
+				Console.WriteLine("Desease - medicament question pairs: " + deseaseMedicamentQuestions.Distinct().Count());
 			}
 		}
 

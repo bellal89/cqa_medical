@@ -11,7 +11,7 @@ namespace cqa_medical.SpellChecker
 {
 	internal class TrigramIndex
 	{
-		public SortedDictionary<int, string> WordAndId { get; private set; }
+		public SortedDictionary<int, string> IdToWord { get; private set; }
 		public Dictionary<string, HashSet<int>> Trigrams { get; private set; }
 		private readonly HashSet<string> vocabulary;
 
@@ -25,26 +25,38 @@ namespace cqa_medical.SpellChecker
 			return new TrigramIndex(questionList, Program.FilesDirectory + "1grams-3.txt");
 		}
 
+		public TrigramIndex(IEnumerable<string> words)
+		{
+			vocabulary = new HashSet<string>(words);
+			IdToWord = new SortedDictionary<int, string>(vocabulary.Select((w, i) => Tuple.Create(i, w)).ToDictionary(it => it.Item1, it => it.Item2));
+			Trigrams = CalculateTrigramIndex();
+		}
 
 		private TrigramIndex(QuestionList questionList)
 		{
 			// Frequencies dictionary based on Mail.Ru corpus
-			var frequencies = CalculateDefaultWordFrequencies(questionList);
+			var frequentWords = GetFrequentWords(questionList);
 			int i = 0;
-			WordAndId = new SortedDictionary<int, string>(frequencies.ToDictionary(q =>  i++, q => q));
+			IdToWord = new SortedDictionary<int, string>(frequentWords.ToDictionary(q =>  i++, q => q));
 			Trigrams = GetDefaultTrigramIndex(questionList);
-			vocabulary = new HashSet<string>(WordAndId.Values);
+			vocabulary = new HashSet<string>(IdToWord.Values);
 		}
 
 		private TrigramIndex(QuestionList questionList, string wordsDictionaryFileName)
 		{
 			// External frequencies dictionary (Google: "ruscorpora"):
 			Console.WriteLine("TrigramIndex: Geting Words from " + wordsDictionaryFileName);
-			WordAndId = new SortedDictionary<int, string>(LoadFromFile(wordsDictionaryFileName));
+			IdToWord = new SortedDictionary<int, string>(LoadFromFile(wordsDictionaryFileName));
 			Console.WriteLine("TrigramIndex: Geting Trigram Index now");
 			Trigrams = GetDefaultTrigramIndex(questionList);
-			vocabulary = new HashSet<string>(WordAndId.Values);
+			vocabulary = new HashSet<string>(IdToWord.Values);
 		}
+		
+		public HashSet<string> GetVocabulary()
+		{
+			return vocabulary;
+		}
+
 		public bool ContainsWord(string word)
 		{
 			return vocabulary.Contains(word);
@@ -53,9 +65,9 @@ namespace cqa_medical.SpellChecker
 		private Dictionary<string, HashSet<int>> CalculateTrigramIndex()
 		{
 			var kgrams = new Dictionary<string, HashSet<int>>();
-			for (var i = 0; i < WordAndId.Count; i++)
+			for (var i = 0; i < IdToWord.Count; i++)
 			{
-				var word = WordAndId[i];
+				var word = IdToWord[i];
 				var wordTrigrams = GetTrigramsFrom(word);
 				foreach (var trigram in wordTrigrams)
 				{
@@ -86,6 +98,7 @@ namespace cqa_medical.SpellChecker
 		{
 			return GetKgramsFrom(word, 3);
 		}
+		
 		private static Dictionary<int, string> LoadFromFile(string fileName)
 		{
 			int i = 0;
@@ -95,7 +108,7 @@ namespace cqa_medical.SpellChecker
 				.ToDictionary(a => i++, a => a[1]);
 		}
 
-		public static string[] CalculateDefaultWordFrequencies(QuestionList questionList)
+		public static string[] GetFrequentWords(QuestionList questionList)
 		{
 			var getDataFunction = new Func<string[]>(
 				() =>
@@ -140,14 +153,11 @@ namespace cqa_medical.SpellChecker
 				.ToDictionary(item => item.Item1, item => item.Item2);
 		}
 
-		public HashSet<int> WordsIdsUnionFrom(IEnumerable<string> wordTrigrams)
+		public HashSet<string> GetWordListUnion(IEnumerable<string> wordTrigrams)
 		{
-			var result = new HashSet<int>();
-			foreach (var word in wordTrigrams.Where(Trigrams.ContainsKey).SelectMany(t=> Trigrams[t]))
-				result.Add(word);
-			return result;
+			return new HashSet<string>(wordTrigrams.Where(Trigrams.ContainsKey).SelectMany(t => Trigrams[t]).Distinct().Select(id => IdToWord[id]));
 		}
-}
+	}
 
 	[TestFixture]
 	public class TrigramIndexTest

@@ -56,6 +56,7 @@ namespace cqa_medical.DataInput
 				question.AddAnswer(answer);
 			}
 		}
+
 		public  QuestionList (string questionsFileName, string answersFileName, IStemmer stemmer = null)
 		{
 			if (stemmer != null)

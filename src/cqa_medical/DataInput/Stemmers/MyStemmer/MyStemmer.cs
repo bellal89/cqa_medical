@@ -6,9 +6,14 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 	{
 		private readonly Vocabulary vocabulary;
 
-		public MyStemmer(Vocabulary vocabulary)
+		public MyStemmer(params string[] fileNames)
 		{
-			this.vocabulary = vocabulary;
+			vocabulary = new Vocabulary(fileNames);
+		}
+
+		public Vocabulary GetVocabulary()
+		{
+			return vocabulary;
 		}
 
 		public string Stem(string word)
@@ -57,9 +62,8 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		[Test]
 		public void TestDictionaryLoading()
 		{
-			var vocabulary = new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName);
-			var stemmer = new MyStemmer(vocabulary);
-			Assert.AreEqual(661255, vocabulary.GetWordInfos().Count);
+			var stemmer = new MyStemmer(Program.QuestionsFileName, Program.AnswersFileName);
+			Assert.AreEqual(661255, stemmer.GetVocabulary().GetWordInfos().Count);
 			Assert.AreEqual("сильный", stemmer.Stem("СилЬнЫх"));
 		}
 	}

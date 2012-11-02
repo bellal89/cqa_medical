@@ -62,7 +62,7 @@ namespace cqa_medical.BodyAnalisys
 		[Test, Explicit]
 		public void TestCalculation()
 		{
-			var questionList = Program.DefaultQuestionList;
+			var questionList = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness");
 			var body = BodyPart.GetBodyPartsFromFile(Program.BodyPartsFileName);
 			var calc = new BodyCalculator(questionList, body);
 			calc.CalculateQuestionDistribution();

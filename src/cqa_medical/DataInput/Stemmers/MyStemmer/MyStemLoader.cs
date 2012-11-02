@@ -95,9 +95,10 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			                     	{
 			                     		StartInfo =
 			                     			{
+												
 			                     				FileName = "mystem.exe", 
 												Arguments = "-in -e cp1251 " + inputFileName + " " + outputFileName,
-												CreateNoWindow = true
+												//CreateNoWindow = true
 			                     			}
 			                     	})
 			{

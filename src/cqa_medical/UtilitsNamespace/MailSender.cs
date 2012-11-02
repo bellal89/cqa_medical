@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using NUnit.Framework;
+using cqa_medical.QualityAnalisys;
 
 namespace cqa_medical.UtilitsNamespace
 {
@@ -69,10 +71,19 @@ namespace cqa_medical.UtilitsNamespace
 			AdditionalHeaders.Add("X-Mailer", "statistics");
 
 			var rand = new Random(1);
+			var i = 1;
 			foreach (var mail in mails)
 			{
-				SendMail(mail.MailTo, mail.Subject, mail.Body);
-				Sleep(rand.Next(2000, 5000)); // I'm not a spammer
+				try
+				{
+					SendMail(mail.MailTo, mail.Subject, mail.Body);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine("Exception: " + e.Message);
+				}
+				Console.WriteLine(i++);
+				Sleep(rand.Next(1000, 3000)); // I'm not a spammer
 			}
 			AdditionalHeaders.Remove("X-Mailer");
 			AdditionalHeaders.Remove("Precedence");
@@ -98,20 +109,26 @@ namespace cqa_medical.UtilitsNamespace
 	internal class MailSenderTest
 	{
 		[Test]
-		public void TestMailBroadcast()
+		public void TestUsersElection()
+		{
+			var userQuality = new UserQuality(Program.DefaultQuestionList);
+			const int n = 1000;
+			var quality = userQuality.GetUserInfos().Keys.Select(k => Tuple.Create(k, userQuality.GetUserQuality(k))).OrderByDescending(it => it.Item2).Take(n);
+			Console.WriteLine(String.Join("\n", quality.Select(q => q.Item1 + "\t" + q.Item2)));
+		}
+
+		[Test, Explicit]
+		public void MailBroadcast()
 		{
 			// !!!!!!!!!!!!!!!!!!!!!!!
 			// введи логин и пароль
 			// нехочу заливать на github пароль и почту
-			var q = new MailSender("SenDer mail @mail.ru", "sender password", "smtp.mail.ru");
+			var q = new MailSender("sendme", "aimimach", "mail.imach.uran.ru"/*"smtp.mail.ru"*/);
 			var w = new[]
 			        	{
 							// можно сделать linq 
 							// и вставлять имя получателя в тело письма через String.Format
-			        		new MainMailInfo("", "Эта тема для тебя", "Будто я египтянин"), 
-			        		new MainMailInfo("", "Эта тема для тебя", "I wanna WoofWoof"),
-			        		new MainMailInfo("", "Эта тема для тебя", "Discovering buddhism"),
-			        		new MainMailInfo("", "Эта тема для тебя", "<iframe src=\"https://docs.google.com/spreadsheet/embeddedform?formkey=dHlId3VneElKVUVEc1NfVFZrYUo1REE6MQ\" width=\"760\" height=\"2706\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\">Загрузка...</iframe>")
+			        		new MainMailInfo("s o m e @m a i l.ru", "Mail subject", "Mail body")
 			        	};
 			q.SendALotOfMails(w);
 		}

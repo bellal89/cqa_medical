@@ -20,8 +20,13 @@ namespace cqa_medical.Statistics
 			: base(questionList)
 		{
 			var parser = new MailUserPageParser(Program.MailUsersDirectory);
-			users = parser.GetUsers().ToList();
 			
+			var questionUsers = questionList.GetAllQuestions().Select(q => q.AuthorEmail);
+			var answerUsers = questionList.GetAllAnswers().Select(a => a.AuthorEmail);
+			var questionListUsers = new HashSet<string>(questionUsers.Union(answerUsers));
+
+			users = parser.GetUsers().Where(u => questionListUsers.Contains(u.Email)).ToList();
+
 			topicStatistics = new TopicsStatistics(questionList);
 		}
 
@@ -130,13 +135,28 @@ namespace cqa_medical.Statistics
 
 			return allTopicProbabilities;
 		}
+
+		public SortedDictionary<int, int> GetBestAnswerTimeDistribution()
+		{
+			var illnessQuestions = Program.DefaultNotStemmedQuestionList.NewQuestionListFilteredByCategories("illness");
+			return GetDistribution(
+				illnessQuestions.GetAllQuestions().Select(
+					q =>
+						{
+							var answers = q.GetAnswers().Where(a => a.IsBest != 0);
+							if (!answers.Any())
+								return 0;
+							return (int) ((answers.First().DateAdded - q.DateAdded).TotalMinutes);
+						})
+						);
+		}
 	}
 
 
 	[TestFixture]
 	public class UserStatisticsTest
 	{
-		private readonly UserStatistics userStatistics = new UserStatistics(Program.DefaultNotStemmedQuestionList);
+		private readonly UserStatistics userStatistics = new UserStatistics(Program.DefaultNotStemmedQuestionList.NewQuestionListFilteredByCategories("illness"));
 		const string Region = "московская область";
 
 		[Test]
@@ -176,17 +196,67 @@ namespace cqa_medical.Statistics
 			File.WriteAllLines(femalePath, genders.Where(n => n.Item3 == GenderDetector.Gender.Female).Select(n => n.Item1 + "\t" + n.Item2));
 		}
 
+		[Test]
+		public void QuickStatistics()
+		{
+			Console.WriteLine("Grls count: " + File.ReadAllLines(Program.MedicamentsFileName).Distinct().Count());
+
+			var illnessQuestions = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness");
+			var bestAnswerTimes = 
+			illnessQuestions.GetAllQuestions().Select(
+				q =>
+					{
+						var answers = q.GetAnswers().Where(a => a.IsBest != 0);
+						if (!answers.Any())
+							return 0;
+						return (int) ((answers.First().DateAdded - q.DateAdded).TotalMinutes);
+					}).OrderBy(minutes => minutes).ToList();
+
+			var medianTime = bestAnswerTimes[bestAnswerTimes.Count / 2];
+
+			Console.WriteLine("Time median to best answer choosing: " + medianTime);
+
+			var chosenBest = illnessQuestions.GetAllQuestions().GroupBy(q => q.ChosenBestBy, (key, qs) => Tuple.Create(key, qs.Count()));
+			
+			foreach (var mark in chosenBest)
+			{
+				Console.WriteLine(mark.Item1 + ": " + mark.Item2 + ";  " + (double)mark.Item2 / illnessQuestions.GetAllQuestions().Count());
+			}
+
+			Console.WriteLine("Illness questions count: " + illnessQuestions.GetAllQuestions().Count());
+
+			var questerEmails = new HashSet<string>(illnessQuestions.GetAllQuestions().Select(q => q.AuthorEmail));
+			var answererEmails = new HashSet<string>(illnessQuestions.GetAllAnswers().Select(a => a.AuthorEmail));
+			
+			var illnessEmails = new HashSet<string>(questerEmails.Union(answererEmails));
+			Console.WriteLine("All illness users: " + illnessEmails.Count);
+			
+			var questerProfilesCount = userStatistics.GetUsers().Count(u => questerEmails.Contains(u.Email));
+			var answererProfilesCount = userStatistics.GetUsers().Count(u => answererEmails.Contains(u.Email));
+			var illnessUsers =
+				userStatistics.GetUsers().Where(u => questerEmails.Contains(u.Email) || answererEmails.Contains(u.Email)).ToList();
+
+			Console.WriteLine("Questions asked by: " + questerEmails.Count);
+			Console.WriteLine("Answers asked by: " + answererEmails.Count);
+			Console.WriteLine("Public profiles gathered for: " + illnessUsers.Count);
+
+			Console.WriteLine("Age pointed out: " + (double)illnessUsers.Count(u => u.BirthDate.Year > 1900) / illnessUsers.Count);
+			Console.WriteLine("GeoLoc pointed out: " + (double)illnessUsers.Count(u => u.Geo != null) / illnessUsers.Count);
+		}
+
 		[Test, Explicit]
 		public void SaveUsersByRegionDistribution()
 		{
 			const string fileToSave = "";
 
-			var userRegions = userStatistics.GetUsersByRegionDistribution().OrderByDescending(kv => kv.Value);
+			var userRegions = userStatistics.GetUsersByRegionDistribution().OrderByDescending(kv => kv.Value).ToDictionary(kv => kv.Key, kv => kv.Value);
 
 			Console.WriteLine(userStatistics.GetUsers().Count);
 			Console.WriteLine(userStatistics.GetUserNames().Count);
-			Console.WriteLine(userRegions.Sum(r => r.Value));
 			
+			var usersWithRegion = userRegions.Sum(r => r.Value);
+			Console.WriteLine("Users from Moscow: " + (double)userRegions[Region] / usersWithRegion);
+
 			Console.WriteLine(String.Join("\n", userRegions.Select(kv => kv.Key + "\t" + kv.Value)));
 		}
 
@@ -214,10 +284,11 @@ namespace cqa_medical.Statistics
 			             	{
 			             		//26, 53, 95, 98
 								//46, 67, 75
-								35
+								//35
+								98
 							};
 			
-			var topicsProbabilities = userStatistics.GetTopicByUserRegionProbabilitiesDistribution(Region, topics).SumUpToWeeks().NormalizeByMax().OrderByDescending(it => it.Value).Select(it => it.Key + "\t" + it.Value);
+			var topicsProbabilities = userStatistics.GetTopicByUserRegionProbabilitiesDistribution(Region, topics).SumUpToWeeks().OrderByDescending(it => it.Value).Select(it => it.Key + "\t" + it.Value);
 			
 			File.WriteAllLines("MoscowTopicProbability_"+ String.Join("_", topics) + ".txt", topicsProbabilities);
 		}
@@ -232,7 +303,9 @@ namespace cqa_medical.Statistics
 		[Test]
 		public void TestUserRegionQuestionsAmountDistrib()
 		{
+
 			File.WriteAllLines("MoscowQuestionsAmountDistrib.txt", userStatistics.GetRegionQuestionsDistrib(Region).SumUpToWeeks().Select(it => it.Key + "\t" + it.Value));
+
 		}
 
 		[Test, Explicit]

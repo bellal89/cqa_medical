@@ -347,7 +347,7 @@ namespace cqa_medical.Statistics
 		{
 			var stemmerCases = new[]
 			                   	{
-									new CaseT(new MyStemmer(new Vocabulary(Program.QuestionsFileName, Program.AnswersFileName)), new TimeSpan(0, 4, 1)),
+									new CaseT(Program.DefaultMyStemmer, new TimeSpan(0, 4, 1)),
 			                   		new CaseT(new RussianStemmer(), new TimeSpan(0, 4, 20)),
 			                   		new CaseT(new AOTLemmatizer(), new TimeSpan(6, 45, 0))
 			                   	};

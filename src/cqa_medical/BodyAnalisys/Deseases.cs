@@ -9,6 +9,8 @@ using HtmlAgilityPack;
 using MicrosoftResearch.Infer.Collections;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
+using cqa_medical.DataInput.Stemmers.MyStemmer;
+using cqa_medical.SpellChecker;
 using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.BodyAnalisys
@@ -16,6 +18,8 @@ namespace cqa_medical.BodyAnalisys
 	public class Deseases
 	{
 		public HashSet<string> DeseasesList { get; private set; }
+		public static readonly HashSet<string> NotDeseases = new HashSet<string> { /*"давление", "кисть", "трава", "травка", "сладость", "восполнение", "квота", "киска", "куста", "дефлорация", "информация",
+		"забор", "запой", "запоя", "запое", "зазор", "зажор", "напор", "задор", "гермес", "сметь", "смерить"*/};
 
 		private Deseases(IStemmer stemmer, IEnumerable<string> deseases)
 		{
@@ -27,7 +31,7 @@ namespace cqa_medical.BodyAnalisys
 		}
 		public static Deseases GetFromDeseasesTxtFile(IStemmer stemmer)
 		{
-			return new Deseases(stemmer, GetCandidatesFromDeseasesTxtFile(stemmer).ToList());
+			return new Deseases(stemmer, GetCandidatesFromDeseasesTxtFile().ToList());
 		}
 
 		public static Deseases GetFromLazarevaManual(IStemmer stemmer)
@@ -55,9 +59,7 @@ namespace cqa_medical.BodyAnalisys
 			}
 			return new Deseases(
 				stemmer,
-				GetCandidatesFromDeseasesTxtFile(stemmer)
-				.Concat(GetCandidatesFromLazarevaManual()
-				.Concat(desFromInternet)).ToList());
+				GetCandidatesFromDeseasesTxtFile().Concat(GetCandidatesFromLazarevaManual().Concat(desFromInternet)).ToList());
 		}
 
 		private static IEnumerable<string> CleanDeseases(IStemmer stemmer, IEnumerable<string> candidateDeseases)
@@ -83,7 +85,7 @@ namespace cqa_medical.BodyAnalisys
 
 
 		// очень завязан на файл Deseases.txt
-		private static IEnumerable<string> GetCandidatesFromDeseasesTxtFile(IStemmer stemmer)
+		private static IEnumerable<string> GetCandidatesFromDeseasesTxtFile()
 		{
 			var tabulationParser = new TabulationParser();
 			var neededWords =
@@ -96,6 +98,7 @@ namespace cqa_medical.BodyAnalisys
 
 			return splittedWords.OrderBy(s => s);
 		}
+
 		private static IEnumerable<string> GetCandidatesFromLazarevaManual()
 		{
 			var text = File.ReadAllText(Program.LazarevaManualFileName);
@@ -145,7 +148,6 @@ namespace cqa_medical.BodyAnalisys
 			return words;
 		}
 
-		
 		public IEnumerable<InvertedIndexUnit> GetIndex(IEnumerable<Tuple<long, string>> idTextList)
 		{
 			var deseasesToIds = new Dictionary<string, HashSet<long>>();
@@ -160,7 +162,6 @@ namespace cqa_medical.BodyAnalisys
 				}
 			}
 			return deseasesToIds.Select(item => new InvertedIndexUnit(item.Key, item.Value)).ToList();
-
 		}
 
 		public static IEnumerable<InvertedIndexUnit> GetDefaultIndex()
@@ -184,6 +185,29 @@ namespace cqa_medical.BodyAnalisys
 					Program.DeseasesIndexFileName,
 					Program.DeseasesFileName));
 		}
+
+		public static IEnumerable<InvertedIndexUnit> GetFuzzyIndex()
+		{
+			return DataActualityChecker.Check(
+				new Lazy<InvertedIndexUnit[]>(
+					() =>
+					{
+						var ql = Program.DefaultQuestionList;
+						var deseases = GetFullDeseases(Program.DefaultMyStemmer);
+						var fuzzySearch = new FuzzySearch(ql, deseases.DeseasesList);
+						return fuzzySearch.GetFuzzyIndex(ql
+												.GetAllQuestions()
+												.Select(t => Tuple.Create(t.Id, t.WholeText)), NotDeseases)
+									.OrderByDescending(k => k.Ids.Count)
+									.ToArray();
+					}),
+				InvertedIndexUnit.FormatStringWrite,
+				InvertedIndexUnit.FormatStringParse,
+				new FileDependencies(
+					Program.FilesDirectory + "DeseasesFuzzyIndex.txt",
+					Program.DeseasesFileName));
+		}
+
 		public static IEnumerable<InvertedIndexUnit> GetIndexFromAnswers()
 		{
 			return DataActualityChecker.Check(
@@ -204,6 +228,23 @@ namespace cqa_medical.BodyAnalisys
 				new FileDependencies(
 					Program.FilesDirectory + "DeseasesIndexFromAnswers.txt",
 					Program.DeseasesFileName));
+		}
+
+		public List<Tuple<string, List<string>>> RetrieveFuzzyDeseases(string text)
+		{
+			var words = text.SplitInWordsAndStripHTML();
+			var trigramIndex = new TrigramIndex(DeseasesList);
+			var spellChecker = new SpellChecker.SpellChecker(trigramIndex);
+			var results = words.Select(w =>
+			                           	{
+			                           		var editDistance = 2;
+											if (w.Length < 10) editDistance = 1;
+											if (w.Length < 5) editDistance = 0;
+			                           		return Tuple.Create(w,
+			                           		                    spellChecker.FindClosestWords(w, editDistance).Where(
+			                           		                    	it => !String.IsNullOrEmpty(it)).ToList());
+			                           	}).Where(it => it.Item2.Any()).ToList();
+			return results;
 		}
 	}
 
@@ -249,6 +290,25 @@ namespace cqa_medical.BodyAnalisys
 			var q  = Deseases.GetFullDeseases(Program.DefaultMyStemmer).DeseasesList.OrderBy(s => s);
 			File.WriteAllLines("deseases.txt", q);
 		}
+
+		[Test, Explicit]
+		public void TestFuzzyDeseasesRetrieval()
+		{
+			var stemmer = new MyStemmer(Program.DeseasesFileName);
+
+			var deseases = Deseases.GetFullDeseases(stemmer);
+
+			var questDesList = Program.DefaultQuestionList.GetAllQuestions().Select(q => Tuple.Create(q, deseases.RetrieveFuzzyDeseases(q.WholeText))).Where(q => q.Item2.Any()).ToList();
+			var questDesCount = questDesList.Count();
+			Console.WriteLine("Questions where illness found: " + questDesCount);
+			var desList =
+				questDesList.SelectMany(q => q.Item2)
+					.SelectMany(it => it.Item2.Select(des => Tuple.Create(des, it.Item1))).ToList();
+
+			File.WriteAllLines("Deseases found in questions.txt", desList.GroupBy(it => it.Item1, (key, its) => Tuple.Create(key, Tuple.Create(its.Select(it => it.Item2).Distinct().Count(), its.Select(it => it.Item2).Distinct())))
+			                              	.OrderByDescending(des => des.Item2.Item1).Select(des => des.Item1 + "\t" + des.Item2.Item1 + "\t" + String.Join(", ", des.Item2.Item2)));
+		}
+
 		[Test, Explicit]
 		public void GetFromDeseasesTxt()
 		{
@@ -259,6 +319,7 @@ namespace cqa_medical.BodyAnalisys
 			var result = deseasesIndex.OrderByDescending(qw => qw.Ids.Count());
 			File.WriteAllLines("DeseasesIndex_FromDeseasesTxt.txt", result.Select(s => s.ToStringCount("\t")));
 		}
+
 		[Test,Explicit]
 		public void GetFromLazarevaManual()
 		{

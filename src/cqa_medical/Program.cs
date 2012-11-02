@@ -5,7 +5,6 @@ using System.Linq;
 using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
-using cqa_medical.SpellChecker;
 using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical
@@ -51,23 +50,20 @@ namespace cqa_medical
 			get { return DefaultVocabularyLazy.Value; }
 		}
 		
-
 		private static readonly Lazy<Dictionary<string, MailUser>> DefaultMailUsersLazy =
 		new Lazy<Dictionary<string, MailUser>>(() =>
 		{
 			var parser = new MailUserPageParser(MailUsersDirectory);
 			return parser.ParseUsers().ToDictionary(u => u.Email, u => u);
 		});
+
 		public static Dictionary<string, MailUser> DefaultMailUsers
 		{
 			get { return DefaultMailUsersLazy.Value; }
 		}
 
-		
-
-
 		private static readonly Lazy<MyStemmer> DefaultMyStemmerLazy =
-			new Lazy<MyStemmer>(() => new MyStemmer(DefaultVocabulary));
+			new Lazy<MyStemmer>(() => new MyStemmer(QuestionsFileName, AnswersFileName));
 		public static MyStemmer DefaultMyStemmer
 		{
 			get { return DefaultMyStemmerLazy.Value; }
@@ -140,7 +136,7 @@ namespace cqa_medical
 //				if (DataActualityChecker.IsFileActual(QuestionsNoTyposFileName, new[] { QuestionsFileName }) &&
 //					  DataActualityChecker.IsFileActual(AnswersNoTyposFileName, new[] { AnswersFileName })) return;
 				var ql = DefaultNotStemmedQuestionList;
-				TypoDetecter.ModifyTyposCorpus(ql);
+				SpellChecker.SpellChecker.ModifyTyposCorpus(ql);
 				var actual = ql.GetAllQuestions().First(q => q.Id == 68484951);
 				Assert.That(actual.Text, Is.EqualTo("одна знакомая плюсной пользуется ветеринарными свечами для себя для профилактики женских заболеваний знаете название свечей и не вредно ли это"));
 

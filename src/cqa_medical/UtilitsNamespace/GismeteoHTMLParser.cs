@@ -296,7 +296,7 @@ namespace cqa_medical.UtilitsNamespace
 		public static void GetWeekFalloutDistribution()
 		{
 			const string fileToSave = "MoscowWeekFallouts.txt";
-			File.WriteAllLines(fileToSave, WeatherCollection.GetWeekRainDistribution().NormalizeByMax().Select(w => w.Key + "\t" + w.Value));
+			File.WriteAllLines(fileToSave, WeatherCollection.GetWeekRainDistribution().Select(w => w.Key + "\t" + w.Value));
 		}
 	}
 }

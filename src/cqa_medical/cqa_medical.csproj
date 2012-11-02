@@ -80,8 +80,9 @@
     <Compile Include="LDA\TopicConverter.cs" />
     <Compile Include="QualityAnalisys\AnswerQuality.cs" />
     <Compile Include="QualityAnalisys\UserQuality.cs" />
+    <Compile Include="SpellChecker\FuzzySearch.cs" />
     <Compile Include="SpellChecker\TrigramIndex.cs" />
-    <Compile Include="SpellChecker\TypoDetecter.cs" />
+    <Compile Include="SpellChecker\SpellChecker.cs" />
     <Compile Include="Statistics\BaseStatistics.cs" />
     <Compile Include="Statistics\GenderDetector.cs" />
     <Compile Include="Statistics\ExpertUsers.cs" />
