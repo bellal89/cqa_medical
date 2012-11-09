@@ -137,9 +137,9 @@ namespace cqa_medical.SpellChecker
 		public void TestGettingMisspellings(string s1, string s2, string c1, string c2)
 		{
 			var levensteinInfo = new LevensteinInfo(s1, s2);
-			var misspellings = levensteinInfo.GetMisspellings();
-			Assert.AreEqual(misspellings[0].Item1, c1);
-			Assert.AreEqual(misspellings[0].Item2, c2);
+			var misspelling = levensteinInfo.GetMisspelling();
+			Assert.AreEqual(misspelling.Item1, c1);
+			Assert.AreEqual(misspelling.Item2, c2);
 		}
 	}
 }

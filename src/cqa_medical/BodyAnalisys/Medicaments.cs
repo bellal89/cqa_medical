@@ -135,12 +135,9 @@ namespace cqa_medical.BodyAnalisys
 					var questionList = Program.DefaultQuestionList;
 					var medicaments = new Medicaments(Program.MedicamentsFileName);
 
-					var fuzzySearch = new FuzzySearch(questionList, medicaments.GetMedicamentNames());
-					return fuzzySearch.GetFuzzyIndex(questionList
-												.GetAllAnswers()
-												.Select(a => Tuple.Create(a.QuestionId, a.Text)), NotMedicaments)
-								.OrderByDescending(k => k.Ids.Count)
-								.ToArray();
+					var idAnswerText = questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text));
+					var fuzzyIndex = new FuzzyIndex(idAnswerText, medicaments.GetMedicamentNames());
+					return fuzzyIndex.GetIndex().OrderByDescending(k => k.Ids.Count).ToArray();
 				}),
 				InvertedIndexUnit.FormatStringWrite,
 				InvertedIndexUnit.FormatStringParse,

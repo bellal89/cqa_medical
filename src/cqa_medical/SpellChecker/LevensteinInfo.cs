@@ -6,14 +6,14 @@ namespace cqa_medical.SpellChecker
 	internal class LevensteinInfo
 	{
 		private readonly string word;
-		private readonly string dictionatyWord;
+		private readonly string dictionaryWord;
 		private readonly int[,] matrix;
 
-		public LevensteinInfo(string dictionatyWord, string word)
+		public LevensteinInfo(string dictionaryWord, string word)
 		{
 			this.word = word;
-			this.dictionatyWord = dictionatyWord;
-			matrix = CalculateLevensteinMatrix(word, dictionatyWord);
+			this.dictionaryWord = dictionaryWord;
+			matrix = CalculateLevensteinMatrix(word, dictionaryWord);
 		}
 
 		public string GetWord()
@@ -23,12 +23,12 @@ namespace cqa_medical.SpellChecker
 
 		public string GetDictionaryWord()
 		{
-			return dictionatyWord;
+			return dictionaryWord;
 		}
 
 		public int GetDistance()
 		{
-			return matrix[word.Length, dictionatyWord.Length];
+			return matrix[word.Length, dictionaryWord.Length];
 		}
 
 		private static int[,] CalculateLevensteinMatrix(string s1, string s2)
@@ -51,6 +51,7 @@ namespace cqa_medical.SpellChecker
 
 					m[i, j] = Math.Min(Math.Min(del, ins), subst);
 
+					// transition
 					if (i > 1 && j > 1 && s1[i - 1] == s2[j - 2] && s1[i - 2] == s2[j - 1])
 					{
 						m[i, j] = Math.Min(
@@ -62,80 +63,28 @@ namespace cqa_medical.SpellChecker
 			return m;
 		}
 
-		public List<Tuple<string, string>> GetMisspellings()
+		public Tuple<string, string> GetMisspelling()
 		{
-			var misspellings = new List<Tuple<string, string>>();
-			int i = word.Length, j = dictionatyWord.Length;
-			while (i != 0 || j != 0)
+			var minLen = Math.Min(dictionaryWord.Length, word.Length);
+			var i = 0;
+			while (i < minLen && dictionaryWord[i] == word[i])
 			{
-				if (i > 0 && j > 0 && word[i - 1] == dictionatyWord[j - 1])
-				{
-					i--;
-					j--;
-				}
-				else
-				{
-					var prevPosList = GetPreviousMinPositions(i, j);
-					if (prevPosList.Count == 0)
-						throw new Exception("Levenstein: Previous minimal positions not found!");
-					if (prevPosList.Count > 1)
-					{
-						if (i < 1 || j < 1)
-							throw new Exception("Levenstein: Transition found but we are on the 1st symbol.");
-						if (i == 1 || j == 1)
-						{
-							i--;
-							j--;
-							misspellings.Add(Tuple.Create("" + word[i], "" + dictionatyWord[j]));
-							break;
-						}
-						i -= 2;
-						j -= 2;
-						misspellings.Add(Tuple.Create("" + word[i] + word[i + 1], "" + dictionatyWord[j] + dictionatyWord[j + 1]));
-						if (word[i] != dictionatyWord[j + 1])
-							misspellings.Add(Tuple.Create("" + word[i], "" + dictionatyWord[j + 1]));
-						if (word[i + 1] != dictionatyWord[j])
-							misspellings.Add(Tuple.Create("" + word[i + 1], "" + dictionatyWord[j]));
-						break;
-					}
-					if (prevPosList[0].Item1 == i)
-					{
-						j--;
-						misspellings.Add(Tuple.Create("", "" + dictionatyWord[j]));
-						break;
-					}
-					if (prevPosList[0].Item2 == j)
-					{
-						i--;
-						misspellings.Add(Tuple.Create("" + word[i], ""));
-						break;
-					}
-					i--;
-					j--;
-					misspellings.Add(Tuple.Create("" + word[i], "" + dictionatyWord[j]));
-				}
+				i++;
 			}
-			return misspellings;
-		}
-
-		private List<Tuple<int, int>> GetPreviousMinPositions(int i, int j)
-		{
-			if (i == 0 && j == 0)
-				return new List<Tuple<int, int>> { Tuple.Create(i, j) };
-			if (i == 0)
-				return new List<Tuple<int, int>> { Tuple.Create(i, j - 1) };
-			if (j == 0)
-				return new List<Tuple<int, int>> { Tuple.Create(i - 1, j) };
-
-			var prevPosList = new List<Tuple<int, int>>();
-			var prevMin = Math.Min(matrix[i - 1, j - 1], Math.Min(matrix[i - 1, j], matrix[i, j - 1]));
-			if (matrix[i - 1, j - 1] == prevMin)
-				prevPosList.Add(Tuple.Create(i - 1, j - 1));
-			if (matrix[i - 1, j] == prevMin)
-				prevPosList.Add(Tuple.Create(i - 1, j));
-			if (matrix[i, j - 1] == prevMin)
-				prevPosList.Add(Tuple.Create(i, j - 1));
-			return prevPosList;
+			if (i == minLen)
+			{
+				string s1 = "", s2 = "";
+				if (dictionaryWord.Length > word.Length)
+					s1 = "" + dictionaryWord[i];
+				else if (dictionaryWord.Length < word.Length)
+					s2 = "" + word[i];
+				return Tuple.Create(s1, s2);
+			}
+			if (i + 1 < dictionaryWord.Length && i + 1 < word.Length && dictionaryWord[i+1] == word[i] && dictionaryWord[i] == word[i+1])
+			{
+				return Tuple.Create(("" + dictionaryWord[i]) + dictionaryWord[i + 1], ("" + word[i]) + word[i + 1]);
+			}
+			return Tuple.Create("" + dictionaryWord[i], "" + word[i]);
 		}
 	}
 }

@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using LinqLib.Sequence;
 using MicrosoftResearch.Infer.Collections;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
@@ -194,12 +195,10 @@ namespace cqa_medical.BodyAnalisys
 					{
 						var ql = Program.DefaultQuestionList;
 						var deseases = GetFullDeseases(Program.DefaultMyStemmer);
-						var fuzzySearch = new FuzzySearch(ql, deseases.DeseasesList);
-						return fuzzySearch.GetFuzzyIndex(ql
-												.GetAllQuestions()
-												.Select(t => Tuple.Create(t.Id, t.WholeText)), NotDeseases)
-									.OrderByDescending(k => k.Ids.Count)
-									.ToArray();
+						var idQuestionText = ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText));
+
+						var fuzzyIndex = new FuzzyIndex(idQuestionText, deseases.DeseasesList);
+						return fuzzyIndex.GetIndex().OrderByDescending(k => k.Ids.Count).ToArray();
 					}),
 				InvertedIndexUnit.FormatStringWrite,
 				InvertedIndexUnit.FormatStringParse,
@@ -228,23 +227,6 @@ namespace cqa_medical.BodyAnalisys
 				new FileDependencies(
 					Program.FilesDirectory + "DeseasesIndexFromAnswers.txt",
 					Program.DeseasesFileName));
-		}
-
-		public List<Tuple<string, List<string>>> RetrieveFuzzyDeseases(string text)
-		{
-			var words = text.SplitInWordsAndStripHTML();
-			var trigramIndex = new TrigramIndex(DeseasesList);
-			var spellChecker = new SpellChecker.SpellChecker(trigramIndex);
-			var results = words.Select(w =>
-			                           	{
-			                           		var editDistance = 2;
-											if (w.Length < 10) editDistance = 1;
-											if (w.Length < 5) editDistance = 0;
-			                           		return Tuple.Create(w,
-			                           		                    spellChecker.FindClosestWords(w, editDistance).Where(
-			                           		                    	it => !String.IsNullOrEmpty(it)).ToList());
-			                           	}).Where(it => it.Item2.Any()).ToList();
-			return results;
 		}
 	}
 
@@ -289,24 +271,6 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var q  = Deseases.GetFullDeseases(Program.DefaultMyStemmer).DeseasesList.OrderBy(s => s);
 			File.WriteAllLines("deseases.txt", q);
-		}
-
-		[Test, Explicit]
-		public void TestFuzzyDeseasesRetrieval()
-		{
-			var stemmer = new MyStemmer(Program.DeseasesFileName);
-
-			var deseases = Deseases.GetFullDeseases(stemmer);
-
-			var questDesList = Program.DefaultQuestionList.GetAllQuestions().Select(q => Tuple.Create(q, deseases.RetrieveFuzzyDeseases(q.WholeText))).Where(q => q.Item2.Any()).ToList();
-			var questDesCount = questDesList.Count();
-			Console.WriteLine("Questions where illness found: " + questDesCount);
-			var desList =
-				questDesList.SelectMany(q => q.Item2)
-					.SelectMany(it => it.Item2.Select(des => Tuple.Create(des, it.Item1))).ToList();
-
-			File.WriteAllLines("Deseases found in questions.txt", desList.GroupBy(it => it.Item1, (key, its) => Tuple.Create(key, Tuple.Create(its.Select(it => it.Item2).Distinct().Count(), its.Select(it => it.Item2).Distinct())))
-			                              	.OrderByDescending(des => des.Item2.Item1).Select(des => des.Item1 + "\t" + des.Item2.Item1 + "\t" + String.Join(", ", des.Item2.Item2)));
 		}
 
 		[Test, Explicit]
@@ -420,12 +384,6 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var des = Deseases.GetFromHandMade(Program.DefaultMyStemmer);
 		}
-		[Test]
-		public void JustNothing()
-		{
-			var q = File.ReadAllLines(@"C:\Users\kriskk\Documents\GitHub\cqa_medical\src\cqa_medical\BodyAnalisys\notDeseases.txt");
-			File.WriteAllLines(@"C:\Users\kriskk\Documents\GitHub\cqa_medical\src\cqa_medical\BodyAnalisys\notDeseases.txt", q.Distinct());
-		}
 
 		[Test]
 		public void GetIndex()
@@ -439,6 +397,13 @@ namespace cqa_medical.BodyAnalisys
 				.OrderByDescending(k => k.Ids.Count)
 				.ToArray();
 			File.WriteAllLines("DeseasesIndexCount.txt", desIndex.OrderByDescending(q => q.Ids.Count).Select(s => s.ToStringCount()));
+		}
+
+		[Test]
+		public void GetFuzzyIndex()
+		{
+			var desIndex = Deseases.GetFuzzyIndex();
+			Console.WriteLine(desIndex.Count());
 		}
 	}
 }
