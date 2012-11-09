@@ -195,5 +195,12 @@ namespace cqa_medical.BodyAnalisys
 				medicaments.FindMedicamentsInTexts(questionList.GetAllQuestions().Select(a => Tuple.Create(a.Id, a.WholeText))).ToList();
 			File.WriteAllLines("MedicamentsIndexQuestionsCount.txt", meds.OrderByDescending(q => q.Ids.Count).Select(s => s.Word + "\t" + s.Ids.Count));
 		}
+
+		[Test]
+		public void GetFuzzyIndex()
+		{
+			var medIndex = Medicaments.GetFuzzyIndex();
+			Console.WriteLine(medIndex.Count());
+		}
 	}
 }

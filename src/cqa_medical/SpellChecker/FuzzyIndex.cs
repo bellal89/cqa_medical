@@ -81,8 +81,14 @@ namespace cqa_medical.SpellChecker
 		private Dictionary<string, string> GetFuzzyDictionary(IEnumerable<LevensteinInfo> levensteinInfos)
 		{
 			const int mispellRatio = 27;
-
+			levensteinInfos = levensteinInfos.ToList();
 			//File.WriteAllLines("__Dictionary_words_to_variants.txt", levensteinInfos.GroupBy(info => info.GetDictionaryWord(), (key, infos) => new { dictionaryWord = key, infos }).OrderByDescending(it => wordFreqs.ContainsKey(it.dictionaryWord) ? wordFreqs[it.dictionaryWord] : 0).Select(it => it.dictionaryWord + "\t" + String.Join(", ", it.infos.OrderByDescending(i => wordFreqs.ContainsKey(i.GetWord()) ? wordFreqs[i.GetWord()] : 0).Select(i => i.GetWord() + " (" + (wordFreqs.ContainsKey(i.GetWord()) ? wordFreqs[i.GetWord()] : 0) + ")"))));
+			//File.WriteAllLines("__Variants_to_dictionary_words.txt", levensteinInfos.GroupBy(info => info.GetWord(), (key, infos) => new { word = key, infos }).OrderByDescending(it => it.infos.Count()).Select(it => it.word + "\t" + String.Join(", ", it.infos.OrderByDescending(i => wordFrequencies.ContainsKey(i.GetDictionaryWord()) ? wordFrequencies[i.GetDictionaryWord()] : 0).Select(i => i.GetDictionaryWord() + " (" + (wordFrequencies.ContainsKey(i.GetDictionaryWord()) ? wordFrequencies[i.GetDictionaryWord()] : 0) + ")"))));
+
+			for (int k = 0; k < 5; k++)
+			{
+				Console.WriteLine(k + ": " + (double)levensteinInfos.Count(i => i.GetDistance() == k) / levensteinInfos.Count());
+			}
 
 			var levensteinGroups = levensteinInfos
 				.Where(info =>
@@ -141,7 +147,7 @@ namespace cqa_medical.SpellChecker
 				{
 					// fuzzyTerm = (string misspelledWord, List<string> dictWordList)
 					var missIndex = new Dictionary<Tuple<string, string>, int>();
-					foreach (var info in levensteinInfos)
+					foreach (var info in levensteinInfos.Where(info => info.GetDistance() == 1))
 					{
 						AddMisspellingsTo(missIndex, info);
 						AddMisspellingsWords(info);

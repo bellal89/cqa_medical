@@ -133,6 +133,7 @@ namespace cqa_medical.SpellChecker
 		[TestCase("цаетил", "ацетил", "ца", "ац")]
 		[TestCase("почему", "почиму", "е", "и")]
 		[TestCase("what", "hat", "w", "")]
+		[TestCase("wght", "what", "g", "")]
 		[TestCase("why", "whyt", "", "t")]
 		public void TestGettingMisspellings(string s1, string s2, string c1, string c2)
 		{

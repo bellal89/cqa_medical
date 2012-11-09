@@ -80,10 +80,18 @@ namespace cqa_medical.SpellChecker
 					s2 = "" + word[i];
 				return Tuple.Create(s1, s2);
 			}
-			if (i + 1 < dictionaryWord.Length && i + 1 < word.Length && dictionaryWord[i+1] == word[i] && dictionaryWord[i] == word[i+1])
+
+			if (i + 1 < dictionaryWord.Length && dictionaryWord[i + 1] == word[i])
 			{
-				return Tuple.Create(("" + dictionaryWord[i]) + dictionaryWord[i + 1], ("" + word[i]) + word[i + 1]);
+				if (i + 1 < word.Length && dictionaryWord[i] == word[i+1])
+				{
+					return Tuple.Create(("" + dictionaryWord[i]) + dictionaryWord[i + 1], ("" + word[i]) + word[i + 1]);
+				}
+				return Tuple.Create("" + dictionaryWord[i], "");
 			}
+			if (i + 1 < word.Length && dictionaryWord[i] == word[i + 1])
+				return Tuple.Create("", "" + word[i]);
+
 			return Tuple.Create("" + dictionaryWord[i], "" + word[i]);
 		}
 	}
