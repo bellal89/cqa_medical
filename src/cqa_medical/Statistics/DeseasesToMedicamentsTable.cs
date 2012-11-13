@@ -124,6 +124,20 @@ namespace cqa_medical.Statistics
 					deseaseMedicamentQuestions.AddRange(desMedQuests);
 				Console.WriteLine("Desease - medicament question pairs: " + deseaseMedicamentQuestions.Distinct().Count());
 			}
+
+			[Test, Explicit]
+			public void GetFuzzyDeseaseNotMedicamentQuestions()
+			{
+				var medicamentInAnswersQuestionIds = new HashSet<long>(Medicaments.GetFuzzyIndex().SelectMany(med => med.Ids));
+				var qs = new List<string>();
+				foreach (var desease in Deseases.GetFuzzyIndex())
+				{
+					var des = desease;
+					qs.AddRange(desease.Ids.Except(medicamentInAnswersQuestionIds).Select(
+						id => string.Format("{0}\n{1}\n{2}\n---\n{3}\n===\n", des.Word, id, Program.DefaultNotStemmedQuestionList.GetQuestion(id).WholeText, String.Join("\n", Program.DefaultNotStemmedQuestionList.GetQuestion(id).GetAnswers().Select(a => a.Text)))));
+				}
+				File.WriteAllLines("Deseases_not_medicaments.txt", qs);
+			}
 		}
 
 	}
