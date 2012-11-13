@@ -8,6 +8,7 @@ using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.LDA;
 using cqa_medical.UtilitsNamespace;
+using cqa_medical.UtilitsNamespace.Parsers;
 
 namespace cqa_medical.Statistics
 {
@@ -25,7 +26,7 @@ namespace cqa_medical.Statistics
 			var answerUsers = questionList.GetAllAnswers().Select(a => a.AuthorEmail);
 			var questionListUsers = new HashSet<string>(questionUsers.Union(answerUsers));
 
-			users = parser.GetUsers().Where(u => questionListUsers.Contains(u.Email)).ToList();
+			users = parser.GetObjects().Where(u => questionListUsers.Contains(u.Email)).ToList();
 
 			topicStatistics = new TopicsStatistics(questionList);
 		}

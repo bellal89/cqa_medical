@@ -1,60 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 using NUnit.Framework;
-using cqa_medical.DataInput;
 
-namespace cqa_medical.UtilitsNamespace
+namespace cqa_medical.UtilitsNamespace.Parsers
 {
-	class MailUserPageParser
+	class MailUserPageParser : HTMLPageParser<MailUser>
 	{
-		private readonly string usersDirectory;
-		private readonly string directoryForSerialization;
 		private readonly HtmlDocument html = new HtmlDocument();
 
-		public MailUserPageParser(string usersDirectory)
+		public MailUserPageParser(string pagesDirectory) : base(pagesDirectory)
 		{
-			this.usersDirectory = usersDirectory;
-			directoryForSerialization = usersDirectory + "serialized/";
 		}
 
-		public IEnumerable<MailUser> ParseUsers()
-		{
-			return Directory.GetFiles(usersDirectory).Select(ParseUser).Where(u => u != null).ToList();
-		}
-		
-		public IEnumerable<MailUser> GetUsers()
-		{
-			if (!Directory.Exists(directoryForSerialization) || Directory.GetFiles(directoryForSerialization).Length == 0)
-				SerializeUsers();
-			
-			return Directory.GetFiles(directoryForSerialization).Select(ObjectSerializer.GetFromFile<MailUser>).Where(u => u != null).ToList();
-		}
-
-		public void SerializeUsers()
-		{
-			if (!Directory.Exists(directoryForSerialization))
-				Directory.CreateDirectory(directoryForSerialization);
-
-			foreach (var file in Directory.GetFiles(usersDirectory))
-			{
-				var user = ParseUser(file);
-				if (user != null)
-				{
-					ObjectSerializer.SaveToFile(user, directoryForSerialization + Path.GetFileName(file) + ".serialized");
-				}
-			}
-		}
-
-		private MailUser ParseUser(string fileName)
+		protected override MailUser ParsePage(string fileName)
 		{
 			html.Load(fileName, Encoding.GetEncoding(1251));
 
-			var fileNameParts = fileName.Split(new[] {'\\', '/'}, StringSplitOptions.RemoveEmptyEntries);
+			var fileNameParts = fileName.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
 			var userEmail = fileNameParts[fileNameParts.Length - 1];
 			userEmail = userEmail.Substring(0, userEmail.Length - 5);
 
@@ -134,14 +100,14 @@ namespace cqa_medical.UtilitsNamespace
 		public void SerializeUsers()
 		{
 			var parser = new MailUserPageParser(Program.MailUsersDirectory);
-			parser.SerializeUsers();
+			parser.SerializeObjects();
 		}
 
 		[Test, Explicit]
 		public void GetSerializedUsers()
 		{
 			var parser = new MailUserPageParser(Program.MailUsersDirectory);
-			var mailUsers = parser.GetUsers().ToList();
+			var mailUsers = parser.GetObjects().ToList();
 			Console.WriteLine("Any information: " + ((double)mailUsers.Count()) / Directory.GetFiles(Program.MailUsersDirectory).Count());
 			Console.WriteLine("Name filled: " + ((double)mailUsers.Count(u => !string.IsNullOrEmpty(u.Name))) / mailUsers.Count());
 			Console.WriteLine("Geo filled: " + ((double)mailUsers.Count(u => u.Geo != null)) / mailUsers.Count());
@@ -155,6 +121,4 @@ namespace cqa_medical.UtilitsNamespace
 												((double)it.Item2 / mailUsers.Count(u => u.Geo != null)))));
 		}
 	}
-
-
 }

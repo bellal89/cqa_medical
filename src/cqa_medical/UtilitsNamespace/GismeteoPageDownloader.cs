@@ -18,7 +18,7 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			for (var d = from; d <= to; d = d.AddMonths(1))
 			{
-				weather.AddRange((new GismeteoHTMLParser(cityCode, d.Year, d.Month)).GetMonthWeatherList());
+				weather.AddRange((new GismeteoPageDownloader(cityCode, d.Year, d.Month)).GetMonthWeatherList());
 			}
 
 			weather = weather.Where(item => from <= item.Date && item.Date <= to).ToList();
@@ -97,7 +97,7 @@ namespace cqa_medical.UtilitsNamespace
 		}
 	}
 
-	class GismeteoHTMLParser
+	class GismeteoPageDownloader
 	{
 		private readonly int cityCode;
 		private readonly int year;
@@ -105,7 +105,7 @@ namespace cqa_medical.UtilitsNamespace
 		private readonly string url;
 		private readonly IEnumerable<DayWeather> dayWeathers; 
 
-		public GismeteoHTMLParser(int cityCode, int year, int month)
+		public GismeteoPageDownloader(int cityCode, int year, int month)
 		{
 			this.cityCode = cityCode;
 			this.year = year;
@@ -250,7 +250,7 @@ namespace cqa_medical.UtilitsNamespace
 		[Test]
 		public static void TestWeatherParsing()
 		{
-			var parser = new GismeteoHTMLParser(4368, 2011, 4);
+			var parser = new GismeteoPageDownloader(4368, 2011, 4);
 			Assert.AreEqual(30, parser.GetMonthWeatherList().Count);
 		}
 

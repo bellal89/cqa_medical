@@ -6,6 +6,7 @@ using NUnit.Framework;
 using cqa_medical.DataInput;
 using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.UtilitsNamespace;
+using cqa_medical.UtilitsNamespace.Parsers;
 
 namespace cqa_medical
 {
@@ -54,7 +55,7 @@ namespace cqa_medical
 		new Lazy<Dictionary<string, MailUser>>(() =>
 		{
 			var parser = new MailUserPageParser(MailUsersDirectory);
-			return parser.ParseUsers().ToDictionary(u => u.Email, u => u);
+			return parser.ParsePages().ToDictionary(u => u.Email, u => u);
 		});
 
 		public static Dictionary<string, MailUser> DefaultMailUsers

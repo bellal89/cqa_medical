@@ -100,12 +100,14 @@
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemmer.cs" />
     <Compile Include="DataInput\Stemmers\MyStemmer\MyStemLoader.cs" />
     <Compile Include="LDA\LDADataGenerator.cs" />
-    <Compile Include="UtilitsNamespace\GismeteoHTMLParser.cs" />
+    <Compile Include="UtilitsNamespace\GismeteoPageDownloader.cs" />
     <Compile Include="UtilitsNamespace\MailUser.cs" />
     <Compile Include="UtilitsNamespace\MailSender.cs" />
-    <Compile Include="UtilitsNamespace\MailUserPageParser.cs" />
+    <Compile Include="UtilitsNamespace\Parsers\MailUserPageParser.cs" />
+    <Compile Include="UtilitsNamespace\Parsers\Mkb10PageParser.cs" />
     <Compile Include="UtilitsNamespace\OctaveController.cs" />
     <Compile Include="UtilitsNamespace\OctavePlot.cs" />
+    <Compile Include="UtilitsNamespace\Parsers\HTMLPageParser.cs" />
     <Compile Include="UtilitsNamespace\TabulationParser.cs" />
     <Compile Include="DataInput\Parser.cs" />
     <Compile Include="DataInput\QuestionList.cs" />
@@ -162,6 +164,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

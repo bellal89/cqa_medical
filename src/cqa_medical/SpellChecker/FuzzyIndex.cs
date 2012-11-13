@@ -25,6 +25,8 @@ namespace cqa_medical.SpellChecker
 		{
 			trigramIndex = new TrigramIndex(words);
 
+			File.WriteAllLines("TrigramIndex.txt", trigramIndex.Trigrams.OrderByDescending(t => t.Value.Count).Select(t => t.Key + "\t" + String.Join(", ", t.Value.Select(id => trigramIndex.IdToWord[id]))));
+
 			var idWordsList = idTextList.Select(idText => Tuple.Create(idText.Item1,
 			                                                           idText.Item2.SplitInWordsAndStripHTML())).ToList();
 			FillWordFrequencies(idWordsList);
