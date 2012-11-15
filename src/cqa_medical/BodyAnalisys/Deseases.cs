@@ -193,7 +193,10 @@ namespace cqa_medical.BodyAnalisys
 				new Lazy<InvertedIndexUnit[]>(
 					() =>
 					{
-						var ql = Program.DefaultQuestionList;
+						var ql = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor");
+						Console.WriteLine("Questions count: " + ql.GetAllQuestions().Count());
+
+
 						var deseases = GetFullDeseases(Program.DefaultMyStemmer);
 						var idQuestionText = ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText));
 
@@ -404,6 +407,27 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var desIndex = Deseases.GetFuzzyIndex();
 			Console.WriteLine(desIndex.Count());
+		}
+
+		[Test]
+		public void HappyTickets()
+		{
+			var n = 0;
+			for (int i = 0; i <= 999999; i++)
+			{
+				int r = 0;
+				for (var j = 1; j <= 100; j *= 10)
+				{
+					r += (i/j)%10;
+				}
+				int l = 0;
+				for (var j = 1000; j <= 100000; j *= 10)
+				{
+					l += (i/j)%10;
+				}
+				if (l == r) n++;
+			}
+			Console.WriteLine(n);
 		}
 	}
 }

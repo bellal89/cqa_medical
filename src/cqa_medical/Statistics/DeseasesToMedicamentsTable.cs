@@ -43,7 +43,7 @@ namespace cqa_medical.Statistics
 			                                       (key, items) =>
 			                                       Tuple.Create(key, items.Select(it => Tuple.Create(it.Key.Item2, it.Value)))).
 			                  	OrderByDescending(it => it.Item2.Sum(med => med.Item2)).Select(
-			                  		it => it.Item1 + "\t" + String.Join("\n\t", it.Item2.OrderByDescending(med => med.Item2).Take(howMany).Select(med => med.Item1 + "\t" + med.Item2))));
+			                  		it => it.Item1 + "\t\n\t" + String.Join("\n\t", it.Item2.OrderByDescending(med => med.Item2).Take(howMany).Select(med => med.Item1 + "\t" + med.Item2))));
 		}
 
 		public override string ToString()

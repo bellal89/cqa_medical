@@ -132,7 +132,7 @@ namespace cqa_medical.BodyAnalisys
 			return DataActualityChecker.Check(
 				new Lazy<InvertedIndexUnit[]>(() =>
 				{
-					var questionList = Program.DefaultQuestionList;
+					var questionList = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor");
 					var medicaments = new Medicaments(Program.MedicamentsFileName);
 
 					var idAnswerText = questionList.GetAllAnswers().Select(a => Tuple.Create(a.QuestionId, a.Text));
