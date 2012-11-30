@@ -6,18 +6,18 @@ namespace cqa_medical.UtilitsNamespace
 {
 	public class InvertedIndexUnit
 	{
-		public string Word;
-		public HashSet<long> Ids;
-
+		public readonly string Word;
+		public readonly HashSet<long> Ids;
 
 		public InvertedIndexUnit(string word, IEnumerable<long> ids)
 		{
 			Word = word;
 			Ids =  new HashSet<long>(ids);
 		}
-		public InvertedIndexUnit (string formattedString, char delimiter = ' ')
+
+		public InvertedIndexUnit(string formattedString, char idsDelimiter = ' ')
 		{
-			var q = formattedString.Split(delimiter);
+			var q = formattedString.Split(idsDelimiter);
 			Word = q[0];
 			Ids = new HashSet<long>(q.Skip(1).Select(Int64.Parse));
 		}
@@ -31,6 +31,7 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			return Word + delimiter + String.Join(idDelimiter, Ids);
 		}
+		
 		public override string ToString()
 		{
 			return ToString();
@@ -38,13 +39,9 @@ namespace cqa_medical.UtilitsNamespace
 
 		public static InvertedIndexUnit FormatStringParse(string formattedString)
 		{
-			var q = formattedString.Split(' ');
-			var word = q[0];
-			var ids = new HashSet<long>(q.Skip(1).Select(Int64.Parse));
-			return new InvertedIndexUnit(word, ids);
+			return new InvertedIndexUnit(formattedString);
 		}
 		
-
 		public static string FormatStringWrite(InvertedIndexUnit unit)
 		{
 			return unit.Word + " " + String.Join(" ", unit.Ids);

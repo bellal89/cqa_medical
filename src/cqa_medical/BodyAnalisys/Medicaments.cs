@@ -109,8 +109,8 @@ namespace cqa_medical.BodyAnalisys
 			return DataActualityChecker.Check(
 				new Lazy<InvertedIndexUnit[]>(() =>
 				                              	{
-				                              		var questionList = Program.DefaultQuestionList;
-				                              		var medicaments = new Medicaments(Program.MedicamentsFileName);
+													var questionList = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor");
+													var medicaments = new Medicaments(Program.MedicamentsFileName);
 				                              		return medicaments
 				                              			.FindMedicamentsInTexts(questionList
 				                              			                        	.GetAllAnswers()

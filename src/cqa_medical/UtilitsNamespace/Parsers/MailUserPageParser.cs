@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,9 +12,18 @@ namespace cqa_medical.UtilitsNamespace.Parsers
 	class MailUserPageParser : HTMLPageParser<MailUser>
 	{
 		private readonly HtmlDocument html = new HtmlDocument();
+		private HashSet<string> uniqueEmails = new HashSet<string>();
 
 		public MailUserPageParser(string pagesDirectory) : base(pagesDirectory)
 		{
+		}
+
+		protected override bool IsUnique(MailUser page)
+		{
+			if (uniqueEmails.Contains(page.Email))
+				return false;
+			uniqueEmails.Add(page.Email);
+			return true;
 		}
 
 		protected override MailUser ParsePage(string fileName)
@@ -96,13 +106,6 @@ namespace cqa_medical.UtilitsNamespace.Parsers
 	[TestFixture]
 	public class MailParsingTest
 	{
-		[Test, Explicit]
-		public void SerializeUsers()
-		{
-			var parser = new MailUserPageParser(Program.MailUsersDirectory);
-			parser.SerializeObjects();
-		}
-
 		[Test, Explicit]
 		public void GetSerializedUsers()
 		{

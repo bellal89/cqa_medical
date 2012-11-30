@@ -70,6 +70,11 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			}
 		}
 
+		public static string GetStemmedFileSuffix()
+		{
+			return StemmedFileSuffix;
+		}
+
 		public Dictionary<string, StemInfo> GetStemInfoVocabulary()
 		{
 			var wordToStemInfo = new Dictionary<string, StemInfo>();

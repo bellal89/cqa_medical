@@ -36,7 +36,7 @@ namespace cqa_medical.SpellChecker
 		{
 			// Frequencies dictionary based on Mail.Ru corpus
 			var frequentWords = GetFrequentWords(questionList);
-			int i = 0;
+			var i = 0;
 			IdToWord = new SortedDictionary<int, string>(frequentWords.ToDictionary(q =>  i++, q => q));
 			Trigrams = GetDefaultTrigramIndex(questionList);
 			vocabulary = new HashSet<string>(IdToWord.Values);

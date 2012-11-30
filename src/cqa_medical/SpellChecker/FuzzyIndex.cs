@@ -70,6 +70,18 @@ namespace cqa_medical.SpellChecker
 			return index;
 		}
 
+		public IEnumerable<long> GetIntersectionByWords(List<string> words)
+		{
+			if (!words.Any() || words.Any(w => !termToIds.ContainsKey(w))) return new HashSet<long>();
+
+			var intersection = termToIds[words.First()];
+			foreach (var word in words.Skip(1).Where(termToIds.ContainsKey))
+			{
+				intersection.IntersectWith(termToIds[word]);
+			}
+			return intersection;
+		}
+
 		private void FillWordFrequencies(IEnumerable<Tuple<long, IEnumerable<string>>> idTextList)
 		{
 			foreach (var word in idTextList.SelectMany(idText => idText.Item2))
