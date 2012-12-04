@@ -3024,72 +3024,56 @@
 2847	сеган	селегилин+selegiline
 1864	сегидрин	гидразина сульфат+hydrazine sulfate
 4086	седакорон	амиодарон+amiodarone
-=======================
-1081	седальгин-нео	кодеин+кофеин+метамизол натрия+парацетамол+фенобарбитал+codeine+caffeine+metamizole sodium+paracetamol+phenobarbital
+1081	седальгин	кодеин кофеин метамизол натрия парацетамол фенобарбитал+codeine caffeine metamizole sodium paracetamol phenobarbital
 5445	седотуссин	пентоксиверин+pentoxyverine
 1082	седуксен	диазепам+diazepam
 1232	секстафаг	пиобактериофаг+pyobacteriofag
 3971	сектрал	ацебутолол+acebutolol
 3166	селегилин	селегилин+selegiline
 3020	селектра	эсциталопрам+escitalopram
-2643	селен-актив	
 4976	селенцин	
 5560	селлсепт	микофенолата мофетил+mycophenolate mofetil
 197	селмевит	поливитамины минералы+multivitamins multimineral
-606	семакс	метионил-глутамил- гистидил-фенилаланил- пролил-глицил- пролин
-668	семакса 0,1%	метионил-глутамил- гистидил-фенилаланил- пролил-глицил- пролин
+606	семакс
 4426	семпрекс	акривастин+acrivastine
-1350	сенаде	сеннозиды а и b+sennosides a &amp; b
-4177	сенна	сеннозиды а и b+sennosides a &amp; b
-1525	сенналакс	сеннозиды а и b+sennosides a &amp; b
+1350	сенаде
+4177	сенна
+1525	сенналакс
 1174	сенорм	галоперидол+haloperidol
 4538	сенсигель	
 1233	сеньор	
 1083	сепротин	
 4597	септолете	
-4232	септолете	бензалкония хлорид+мяты перечной листьев масло+тимол+эвкалипта прутовидного листьев масло+левоментол+benzalkonium chloride+menthae piperitae oleum+thymol+eucalypti viminalis foliorum oleum+levomentol
-4598	септолете д	
-4259	септолете д	бензалкония хлорид+мяты перечной листьев масло+тимол+эвкалипта прутовидного листьев масло+левоментол+benzalkonium chloride+menthae piperitae oleum+thymol+eucalypti viminalis foliorum oleum+levomentol
-4599	септолете нео	
-4442	септолете нео	цетилпиридиния хлорид+cetylpyridinium chloride
-4600	септолете	
-4233	септолете	бензокаин+цетилпиридиния хлорид+benzocaine+cetylpyridinium chloride
-1741	септрин	ко-тримоксазол [сульфаметоксазол+триметоприм]+co-trimoxazole [sulfamethoxazole+trimethoprim]
-4076	сердечный друг	
+1741	септрин	ко-тримоксазол+co-trimoxazole
 2959	сердолект	сертиндол+sertindole
 4475	серевент	салметерол+salmeterol
-4489	серетид	салметерол+флутиказон+salmeterol+fluticasone
-4490	серетид мультидиск	салметерол+флутиказон+salmeterol+fluticasone
+4489	серетид	салметерол флутиказон+salmeterol fluticasone
+4490	серетид	салметерол флутиказон+salmeterol fluticasone
 2854	сермион	ницерголин+nicergoline
-4924	серная простая	сера+sulfur
+4924	серная	сера+sulfur
 2960	сероквель	кветиапин+quetiapine
-2961	сероквель пролонг	кветиапин+quetiapine
 2338	серокриптин	бромокриптин+bromocriptine
 116	серотонин	серотонин+serotonin
-2028	серотонина адипинат	серотонин+serotonin
 5351	серофен	кломифен+clomifene
 5352	серпафар	кломифен+clomifene
-5276	серпенс	пальмы ползучей плодов экстракт+serenoa repens fructuum extract
+5276	серпенс
 701	сертикан	эверолимус+everolimus
 3972	сетегис	теразозин+terazosin
-3718	сефрил а	цефрадин+cefradine
 3717	сефрил	цефрадин+cefradine
 3122	сиалис	тадалафил+tadalafil
 1175	сибазон	диазепам+diazepam
-1176	сибазона для инъекций 0,5%	диазепам+diazepam
-2962	сибазона	диазепам+diazepam
-1365	сибектан	березы листьев экстракт+зверобоя продырявленного травы экстракт+расторопши пятнистой плодов экстракт+пижмы обыкновенной цветков экстракт+betulae foliorum extract+hyperici perforati herbae extract+silybi mariani fructuum extract+tanaceti floridis extract
-4853	сибикорт	гидрокортизон+хлоргексидин+hydrocortisone+chlorhexidine
+1365	сибектан
+4853	сибикорт	гидрокортизон хлоргексидин+hydrocortisone chlorhexidine
 1084	сигнопам	темазепам+temazepam
 2963	сиднокарба	мезокарб+mesocarb
 48	сиину	ломустин+lomustine
-4813	силегон	расторопши пятнистой плодов экстракт+silybi mariani fructuum extract
-4807	силимарина седико	расторопши пятнистой плодов экстракт+silybi mariani fructuum extract
+4813	силегон
+4807	силимарина
 4977	силокаст	
 2258	силубин	буформин+buformin
 3021	симбалта	дулоксетин+duloxetine
-4496	симбикорт турбухалер	будесонид+формотерол+budesonide+formoterol
-1234	симбиолакт комп.	
+4496	симбикорт	будесонид формотерол+budesonide formoterol
+1234	симбиолакт
 2725	симвагексал	симвастатин+simvastatin
 2726	симвастол	симвастатин+simvastatin
 1085	симвор	симвастатин+simvastatin
@@ -3099,16 +3083,15 @@
 2727	симло	симвастатин+simvastatin
 3058	симпатил	
 5544	синагис	паливизумаб+palivizumab
-4854	синалар к	клиохинол+флуоцинолона ацетонид+clioquinol+fluocinolone acetonide
+4854	синалар	клиохинол флуоцинолона ацетонид+clioquinol fluocinolone acetonide
 4925	синалар	флуоцинолона ацетонид+fluocinolone acetonide
 3973	синаром	атенолол+atenolol
 4905	синафлан	флуоцинолона ацетонид+fluocinolone acetonide
 1086	синекод	бутамират+butamirate
-3168	синемет ср	леводопа+карбидопа+levodopa+carbidopa
 3167	синемет	леводопа+карбидопа+levodopa+carbidopa
-3974	синепрес	гидрохлоротиазид+дигидроэрготоксин+резерпин+hydrochlorothiazide+dihydroergotoxine+reserpine
+3974	синепрес	гидрохлоротиазид дигидроэрготоксин резерпин+hydrochlorothiazide dihydroergotoxine reserpine
 564	синергин	
-1911	синерсул	ко-тримоксазол [сульфаметоксазол+триметоприм]+co-trimoxazole [sulfamethoxazole+trimethoprim]
+1911	синерсул	ко-тримоксазол+co-trimoxazole
 3259	синкаптон	
 4131	синкумар	аценокумарол+acenocoumarol
 4906	синодерм	флуоцинолона ацетонид+fluocinolone acetonide
@@ -3119,13 +3102,10 @@
 348	синфаз	
 1775	синэстрол	гексэстрол+hexestrol
 3022	сиозам	циталопрам+citalopram
-2259	сиофор 500	метформин+metformin
-2260	сиофор 850	метформин+metformin
+2259	сиофор	метформин+metformin
 1088	сирдалуд	тизанидин+tizanidine
-1312	сирдалуд мр	тизанидин+tizanidine
 4814	сирепар	
-4291	сироп от кашля с подорожником и мать-и-мачехой	
-3676	систейн офтальмологическое средство	
+3676	систейн
 2783	сифлокс	ципрофлоксацин+ciprofloxacin
 3427	сиэль	дименгидринат+dimenhydrinate
 5102	скелид	тилудроновая +tiludronic acid
@@ -3133,165 +3113,114 @@
 1555	скин-кап	пиритион цинка+pyrithione zinc
 1380	скинорен	азелаиновая +azelaic acid
 5042	скипидарная	
-3476	слеза натуральная	гипромеллоза+декстран+hypromellose+dextran
 4754	смекта	смектит диоктаэдрический+smectite dioctaedric
-2606	смофкабивен периферический	аминокислоты для парентерального питания [жировые эмульсии для парентерального питания+декстроза+минералы]+aminoacids for parenteral nutrition [fat emulsions+dextrose+multimineral]
-2607	смофкабивен центральный	аминокислоты для парентерального питания [жировые эмульсии для парентерального питания+декстроза+минералы]+aminoacids for parenteral nutrition [fat emulsions+dextrose+multimineral]
+2607	смофкабивен
 3734	снуп	ксилометазолин+xylometazoline
 4907	совентол	бамипин+bamipine
 3719	солексин	цефалексин+cefalexin
-3720	солексин-кид	цефалексин+cefalexin
-3721	солексин-форте	цефалексин+cefalexin
 2964	солиан	амисульприд+amisulpride
-5227	солидаго с	
+5227	солидаго
 1089	солковагин	
 3572	солкодерм	
-721	солкосерил дентальная адгезивная паста	
-1400	солкосерил	
+721	солкосерил
 3465	солкотриховак	
 5204	солкоуровак	
-4724	солодки корней брикет круглый	
-5446	солодки корней брикет круглый	солодки корни+glycyrrhizae radix
-1090	солодки корня сироп	солодки корни+glycyrrhizae radix
+5446	солодка	солодки корни+glycyrrhizae radix
 4347	солопан	
-4640	солпадеин фаст	
-3262	солпадеин фаст	кофеин+парацетамол+caffeine+paracetamol
-3261	солпадеин	кодеин+кофеин+парацетамол+codeine+caffeine+paracetamol
+3261	солпадеин	кодеин кофеин парацетамол+codeine caffeine paracetamol
 3736	солпафлекс	ибупрофен+ibuprofen
 4398	солутан	
 5162	сольвенций	
-166	солю-декортин h25	преднизолон+prednisolone
-167	солю-декортин н250	преднизолон+prednisolone
-168	солю-декортин н50	преднизолон+prednisolone
+166	солю-декортин	преднизолон+prednisolone
 1091	сомбревин	пропанидид+propanidid
 3310	сомноген	
 3103	сомнол	зопиклон+zopiclone
 2911	сонапакс	тиоридазин+thioridazine
 5277	сонизин	тамсулозин+tamsulosin
-3080	соннорм лайф формула	
-2366	сополькорт н	гидрокортизон+hydrocortisone
-760	сорбилакт	калия хлорид+кальция хлорид+магния хлорид+натрия лактат+натрия хлорид+сорбитол+potassium chloride+calcium chloride+magnesium chloride+sodium lactate+sodium chloride+sorbitol
-469	сорбифер дурулес	железа сульфат+аскорбиновая +ferrous sulfate+ascorbic acid
-2831	составной натрия лактат	натрия лактата сложный [калия хлорид+кальция хлорид+натрия хлорид+натрия лактат]+compound solution of sodium lactate [potassium chloride+calcium chloride+sodium chloride+sodium lactate]
+2366	сополькорт	гидрокортизон+hydrocortisone
+760	сорбилакт
+469	сорбифер	железа сульфат аскорбиновая +ferrous sulfate ascorbic acid
 3345	софазин	норфлоксацин+norfloxacin
-3446	софрадекс	грамицидин с+дексаметазон+фрамицетин+gramicidin s+dexamethasone+framycetin
+3446	софрадекс	грамицидин дексаметазон фрамицетин+gramicidin s dexamethasone framycetin
 1527	софтовак	
-1343	спазган	метамизол натрия+питофенон+фенпивериния бромид+metamizole sodium+pitofenone+fenpiverinium bromide
-4641	спаздользин для детей	метамизол натрия+metamizole sodium
-1092	спазмалгон	метамизол натрия+питофенон+фенпивериния бромид+metamizole sodium+pitofenone+fenpiverinium bromide
+1343	спазган	метамизол натрия питофенон фенпивериния бромид+metamizole sodium pitofenone fenpiverinium bromide
+4641	спаздользин	метамизол натрия+metamizole sodium
+1092	спазмалгон	метамизол натрия питофенон фенпивериния бромид+metamizole sodium pitofenone fenpiverinium bromide
 3137	спазмекс	троспия хлорид+trospium chloride
-1485	спазмовералгин нео	
+1485	спазмовералгин
 3279	спазмол	дротаверин+drotaverine
-4651	спазмомен 40	отилония бромид+otilonium bromide
-1345	спазмонет	дротаверин+drotaverine
+4651	спазмомен	отилония бромид+otilonium bromide
 1344	спазмонет	дротаверин+drotaverine
 5220	спазмоцистенал	
 3291	спаковин	дротаверин+drotaverine
 1938	спарфло	спарфлоксацин+sparfloxacin
 1346	спаскупрель	
-3668	спектрум с лютеином для глаз	
 2069	спектрум	
-2070	спектрум 50+ лайф формула	
-5278	спеман	
 1479	спеман	
 2539	спематон	
 2860	сперидан	рисперидон+risperidone
 5294	спермактин	
-3547	сперсаллерг	антазолин+тетризолин+antazoline+tetryzoline
-2524	специальное драже мерц	поливитамины минералы+multivitamins multimineral
+3547	сперсаллерг	антазолин тетризолин+antazoline tetryzoline
 3263	спигелон	
 2077	спирамицин-веро	спирамицин+spiramycin
 4404	спирива	тиотропия бромид+tiotropium bromide
-5452	спирива респимат	тиотропия бромид+tiotropium bromide
 2361	спирикс	спиронолактон+spironolactone
 2784	спирозин	цефотаксим+cefotaxime
 2362	спиронаксан	спиронолактон+spironolactone
 2363	спиронол	спиронолактон+spironolactone
 1928	спиронолактон	спиронолактон+spironolactone
-604	спирулина платенсис	
+604	спирулина
 2927	спитомин	буспирон+buspirone
 2655	сплатинат	
 2328	спленин	
-3976	спониф 10	нифедипин+nifedipine
-2644	спорт дринк	
-4517	спофиллин 100	теофиллин+theophylline
-4518	спофиллин 250	теофиллин+theophylline
+3976	спониф	нифедипин+nifedipine
+4517	спофиллин	теофиллин+theophylline
 1894	спрайсел	дазатиниб+dasatinib
-5530	спрегаль	пиперонил бутоксид+эсбиол+piperonyl butoxide+esbiol
-160	спрей кровоостанавливающий ankaferd blood stopper	
-161	средство кровоостанавливающее ankaferd blood stopper	
-318	средство многофункциональное отоларингологическое для промывания ушного прохода «а-церумен»+a-cerumen	
-1093	стабизол гэк 6%	гидроксиэтилкрахмал+hydroxiethyl starch
-1094	стадол нс	буторфанол+butorphanol
+5530	спрегаль	пиперонил бутоксид эсбиол+piperonyl butoxide esbiol
+1093	стабизол	гидроксиэтилкрахмал+hydroxiethyl starch
 1095	стадол	буторфанол+butorphanol
 2928	стазепин	карбамазепин+carbamazepine
-3169	сталево	леводопа+энтакапон+[карбидопа]+levodopa+entacapone+[carbidopa]
+3169	сталево	леводопа энтакапон+levodopa entacapone
 2608	сталон	
 2861	стамин	пирацетам+piracetam
 3977	стамло	амлодипин+amlodipine
-3978	стамло м	амлодипин+amlodipine
 1096	стандациллин	ампициллин+ampicillin
 3548	стафен	кетотифен+ketotifen
-1235	стафилофаг+бактериофаг стафилококковый жидкий	
-3381	стекловидное тело	
 4964	стелара	устекинумаб+ustekinumab
 1097	стеригал	
 349	стерилин	ноноксинол+nonoxinol
-4491	стеринеб саламол	сальбутамол+salbutamol
+4491	стеринеб	сальбутамол+salbutamol
 1098	стиламин	соматостатин+somatostatin
 565	стимол	цитруллина малат+citrulline malate
 5447	стодаль	
 5136	стокрин	эфавиренз+efavirenz
 4553	стоматофит	
 582	стопангин	гексэтидин+hexetidine
-4292	стоптуссин	бутамират+гвайфенезин+butamirate+guaifenesin
-4348	стоптуссин-фито	
+4292	стоптуссин	бутамират гвайфенезин+butamirate guaifenesin
+4348	стоптуссин
 3209	сторилат	карбамазепин+carbamazepine
 3134	страттера	атомоксетин+atomoxetine
 3076	стрезам	этифоксин+etifoxine
-5457	стрепсилс интенсив	флурбипрофен+flurbiprofen
-4601	стрепсилс	
-4260	стрепсилс	амилметакрезол+дихлорбензиловый+amylmetacresol+dichlorobenzyl alcohol
-4261	стрепсилс	амилметакрезол+дихлорбензиловый+лидокаин+amylmetacresol+dichlorobenzyl alcohol+lidocaine
-4602	стрепсилс с витамином c	
-4449	стрепсилс с витамином c	амилметакрезол+дихлорбензиловый+аскорбиновая +amylmetacresol+dichlorobenzyl alcohol+ascorbic acid
-4603	стрепсилс с ментолом и эвкалиптом	
-4450	стрепсилс с ментолом и эвкалиптом	амилметакрезол+дихлорбензиловый+левоментол+amylmetacresol+dichlorobenzyl alcohol+levomenthol
-4604	стрепсилс с охлаждающим эффектом	
-4550	стрепсилс с охлаждающим эффектом	амилметакрезол+дихлорбензиловый+левоментол+amylmetacresol+dichlorobenzyl alcohol+levomenthol
+4601	стрепсилс
 3596	стрептаза	стрептокиназа+streptokinase
 5420	стрептомицин	стрептомицин+streptomycin
 3041	стрептонитол	аминитрозол+сульфаниламид+aminitrozole+sulfanilamide
-3128	стрептофаг+бактериофаг стрептококковый жидкий	
-3042	стрептоцид белый	сульфаниламид+sulfanilamide
 3688	стрептоцида	сульфаниламид+sulfanilamide
-3043	стрептоцидовая 10%	сульфаниламид+sulfanilamide
-288	стресс формула 600	поливитамины+multivitamins
-566	стресс формула с железом	поливитамины минералы+multivitamins multimineral
-567	стресс формула с цинком	поливитамины минералы+multivitamins multimineral
+3043	стрептоцидовая	сульфаниламид+sulfanilamide
 3051	стрессплант	
-669	стресстабс 500	поливитамины+multivitamins
-670	стресстабс+железо	поливитамины минералы+multivitamins multimineral
-671	стресстабс+цинк	поливитамины минералы+multivitamins multimineral
+669	стресстабс	поливитамины+multivitamins
 1099	стрикс	
-3671	стрикс кидс	
-3672	стрикс менеджер	
-2486	стрикс отличник	
-3594	стрикс	
-1456	стримол	кофеин+парацетамол+caffeine+paracetamol
-2683	стройность	
-2682	стройность	
+1456	стримол	кофеин парацетамол+caffeine paracetamol
 5118	структум	хондроитина сульфат+chondroitin sulfate
-2101	струмель т	
+2101	струмель
 1295	стугерон	циннаризин+cinnarizine
-5448	судафед	гвайфенезин+псевдоэфедрин+guaifenesin+pseudoephedrine
+5448	судафед	гвайфенезин псевдоэфедрин+guaifenesin pseudoephedrine
 4932	судокрем	
 2299	сукламат	
 4671	сукрат	сукральфат+sucralfate
 4178	сулган	
-3403	сулотрим	ко-тримоксазол [сульфаметоксазол+триметоприм]+co-trimoxazole [sulfamethoxazole+trimethoprim]
-2315	сульперазон	цефоперазон+сульбактам +cefoperazone+sulbactam
-1178	сульпирид белупо	сульпирид+sulpiride
+3403	сулотрим	ко-тримоксазол+co-trimoxazole
+2315	сульперазон	цефоперазон сульбактам +cefoperazone sulbactam
 1177	сульпирид	сульпирид+sulpiride
 1100	сультасин	ампициллин+сульбактам+ampicillin+sulbactam
 2316	сульфадиметоксина	сульфадиметоксин+sulfadimethoxine
@@ -3299,47 +3228,28 @@
 5009	сульфаргин	сульфадиазин+sulfadiazine
 3504	сульфацил-натрия	сульфацетамид+sulfacetamide
 4926	сульфодекортэм	
-5451	сульфокамфокаин для инъекций 10%	прокаин+сульфокамфорная +procaine+sulfocamphoric acid
-4109	сульфокамфокаин	прокаин+сульфокамфорная +procaine+sulfocamphoric acid
+4109	сульфокамфокаин	прокаин сульфокамфорная +procaine sulfocamphoric acid
 2278	сумазид	азитромицин+azithromycin
 3044	сумамед	азитромицин+azithromycin
-3045	сумамед	азитромицин+azithromycin
 3264	сумамигрен	суматриптан+sumatriptan
 1919	сумамокс	азитромицин+azithromycin
-1742	суметролим	ко-тримоксазол [сульфаметоксазол+триметоприм]+co-trimoxazole [sulfamethoxazole+trimethoprim]
-198	суперантитокс-100	
-199	суперантитокс-25	
-200	суперантитокс-50	
-4620	суперо	
-3046	суперо	цефуроксим+cefuroxime
+1742	суметролим	ко-тримоксазол+co-trimoxazole
+198	суперантитокс
 2826	суппортан	
 3493	суправиран	ацикловир+aciclovir
 86	супрадин	поливитамины минералы+multivitamins multimineral
-2525	супрадин кидс	
-1469	супрадин кидс мишки	
-1470	супрадин кидс юниор	
-1476	супрадин кидс	
 3346	супракс	цефиксим+cefixime
 24	супрастин	хлоропирамин+chloropyramine
 3549	супрастинекс	левоцетиризин+levocetirizine
 3071	супренамин	
-1816	супрефакт депо	бусерелин+buserelin
 1815	супрефакт	бусерелин+buserelin
-2085	суприма-бронхо	
-4605	суприма-лор	
-4350	суприма-лор	амилметакрезол+дихлорбензиловый+amylmetacresol+dichlorobenzyl alcohol
-4351	суприма-плюс	
+4350	суприма	амилметакрезол дихлорбензиловый+amylmetacresol dichlorobenzyl alcohol
 1101	сургам	тиапрофеновая +tiaprofenic acid
 4077	сустак	нитроглицерин+nitroglycerin
-2358	сустанон-250	тестостерон+смесь эфиров+testosterone [mixture of esters]
-2656	сустанорм лайф формула	
+2358	сустанон
+2656	сустанорм
 4078	сустонит	нитроглицерин+nitroglycerin
 396	сутент	сунитиниб+sunitinib
-4116	сыворотка противоботулиническая типа b лошадиная очищенная концентрированная жидкая	
-3053	сыворотка противогангренозная поливалентная лошадиная очищенная концентрированная жидкая	
-2078	сыворотка противодифтерийная лошадиная очищенная концентрированная жидкая	
-2035	сыворотка противостолбнячная лошадиная очищенная концентрированная жидкая	
-5449	таблетки от кашля	кодеин+натрия гидрокарбонат+солодки корни+термопсиса ланцетного трава+codeine+sodium hydrocarbonate+glycyrrhizae radiсes+thermopsidis lanceolatae herba
 2785	таваник	левофлоксацин+levofloxacin
 25	тавегил	клемастин+clemastine
 4399	тавипек	
@@ -3352,41 +3262,30 @@
 1776	тайверб	лапатиниб+lapatinib
 1622	тайлед	недокромил натрия+nedocromil sodium
 4519	тайлед минт	недокромил натрия+nedocromil sodium
-4534	тайленол для младенцев	парацетамол+paracetamol
-4352	тайленол от простуды	декстрометорфан+парацетамол+псевдоэфедрин+хлорфенамин+dextromethorphan+paracetamol+pseudoephedrine+chlorphenamine
 1457	тайленол	парацетамол+paracetamol
 624	таксол	паклитаксел+paclitaxel
 70	таксотер	доцетаксел+docetaxel
-568	таксофит поливитамины + минеральные элементы и микроэлементы	
 1865	тактивин	тимуса экстракт
 4520	талеум	кромоглициевая +cromoglicic acid
 1102	тамерит	аминодигидрофталазиндион натрия+aminodihydrophthalasindione sodium
 4370	тамифлю	осельтамивир+oseltamyvir
 1103	тамицин	цефпирамид+cefpiramide
 1777	тамоксен	тамоксифен+tamoxifen
-1778	тамоксифен гексал	тамоксифен+tamoxifen
-1779	тамоксифен лахема	тамоксифен+tamoxifen
 1705	тамоксифен	тамоксифен+tamoxifen
-1780	тамоксифена цитрат	тамоксифен+tamoxifen
-1735	тамоксифен-эбеве	тамоксифен+tamoxifen
-4755	тамс	кальция карбонат+магния карбонат+calcium carbonate+magnesium carbonate
-5280	тамсулон-фс	тамсулозин+tamsulosin
-2873	танакан	гинкго двулопастного листьев экстракт+ginkgo bilobae foliorum extract
+5280	тамсулон	тамсулозин+tamsulosin
+2873	танакан	гинкго+ginkgo
 5281	таниз-к	тамсулозин+tamsulosin
 4793	таннакомп	
-4569	тантум верде	
 210	тантум верде	бензидамин+benzydamine
-319	тантум роза	бензидамин+benzydamine
 3727	танфломед	левофлоксацин+levofloxacin
 1104	таргоцид	тейкопланин+teicoplanin
-1972	тардиферон	железа сульфат+ferrous sulfate
+1972	тардиферон
 3347	таривид	офлоксацин+ofloxacin
 3348	тариферид	офлоксацин+ofloxacin
 3349	тарицин	офлоксацин+ofloxacin
-3979	тарка	верапамил+трандолаприл+verapamil+trandolapril
-4606	тароментин	
-1105	тароментин	амоксициллин+клавулановая +amoxicillin+clavulanic acid
-4353	тартефедрель н	
+3979	тарка	верапамил трандолаприл+verapamil trandolapril
+1105	тароментин	амоксициллин клавулановая +amoxicillin clavulanic acid
+4353	тартефедрель
 226	тарцева	эрлотиниб+erlotinib
 1106	тарцефандол	цефамандол+cefamandole
 1107	тарцефоксим	цефотаксим+cefotaxime
@@ -3395,53 +3294,42 @@
 5072	тауредон	натрия ауротиомалат+sodium aurothiomalate
 625	таутакс	доцетаксел+docetaxel
 3574	тауфон	таурин+taurine
-3575	тауфона 4%+глазные	таурин+taurine
 2329	тахистин	дигидротахистерол+dihydrotachysterol
 1108	тахокомб	
 2728	тг-тор	аторвастатин+atorvastatin
-4098	тд-спрей изо мак	изосорбида динитрат+isosorbide dinitrate
 3210	тебантин	габапентин+gabapentin
-5191	тевабон	алендроновая +альфакальцидол [набор]
-4497	тевакомб	салметерол+флутиказон+salmeterol+fluticasone
+5191	тевабон	алендроновая +альфакальцидол
+4497	тевакомб	салметерол флутиказон+salmeterol fluticasone
 5192	теванат	алендроновая +alendronic acid
 3980	теветен	эпросартан+eprosartan
-3981	теветен	гидрохлоротиазид+эпросартан+hydrochlorothiazide+eprosartan
-4935	теймурова паста	борная +метенамин+тальк+натрия тетраборат+салициловая +свинца ацетат+формальдегид+цинка оксид+boric acid+methenamine+talc+sodium tetraborate+salicylic acid+plumbum acetate+formaldegide+zinc oxide
-4190	телебрикс 30 меглумин	йокситаламовая +ioxitalamic acid
-4191	телебрикс 35	йокситаламовая +ioxitalamic acid
+4935	теймурова
+4191	телебрикс	йокситаламовая +ioxitalamic acid
 2855	телектол	винпоцетин+vinpocetine
-5521	телмокс 100	мебендазол+mebendazole
+5521	телмокс	мебендазол+mebendazole
 4427	телфаст	фексофенадин+fexofenadine
 1706	темодал	темозоломид+temozolomide
 3982	тензотран	моксонидин+moxonidine
 3382	теникам	теноксикам+tenoxicam
 3983	тенокс	амлодипин+amlodipine
 5043	теноктил	теноксикам+tenoxicam
-3984	теноретик	атенолол+хлорталидон+atenolol+chlortalidone
+3984	теноретик	атенолол хлорталидон+atenolol chlortalidone
 3985	тенормин	атенолол+atenolol
-3069	тенотен детский	
 1296	тенотен	
 672	тентекс	
-3986	теодибаверин	бендазол+папаверин+теобромин+bendazol+papaverine+theobromine
+3986	теодибаверин	бендазол папаверин теобромин+bendazol papaverine theobromine
 4521	теостат	теофиллин+theophylline
 4463	теотард	теофиллин+theophylline
-1623	теофедрин-н	белладонны листьев экстракт+кофеин+парацетамол+теофиллин+фенобарбитал+цитизин+эфедрин+belladonna folia extract+caffeine+paracetamol+theophylline+phenobarbital+cytisin+ephedrine
-569	теравит тоник	поливитамины минералы+multivitamins multimineral
+1623	теофедрин
 673	теравит	поливитамины минералы+multivitamins multimineral
 2870	тералиджен	алимемазина тартрат+aimemazine tartrate
-5120	терафлекс адванс	глюкозамин+ибупрофен+хондроитина сульфат+glucosamine+ibuprofen+chondroitin sulfate
-5119	терафлекс	глюкозамин+хондроитина сульфат+glucosamine+chondroitin sulfate
-4401	терафлю бро	
-4607	терафлю лар	
-4443	терафлю лар	бензоксония хлорид+лидокаин+benzoxonium chloride+lidocaine
-4354	терафлю от гриппа и простуды	парацетамол+фенилэфрин+фенирамин+аскорбиновая +paracetamol+phenylephrinel+pheniramine+ascorbic acid
+5119	терафлекс	глюкозамин хондроитина сульфат+glucosamine chondroitin sulfate
+4354	терафлю	парацетамол фенилэфрин фенирамин аскорбиновая +paracetamol phenylephrinel pheniramine ascorbic acid
 5337	тербизил	тербинафин+terbinafine
 5330	тербикс	тербинафин+terbinafine
 1109	тержинан	
-1110	теркурония для инъекций 0,5%	теркуроний+tercuronium
+1110	теркурония	теркуроний+tercuronium
 5331	термикон	тербинафин+terbinafine
-3383	термо-ревмон	
-5450	терпинкод	кодеин+натрия гидрокарбонат+терпингидрат+codeine+sodium hydrocarbonate+therpinhydrate
+5450	терпинкод	кодеин натрия гидрокарбонат терпингидрат+codeine sodium hydrocarbonate therpinhydrate
 5459	терпон	
 1111	терцеф	цефтриаксон+ceftriaxone
 1480	тестаген	
@@ -3449,77 +3337,61 @@
 3111	тестис	
 1781	тестостерона пропионат	тестостерон+testosterone
 2461	тетравит	поливитамины+multivitamins
-2036	тетракок 05	вакцина для профилактики дифтерии, коклюша, полиомиелита, столбняка
-1458	тетралгин	кодеин+кофеин+метамизол натрия+фенобарбитал+codeine+caffeine+metamizole sodium+phenobarbital
-3447	тетрациклиновая глазная 1%	тетрациклин+tetracycline
+2036	тетракок
+1458	тетралгин	кодеин кофеин метамизол натрия фенобарбитал+codeine caffeine metamizole sodium phenobarbital
+3447	тетрациклиновая	тетрациклин+tetracycline
 2913	тетурама	дисульфирам+disulfiram
 3987	тиакем	дилтиазем+diltiazem
-2462	тиамина бромида 0,00645&nbsp;г, рибофлавина 0,005&nbsp;г, аскорбиновой 0,1&nbsp;г покрытые оболочкой	поливитамины+multivitamins
-2110	тиамина хлорид	тиамин+thiamine
-2463	тиамина хлорида для инъекций	тиамин+thiamine
 134	тиаприд	тиаприд+tiapride
 1179	тиапридал	тиаприд+tiapride
 1112	тиберал	орнидазол+ornidazole
-201	ти-грин97	
-1113	тиенам	имипенем+циластатин+imipenem+cilastatin
+1113	тиенам	имипенем циластатин+imipenem cilastatin
 5421	тизамид	пиразинамид+pyrazinamide
 3190	тизанил	тизанидин+tizanidine
-3728	тизин ксило	ксилометазолин+xylometazoline
 4262	тизин	тетризолин+tetryzoline
-3729	тизин ксило био	ксилометазолин+xylometazoline
 1114	тиклид	тиклопидин+ticlopidine
 419	тикло	тиклопидин+ticlopidine
 3384	тилкотил	теноксикам+tenoxicam
-289	тималин	тимуса экстракт
-1115	тиментин	тикарциллин+клавулановая +ticarcillin+clavulanic acid
+289	тималин	тимус
+1115	тиментин	тикарциллин клавулановая +ticarcillin clavulanic acid
 3665	тимогексал	тимолол+timolol
-700	тимоглобулин	иммуноглобулин антитимоцитарный+immunoglobulin antithymocyte
+700	тимоглобулин	иммуноглобулин+immunoglobulin
 461	тимодепрессин	
-3648	тимолол буфус	тимолол+timolol
-3666	тимолол-акос	тимолол+timolol
-3649	тимолол-мэз	тимолол+timolol
-3650	тимолол-пос	тимолол+timolol
+3648	тимолол	тимолол+timolol
 3651	тимоптик	тимолол+timolol
-3652	тимоптик-депо	тимолол+timolol
-290	тимоптин для инъекций	
-3653	тимпило	пилокарпин+тимолол+pilocarpine+timolol
+290	тимоптин
+3653	тимпило	пилокарпин тимолол+pilocarpine timolol
 291	тимусамин	
 1116	тиниба	тинидазол+tinidazole
 1117	тинидазол	тинидазол+tinidazole
-3106	тинидазол-акри	тинидазол+tinidazole
 3397	тиогамма	тиоктовая +thioctic acid
 2914	тиодазин	тиоридазин+thioridazine
-3401	тиоктацид 600 т	тиоктовая +thioctic acid
-3400	тиоктацид 600	тиоктовая +thioctic acid
-3402	тиоктацид бв	тиоктовая +thioctic acid
+3400	тиоктацид	тиоктовая +thioctic acid
 3398	тиолепта	тиоктовая +thioctic acid
 1118	тиопентал	тиопентал натрий+thiopental sodium
 1733	тиотепа-тиоплекс	тиотепа+thiotepa
-1782	тиофосфамид лиофилизированный для инъекций	тиотепа+thiotepa
+1782	тиофосфамид	тиотепа+thiotepa
 2095	тирамин	
-2096	тиреокомб	левотироксин натрия+лиотиронин+калия йодид+levothyroxine sodium+liothyronine+potassium chloride
-1848	тиреотом	левотироксин натрия+лиотиронин+levothyroxine sodium+liothyronine
+2096	тиреокомб	левотироксин натрия лиотиронин калия йодид+levothyroxine sodium liothyronine potassium chloride
+1848	тиреотом	левотироксин натрия лиотиронин+levothyroxine sodium liothyronine
 3550	тирлор	лоратадин+loratadine
-2097	тиро-4	левотироксин натрия+levothyroxine sodium
 1929	тирозол	тиамазол+thiamazole
-2929	тиролиберина для инъекций	протирелин+protirelin
+2929	тиролиберина	протирелин+protirelin
 1119	тиротакс	цефотаксим+cefotaxime
-1120	тисасен	сеннозиды а и b+sennosides a &amp; b
+1120	тисасен
 1319	тисацид	гидроталцит+hydrotalcite
-1121	тиссукол кит	
-5470	тифим ви	вакцина для профилактики брюшного тифа+vaccine typhoid
+1121	тиссукол
+5470	тифим
 2823	тоби	тобрамицин+tobramycin
-2824	тоби подхалер	тобрамицин+tobramycin
 3385	тобитил	теноксикам+tenoxicam
-3448	тобрадекс	дексаметазон+тобрамицин+dexamethasone+tobramycin
-3449	тобразон	дексаметазон+тобрамицин+dexamethasone+tobramycin
-1503	тобрацин-адс	тобрамицин+tobramycin
-3451	тобрекс 2х	тобрамицин+tobramycin
+3448	тобрадекс	дексаметазон тобрамицин+dexamethasone tobramycin
+3449	тобразон	дексаметазон тобрамицин+dexamethasone tobramycin
+1503	тобрацин	тобрамицин+tobramycin
 3450	тобрекс	тобрамицин+tobramycin
 1122	тобропт	тобрамицин+tobramycin
 1123	томицид	
 144	томудекс	ралтитрексид+raltitrexed
-292	тонзилгон н	
+292	тонзилгон
 4451	тонзилла	
 4274	тонзилотрен	
 5458	тонзипрет	
@@ -3529,16 +3401,16 @@
 5495	торадол	кеторолак+ketorolac
 2186	торвакард	аторвастатин+atorvastatin
 3741	торекан	тиэтилперазин+thiethylperazine
-2862	торендо ку-таб	рисперидон+risperidone
+2862	торендо	рисперидон+risperidone
 1827	торизел	темсиролимус+temsirolimus
 5498	торолак	кеторолак+ketorolac
 1124	тотацеф	цефазолин+cefazolin
-1973	тотема	железа глюконат+марганца глюконат+меди глюконат+ferrous gluconate+manganese gluconate+cuprum gluconate
-4214	тофф	декстрометорфан+парацетамол+фенилэфрин+хлорфенамин+dextromethorphan+paracetamol+phenylephrine+chlorphenamine
+1973	тотема
+4214	тофф	декстрометорфан парацетамол фенилэфрин хлорфенамин+dextromethorphan paracetamol phenylephrine chlorphenamine
 3654	траватан	травопрост+travoprost
 4400	трависил	
 4875	травоген	изоконазол+isoconazole
-4876	травокорт	дифлукортолон+изоконазол+diflucortolone+izoconazole
+4876	травокорт	дифлукортолон изоконазол+diflucortolone izoconazole
 3988	тразикор	окспренолол+oxprenolol
 2965	тразин	трифлуоперазин+trifluoperazine
 4192	тразограф	натрия амидотризоат+sodium amidotrizoate
@@ -3546,16 +3418,8 @@
 4110	траклир	бозентан+bosentan
 1125	тракриум	атракурия безилат+atracurium besilate
 5392	трактоцил	атозибан+atosiban
-1127	трамадол ланнахер	трамадол+tramadol
 1126	трамадол	трамадол+tramadol
-1128	трамадол-акри	трамадол+tramadol
-1129	трамадол-словакофарма	трамадол+tramadol
 1130	трамал	трамадол+tramadol
-1131	трамал 50	трамадол+tramadol
-1133	трамал 100	трамадол+tramadol
-5496	трамал 150	трамадол+tramadol
-5497	трамал 200	трамадол+tramadol
-1132	трамал	трамадол+tramadol
 1134	трамал100	трамадол+tramadol
 1135	трамолин	трамадол+tramadol
 5491	трамундин	трамадол+tramadol
@@ -3567,64 +3431,57 @@
 1136	трансамча	транексамовая +tranexamic acid
 5488	транстек	бупренорфин+buprenorphine
 4799	трасколан	апротинин+aprotinin
-1137	траумель с	
+1137	траумель
 674	трекрезана	оксиэтиламмония метилфеноксиацетат+oxyethylammonium methylphenoxiacetate
 696	трексан	метотрексат+methotrexate
 4355	трексил	терфенадин+terfenadine
-3171	тремонорм	леводопа+карбидопа+levodopa+carbidopa
+3171	тремонорм	леводопа карбидопа+levodopa carbidopa
 1401	тренпентал	пентоксифиллин+pentoxifylline
 1279	трентал	пентоксифиллин+pentoxifylline
-1280	трентал 400	пентоксифиллин+pentoxifylline
 1802	треосульфан	треосульфан+treosulfan
-2376	триаклим	эстрадиол+норэтистерон+ estradiol+norethisterone
+2376	триаклим	эстрадиол норэтистерон+ estradiol norethisterone
 4908	триакорт	триамцинолон+triamcinolone
-3989	триам-ко	гидрохлоротиазид+триамтерен+hydrochlorothiazide+triamterene
-4483	триамсинолон	триамцинолон+triamcinolone
+3989	триам-ко	гидрохлоротиазид триамтерен+hydrochlorothiazide triamterene
 1624	триамцинолон	триамцинолон+triamcinolone
-1886	триамцинолона 0,004&nbsp;г	триамцинолон+triamcinolone
-5282	трианол	сливы африканской коры экстракт+pygeum africanum corticis extract
-4855	триасепт	бацитрацин+неомицин+полимиксин b+bacitracin+neomycin+polymyxin b
+5282	трианол
+4855	триасепт	бацитрацин неомицин полимиксин+bacitracin neomycin polymyxin b
 2657	три-ви-плюс	поливитамины минералы+multivitamins multimineral
-3314	тригамма	пиридоксин+тиамин+цианокобаламин+[лидокаин]
-3551	тригистаглобулин сухой	
+3314	тригамма	пиридоксин тиамин цианокобаламин
+3551	тригистаглобулин
 3990	тригрим	торасемид+torasemide
-5023	тридерм	бетаметазон+гентамицин+клотримазол+betamethasone+gentamicin+clotrimasole
+5023	тридерм	бетаметазон гентамицин клотримазол+betamethasone gentamicin clotrimasole
 5198	тридин	
 3605	тридукард	триметазидин+trimetazidine
-5137	тризивир	абакавир+ламивудин+зидовудин+abacavir+lamivudine+zidovudine
-2098	трийодтиронин 50 берлин-хеми	лиотиронин+liothyronine
-350	триквилар	левоноргестрел+этинилэстрадиол+levonorgestrel+ethinylestradiol
+5137	тризивир	абакавир ламивудин зидовудин+abacavir lamivudine zidovudine
+2098	трийодтиронин	лиотиронин+liothyronine
+350	триквилар	левоноргестрел этинилэстрадиол+levonorgestrel ethinylestradiol
 3214	трилептал	окскарбазепин+oxcarbazepine
-4672	тримедат	
 4756	тримедат	тримебутин+trimebutine
-1835	тримезол	ко-тримоксазол [сульфаметоксазол+триметоприм]+co-trimoxazole [sulfamethoxazole+trimethoprim]
+1835	тримезол	ко-тримоксазол+co-trimoxazole
 2684	тримекс	фенилпропаноламин+phenylpropanolamine
-3606	тримектал мв	триметазидин+trimetazidine
+3606	тримектал	триметазидин+trimetazidine
 1853	тримепранол	метипранолол+metipranolol
 3607	триметазид	триметазидин+trimetazidine
 3608	триметазидин	триметазидин+trimetazidine
 5247	тримопан	триметоприм+trimethoprim
 4193	триомбраст	натрия амидотризоат+sodium amidotrizoate
-3555	трипсин кристаллический	трипсин+trypsin
+3555	трипсин	трипсин+trypsin
 3023	триптизол	амитриптилин+amitriptyline
-368	три-регол 21+7	левоноргестрел+этинилэстрадиол+levonorgestrel+ethinylestradiol
-367	три-регол	левоноргестрел+этинилэстрадиол+levonorgestrel+ethinylestradiol
-3991	трирезид к	гидрохлоротиазид+дигидралазин+резерпин+[калия хлорид]+hydrochlorothiazide+dihydralazine+reserpine+[potassium chloride]
-2369	трисеквенс	эстрадиол+норэтистерон+ estradiol+norethisterone
+3991	трирезид	гидрохлоротиазид дигидралазин резерпин+hydrochlorothiazide dihydralazine reserpine
+2369	трисеквенс	эстрадиол норэтистерон+ estradiol norethisterone
 716	тритаце	рамиприл+ramipril
 132	триттико	тразодон+trazodone
-1836	трифамокс ибл	амоксициллин+сульбактам+amoxicillin+sulbactam
-1180	трифтазина в ампулах 0,2%	трифлуоперазин+trifluoperazine
+1836	трифамокс	амоксициллин сульбактам+amoxicillin sulbactam
+1180	трифтазина	трифлуоперазин+trifluoperazine
 153	трихоброл	метронидазол+metronidazole
 4877	трозид	тиоконазол+tioconazole
-1402	троксерутин лечива	троксерутин+troxerutin
+1402	троксерутин	троксерутин+troxerutin
 5019	тромблесс	гепарин натрия+heparin sodium
-1138	тромбо асс	ацетилсалициловая +acetylsalicylic acid
 4099	тромбовазим	
 1139	тромбовар	натрия тетрадецилсульфат+sodium tetradecyl sulfate
 717	тромбопол	ацетилсалициловая +acetylsalicylic acid
 4143	тромбофоб	гепарин натрия+heparin sodium
-420	трометамол н	трометамол+trometamol
+420	трометамол	трометамол+trometamol
 4133	тропарин	цертопарин натрия+certoparin sodium
 1636	тропацина	дифенилтропин+diphenyltropine
 722	тропикамид	тропикамид+tropicamide
@@ -3635,22 +3492,16 @@
 2729	тулип	аторвастатин+atorvastatin
 5283	тулозин	тамсулозин+tamsulosin
 5374	туринал	аллилэстренол+allylestrenol
-4356	туссамаг бальзам от простуды	эвкалипта прутовидного листьев масло+eucalypti viminalis foliorum oleum
+4356	туссамаг
 4293	тусупрекс	окселадин+oxeladin
-5284	туя комп.	
 1366	тыквелон	
-1367	тыквеол 450&nbsp;мг	
-1368	тыквеол масло для приема внутрь	
-583	тыквеол суппозитории ректальные	
-2658	тыквэйнол. масло пищевое	
+1367	тыквеол
+2658	тыквэйнол
 2645	убихинон	
 3175	убретид	дистигмина бромид+distigmine bromide
-3477	увлажняющие	гипромеллоза+hypromellose
-1517	уголь активированный мс	активированный уголь+activated charcoal
-1518	уголь активированный фас-э	активированный уголь+activated charcoal
+1517	уголь активированный	активированный уголь+activated charcoal
 4774	узара	
 4134	укидан	урокиназа+urokinase
-2440	укрепление костной ткани леди'с формула	
 4673	улкодин	ранитидин+ranitidine
 128	улкозол	омепразол+omeprazole
 4674	улкосан	ранитидин+ranitidine
@@ -3659,53 +3510,42 @@
 129	ультоп	омепразол+omeprazole
 1710	ультравист	йопромид+iopromide
 1142	ультракаин	артикаин+articaine
-1144	ультракаин д-с	артикаин+эпинефрин+articaine+epinephrine
-1143	ультракаин д-с	артикаин+эпинефрин+articaine+epinephrine
+1143	ультракаин	артикаин эпинефрин+articaine epinephrine
 4152	ультралан	флуокортолон+fluocortolone
 1528	ультрапрокт	
-2188	ультратард нм	инсулин двухфазный [человеческий генно-инженерный]+insulin biphasic [human biosynthetic]
+2188	ультратард	инсулин+insulin
 1594	ульфамид	фамотидин+famotidine
-1145	уман комплекс д.и.	фактор ix комплекс+factor ix complex
 4215	умкалор	
-1146	уназин	ампициллин+сульбактам+ampicillin+sulbactam
-3386	унгапивен	яд пчелиный+bee venom
+1146	уназин	ампициллин сульбактам+ampicillin sulbactam
+3386	унгапивен
 2659	ундевит	поливитамины+multivitamins
 4939	унидерм	мометазон+mometasone
 1181	унитиол	димеркаптопропансульфонат натрия+dimercaptopropansulfonate sodium
 4642	уолш-асалгин	ацетилсалициловая +acetylsalicylic acid
-570	упсавит витамин c	аскорбиновая  [аскорбиновая +натрия аскорбат]+ascorbic acid  [ascorbic acid+sodium ascorbate]
-1309	упсавит кальций	кальция карбонат+calcium carbonate
-571	упсавит мультивитамин	поливитамины минералы+multivitamins multimineral
-5479	упсарин упса с витамином c	ацетилсалициловая +аскорбиновая +acetylsalicylic acid+ascorbic acid
-1459	упсарин упса	ацетилсалициловая +acetylsalicylic acid
+1459	упсарин	ацетилсалициловая +acetylsalicylic acid
 2364	урактон	спиронолактон+spironolactone
-2694	уралит-у	калия натрия гидроцитрат+potassium-sodium-hydrogen citrate
+2694	уралит	калия натрия гидроцитрат+potassium sodium hydrogen citrate
 2024	урбазон	
 2609	урисан	
-5228	урифлорин	толокнянки обыкновенной листья+uvae ursi folia
-1829	уро-бцж	вакцина бцж для иммунотерапии рака мочевого пузыря+vaccinum bcg for immunotherape cancer of vesica urinaria
-5238	уро-ваксом	лизат бактерий [esсheriсhia сoli]+bacterial lysates
-2610	уровит лайф формула	
+5228	урифлорин	толокнянка+uvae ursi folia
+5238	уро-ваксом
+2610	уровит
 1711	урографин	натрия амидотризоат+sodium amidotrizoate
 421	урокиназа	урокиназа+urokinase
-4832	уролесан	душицы обыкновенной травы экстракт+клещевины обыкновенной семян масло+моркови дикой семян экстракт+мяты перечной листьев масло+пихты масло+хмеля соплодия+origani cretici herbae extract+ricini communis semenis oleum+dauci sativi semenis extract+menthae piperitae foliorum oleum+abiesis oleum+humuli lupuli fructus
-5214	урологический+мочегонный сбор	календулы лекарственной цветки+мяты перечной листья+толокнянки обыкновенной листья+укропа огородного плоды+элеутерококка колючего корневища с корнями+calendulae officinalis flores+menthae piperitae folia+uvae ursi folia+anethi graveolentis fructus+eleutherococci senticosi rhizomata cum radicibus
+4832	уролесан	
 462	уромитексан	месна+mesna
 5205	уропимид	пипемидовая +pipemidic acid
 5285	урорек	силодозин+silodosin
-5229	уро-тоник лайф формула	
+5229	уро-тоник
 5230	уротрактин	пипемидовая +pipemidic acid
 5231	урофлукс	
-4825	урсо 100	урсодезоксихолевая +ursodeoxycholic acid
+4825	урсо	урсодезоксихолевая +ursodeoxycholic acid
 4740	урсодез	урсодезоксихолевая +ursodeoxycholic acid
 1369	урсосан	урсодезоксихолевая +ursodeoxycholic acid
 4684	урсофальк	урсодезоксихолевая +ursodeoxycholic acid
 2611	урсул	
-3060	успокой	
-3091	успокоительный+седативный сбор №2	валерианы лекарственной корневища с корнями+мяты перечной листья+пустырника трава+солодки корни+хмеля соплодия+valerianae officinalis rhizomata cum radicibus+menthae piperitae folia+leonuri herba+glycyrrhizae radices+humuli lupuli cones
-3092	успокоительный сбор №3	
-49	уфт	тегафур+урацил+tegafur+uracil
-2700	фабразим	агалсидаза бета+agalsidase beta
+49	уфт	тегафур урацил+tegafur uracil
+2700	фабразим	агалсидаза+agalsidase
 1147	фазижин	тинидазол+tinidazole
 3722	фазин	оксиметазолин+oxymetazoline
 1783	фазлодекс	фулвестрант+fulvestrant
@@ -3721,201 +3561,157 @@
 4652	фамотидин	фамотидин+famotidine
 1595	фамотидин-акри	фамотидин+famotidine
 4216	фариал	инданазолин+indanazoline
-1149	фарингопилс	амилметакрезол+дихлорбензиловый+левоментол+amylmetacresol+dichlorobenzyl alcohol+levomenthol
-4611	фарингосепт	
+1149	фарингопилс	амилметакрезол дихлорбензиловый левоментол+amylmetacresol dichlorobenzyl alcohol levomenthol
 4263	фарингосепт	амбазон+ambazone
 3730	фармазолин	ксилометазолин+xylometazoline
-2620	фарманекс марин омега	
+2620	фарманекс
 351	фарматекс	бензалкония хлорид+benzalkonium chloride
 2317	фарциклин	амикацин+amikacin
 1150	фаспик	ибупрофен+ibuprofen
-4867	фастин-1	
+4867	фастин	
 3387	фастум	кетопрофен+ketoprofen
 1370	фебихол	фенипентол+fenipentol
 3265	фебрицет	парацетамол+paracetamol
-5482	фебрицет	парацетамол+фенирамин+аскорбиновая +paracetamol+pheniramine+ascorbic acid
 5088	феброфид	кетопрофен+ketoprofen
 3024	феварин	флувоксамин+fluvoxamine
-1281	фезам	пирацетам+циннаризин+piracetam+cinnarizine
+1281	фезам	пирацетам циннаризин+piracetam cinnarizine
 1637	фезипам	бромдигидрохлорфенилбензодиазепин+bromdihydrochlorphenylbenzodiazepine
-2014	фейба	антиингибиторный коагулянтный комплекс+anti-inhibitor coagulant complex
+2014	фейба	коагулянтный+anti-inhibitor coagulant
 4433	фексадин	фексофенадин+fexofenadine
-5078	фелдорал седико	пироксикам+piroxicam
+5078	фелдорал	пироксикам+piroxicam
 1151	фелексин	цефалексин+cefalexin
 3992	фелодип	фелодипин+felodipine
-5073	фелоран 25	диклофенак+diclofenac
-5074	фелоран	диклофенак+diclofenac
 5049	фелоран	диклофенак+diclofenac
 1784	фемара	летрозол+letrozole
-2526	фемибион наталкер i	
-2612	фемибион наталкер ii	
-5323	фемилекс	молочная +lactic acid
-5371	феминал	
-5306	феминус эдас-101	
-369	фемоден	гестоден+этинилэстрадиол+gestodene+ethinylestradiol
-5193	фемостон	дидрогестерон+эстрадиол+dydrogesterone+estradiol
-5194	фемостон 1/5	дидрогестерон+эстрадиол+dydrogesterone+estradiol
+2526	фемибион
+5323	фемилекс
+5371	феминал
+5306	феминус
+369	фемоден	гестоден этинилэстрадиол+gestodene ethinylestradiol
+5193	фемостон	дидрогестерон эстрадиол+dydrogesterone estradiol
 1638	феназепам	бромдигидрохлорфенилбензодиазепин+bromdihydrochlorphenylbenzodiazepine
 1152	феназепама	бромдигидрохлорфенилбензодиазепин+bromdihydrochlorphenylbenzodiazepine
-5423	феназид	изоникотиноилгидразин железа сульфат+iisonicotinoylhydrazine ferrum sulfate
+5423	феназид
 3391	фендивия	фентанил+fentanyl
 1153	фенибут	аминофенилмасляная +aminophenylbutyric acid
 1154	фенилин	фениндион+phenindione
-2691	фенил-фри 1	
-4820	фенистил пенцивир	пенцикловир+penciclovir
+2691	фенил-фри
 26	фенистил	диметинден+dimetindene
-4428	фенистил 24	диметинден+dimetindene
 4940	фенкарол	хифенадин+quifenadine
-3180	фенобарбитала для детей 0,005&nbsp;г	фенобарбитал+phenobarbital
 3179	фенобарбитала	фенобарбитал+phenobarbital
-230	феноксиметилпенициллин+для суспензии	феноксиметилпенициллин+phenoxymethylpenicillin
 2279	феноксиметилпенициллин	феноксиметилпенициллин+phenoxymethylpenicillin
-231	феноксиметилпенициллина	феноксиметилпенициллин+phenoxymethylpenicillin
 1639	фенорелаксан	бромдигидрохлорфенилбензодиазепин+bromdihydrochlorphenylbenzodiazepine
 4522	фенотерол	фенотерол+fenoterol
-607	фенотропил	n-карбамоилметил-4-фенил-2-пирролидон
+607	фенотропил
 1155	фентанил	фентанил+fentanyl
-4264	фервекс для детей	парацетамол+фенирамин+аскорбиновая +paracetamol+pheniramine+ascorbic acid
-4612	фервекс от боли в горле	
-4275	фервекс от боли в горле	хлоргексидина глюконат+chlorhexidine gluconate
-4294	фервекс от кашля	амброксол+ambroxol
-4358	фервекс от сухого кашля	декстрометорфан+парацетамол+аскорбиновая +dextromethorphan+paracetamol+ascorbic acid
-4217	фервекс спрей от насморка	оксиметазолин+oxymetazoline
-4357	фервекс	парацетамол+фенирамин+аскорбиновая +paracetamol+pheniramine+ascorbic acid
-653	ферестал	гемицеллюлаза+желчи компоненты+панкреатин+hemicellulase+bile components+pancreatin
+4357	фервекс	парацетамол фенирамин аскорбиновая+paracetamol pheniramine ascorbic acid
+653	ферестал	гемицеллюлаза желчь панкреатин+hemicellulase bile pancreatin
 1974	феринжект	железа карбоксимальтозат+ferric carboxymaltosate
 1955	ферлатум	железа протеин сукцинилат+ferrous protein succinilate
-1956	ферретаб комп.	железа фумарат+фолиевая +ferrous fumarate+folic acid
+1956	ферретаб комп.	железа фумарат фолиевая +ferrous fumarate folic acid
 1957	ферринат	
 1958	ферровин хинное вино с железом	
-4388	ферровир	дезоксирибонуклеат натрия с железом комплекс+desoxyribonucleate sodium with ferrum complex
+4388	ферровир	дезоксирибонуклеат натрия железо+desoxyribonucleate sodium ferrum
 1959	феррогематоген	
 1960	ферроградумет	железа сульфат+ferrous sulfate
-1962	ферронал 35	железа глюконат+ferrous gluconate
 1961	ферронал	железа глюконат+ferrous gluconate
 1963	ферронат	железа фумарат+ferrous fumarate
-1471	ферро-фольгамма	железа сульфат+фолиевая +цианокобаламин+ferrous sulfate+folic acid+cyanocobalamin
-1964	феррум лек	железа+iii гидроксид декстран+ferric+iii hydroxide destrane
+1471	ферро-фольгамма	железа сульфат фолиевая цианокобаламин+ferrous sulfate folic acid cyanocobalamin
 654	фестал	
 4153	фибро-вейн	натрия тетрадецилсульфат+sodium tetradecyl sulfate
-3452	физиологический «физиоложика»	натрия хлорид+sodium chloride
-4219	физиомер спрей назальный для детей	морская вода+sea-water
-1156	физиомер спрей назальный	морская вода+sea-water
-4218	физиомер спрей назальный	морская вода+sea-water
+1156	физиомер	морская вода+sea-water
 3993	физиотенз	моксонидин+moxonidine
 5075	финалгель	пироксикам+piroxicam
-5089	финалгон	нонивамид+никобоксил+nonivamide+nicoboxil
+5089	финалгон	нонивамид никобоксил+nonivamide nicoboxil
 5286	финаст	финастерид+finasteride
 5287	финастерид	финастерид+finasteride
 2930	финлепсин	карбамазепин+carbamazepine
-2931	финлепсин	карбамазепин+carbamazepine
 3994	финоптин	верапамил+verapamil
-5169	финрексин с-300	ацетилсалициловая +кофеин+аскорбиновая +acetylsalicylic acid+caffeine+ascorbic acid
+5169	финрексин	ацетилсалициловая кофеин аскорбиновая+acetylsalicylic acid caffeine+ascorbic acid
 2039	фиразир	икатибант+icatibant
-4184	фитангин эдас-105	
-4844	фитестен	
-3061	фито ново-сед	боярышника плоды+мелиссы лекарственной трава+пустырника трава+шиповника плоды+эхинацеи пурпурной трава+crataegi fructus+melissae officinalis herba+leonuri herba+rosae fructus+echinaceae purpurae herba
-4928	фитовал интенсивный уход	
-4929	фитовал регулярный уход	
-3093	фитовит	
-4823	фитогепатол №2+желчегонный сбор №2	
-2685	фитодиуретик с калием диет формула	
+4184	фитангин
+4844	фитестен
+4928	фитовал
+3093	фитовит
+4823	фитогепатол
+2685	фитодиуретик
 5209	фитолизин	
-2261	фитомуцил диет формула	
-3311	фиторелакс	боярышника цветков экстракт+валерианы лекарственной корневищ с корнями экстракт+crataegi floridis extract+valerianae officinalis rhizomatum cum radicibus extract
+2261	фитомуцил	
+3311	фиторелакс	боярышник валериана+crataegi valerianae
 1157	фитостимулин	
-2300	фиточай «золотые рецепты алтая»	
 4476	флавамед	амброксол+ambroxol
 1158	флагил	метронидазол+metronidazole
 1193	фламакс	кетопрофен+ketoprofen
-1194	фламакс	кетопрофен+ketoprofen
 4359	флекоксин	бромгексин+bromhexine
 3388	флексен	кетопрофен+ketoprofen
 1504	флексид	левофлоксацин+levofloxacin
 4119	флекситал	пентоксифиллин+pentoxifylline
-1556	флекситол бальзам для ухода за кожей ног	
-1557	флекситол бальзам для ухода за кожей рук	
-1558	флекситол для кутикулы и ногтей	
-3731	флемоклав солютаб	амоксициллин+клавулановая +amoxicillin+clavulanic acid
-3750	флемоксин солютаб	амоксициллин+amoxicillin
+1556	флекситол
+3731	флемоклав	амоксициллин клавулановая+amoxicillin clavulanic acid
+3750	флемоксин	амоксициллин+amoxicillin
 4429	фликсоназе	флутиказон+fluticasone
 4477	фликсотид	флутиказон+fluticasone
-4846	флит фосфо-сода	
 584	флогэнзим	
 3432	флоксал	офлоксацин+ofloxacin
 2916	флоксэт	флуоксетин+fluoxetine
 5050	флолид	нимесулид+nimesulide
-1236	флонивин бс	
-2071	флоравит э	
-64	флора-дофилус + фос	
+1236	флонивин
+2071	флоравит
 4478	флорацид	левофлоксацин+levofloxacin
 2359	флоринеф	флудрокортизон+fludrocortisone
 4936	флоцета	
-4383	флу	
 5044	флугалин	флурбипрофен+flurbiprofen
 1875	флудара	флударабин+fludarabine
 1876	флударабин-тева	флударабин+fludarabine
 2825	флуимуцил	ацетилцистеин+acetylcysteine
-3699	флуифорт	карбоцистеина лизиновая соль+carbocisteine lysine salt
+3699	флуифорт
 4360	флуклоксациллин	флуклоксациллин+flucloxacillin
-5161	флукомицид седико	флуконазол+fluconazole
+5161	флукомицид	флуконазол+fluconazole
 173	флуконазол	флуконазол+fluconazole
 3138	флукорал	флуконазол+fluconazole
-4858	флукорт н	неомицин+флуоцинолона ацетонид+neomycin+fluocinolone acetonide
-4859	флукорт ц	флуоцинолона ацетонид+fluocinolone acetonide
+4858	флукорт	неомицин флуоцинолона ацетонид+neomycin fluocinolone acetonide
 4857	флукорт	флуоцинолона ацетонид+fluocinolone acetonide
 3025	флуксонил	флуоксетин+fluoxetine
 3026	флунисан	флуоксетин+fluoxetine
-3027	флуоксетин ланнахер	флуоксетин+fluoxetine
 3028	флуоксетин	флуоксетин+fluoxetine
 3474	флуомизин	деквалиния хлорид+dequalinium chloride
 208	флуоресцеин новартис	флуоресцеин натрия+fluorescein sodium
-50	флуоро-урацил рош	фторурацил+fluorouracil
+50	флуоро-урацил	фторурацил+fluorouracil
 1817	флутакан	флутамид+flutamide
-1483	флутамид сандоз	флутамид+flutamide
 1818	флутамид	флутамид+flutamide
 4909	флуцинар	флуоцинолона ацетонид+fluocinolone acetonide
-1376	флуцинар н	неомицин+флуоцинолона ацетонид+neomycin+fluocinolone acetonide
 1819	флуцином	флутамид+flutamide
 2917	флюанксол	флупентиксол+flupentixol
-4384	флюарикс	вакцина для профилактики гриппа [инактивированная]+vaccine influenza virus inactivated
+4384	флюарикс
 4220	флюдитек	карбоцистеин+carbocisteine
-1460	флюколдекс-н	кофеин+парацетамол+хлорфенамин+caffeine+paracetamol+chlorpheniramine
+1460	флюколдекс	кофеин парацетамол хлорфенамин+caffeine paracetamol chlorpheniramine
 5297	флюкостат	флуконазол+fluconazole
-3995	фозид 20	гидрохлоротиазид+фозиноприл+hydrochlorothiazide+fosinopril
-3996	фозикард н	гидрохлоротиазид+фозиноприл+hydrochlorothiazide+fosinopril
-3997	фозикард	фозиноприл+fosinopril
-2457	фокус	
+3995	фозид	гидрохлоротиазид фозиноприл+hydrochlorothiazide fosinopril
+3996	фозикард	гидрохлоротиазид фозиноприл+hydrochlorothiazide fosinopril
 390	фолацин	фолиевая +folic acid
-1472	фолинат кальция	кальция фолинат+calcium folinate
-5389	фолио	
-4492	форадил комби	будесонид+формотерол+набор+budesonide+formoterol+set
+1472	фолинат	кальция фолинат+calcium folinate
 1625	форадил	формотерол+formoterol
-3389	форапин e	
+3389	форапин
 4786	форлакс	макрогол+macrogol
 5429	формагель	формальдегид+formaldehyde
 2262	форметин	метформин+metformin
 5511	формидрон	формальдегид+formaldehyde
 5195	фороза	алендроновая +alendronic acid
-4385	форталгин c	ацетилсалициловая +аскорбиновая +acetylsalicylic acid+ascorbic acid
+4385	форталгин	ацетилсалициловая аскорбиновая +acetylsalicylic acid ascorbic acid
 572	фортамин	
-2026	фортекортин моно	дексаметазон+dexamethasone
 2025	фортекортин	дексаметазон+dexamethasone
 468	фортикер	
 5138	фортоваза	саквинавир+saquinavir
 4847	фортранс	макрогол+macrogol
 414	фортум	цефтазидим+ceftazidime
 1505	форцеф	цефтриаксон+ceftriaxone
-2810	фосаванс	алендроновая +колекальциферол+alendronic acid+colecalciferol
+2810	фосаванс	алендроновая колекальциферол+alendronic acid colecalciferol
 2811	фосамакс	алендроновая +alendronic acid
 2762	фосфадена	аденозина фосфат+adenosine phosphate
 158	фосфалюгель	алюминия фосфат+aluminium phosphate
-4826	фосфоглив	глицирризиновая +фосфолипиды+glycyrrhizic acid+phospholipides
-65	фосфоглив	глицирризиновая +фосфолипиды+glycyrrhizic acid+phospholipides
-4734	фосфотиамина	
+65	фосфоглив	глицирризиновая фосфолипиды+glycyrrhizic acid phospholipides
 2464	фосфотиамина	монофосфотиамин+monophosphothiamine
-3656	фотил	пилокарпин+тимолол+pilocarpine+timolol
-3657	фотил	пилокарпин+тимолол+pilocarpine+timolol
+3656	фотил	пилокарпин тимолол+pilocarpine timolol
 54	фотодитазин	
 55	фотосенс	гидроксиалюминия трисульфофталоцианин+hydroxialuminium trisulfophtalocyanine
 573	фотостим	
@@ -3923,64 +3719,51 @@
 422	фраксипарин	надропарин кальция+nadroparin calcium
 3029	фрамекс	флуоксетин+fluoxetine
 4430	френасма	кетотифен+ketotifen
-4910	фридерм деготь	
-4911	фридерм рн-баланс	
-4912	фридерм цинк	пиритион цинка+pyrithione zinc
 1977	фромилид	кларитромицин+clarithromycin
-1978	фромилид уно	кларитромицин+clarithromycin
 3030	фронтин	алпразолам+alprazolam
-4389	фсме-булин	иммуноглобулин против клещевого энцефалита+immunoglobulin tick-born encephalitis
-4390	фсме-иммун инжект	вакцина для профилактики клещевого энцефалита+vaccine tick-borne encephalitis
-4739	фталазола 0,5&nbsp;г	фталилсульфатиазол+phthalylsulfathiazole
-5424	фтизопирам	изониазид+пиразинамид+isoniazid+pyrazinamide
-5425	фтизоэтам	изониазид+этамбутол+isoniazid+ethambutol
+4389	фсме-булин	иммуноглобулин+immunoglobulin
+4739	фталазола	фталилсульфатиазол+phthalylsulfathiazole
+5424	фтизопирам	изониазид пиразинамид+isoniazid pyrazinamide
+5425	фтизоэтам	изониазид этамбутол+isoniazid ethambutol
 71	фторафур	тегафур+tegafur
 27	фторокорт	триамцинолон+triamcinolone
-51	фторурацила для инъекций 5%	фторурацил+fluorouracil
-3689	фугентин	гентамицин+фузидовая +gentamicin+fusidic acid
-2788	фузидин-натрия, покрытые оболочкой	фузидовая +fusidic acid
+51	фторурацила	фторурацил+fluorouracil
+3689	фугентин	гентамицин фузидовая +gentamicin fusidic acid
+2788	фузидин-натрия	фузидовая +fusidic acid
 1377	фузимет	
 5318	фульцин	гризеофульвин+griseofulvin
-2808	фунгизон	амфотерицин b+amphotericin b
+2808	фунгизон	амфотерицин+amphotericin b
 320	фунголон	флуконазол+fluconazole
 4930	фунготербин	тербинафин+terbinafine
-5332	фунготербин нео	
+5332	фунготербин
 5232	фурагин	фуразидин+furazidin
-3505	фурагина 0,05&nbsp;г	фуразидин+furazidin
+3505	фурагина	фуразидин+furazidin
 5233	фурадонин	нитрофурантоин+nitrofurantoin
 1743	фуразолидон	фуразолидон+furazolidone
 4881	фурамаг	фуразидин+furazidin
 3453	фурацилин	нитрофурал+nitrofural
-3506	фурацилина для наружного употребления 0,02&nbsp;г	нитрофурал+nitrofural
-5508	фурезис	триамтерен+фуросемид+triamterene+furosemide
-3425	фуросемид ланнахер	фуросемид+furosemide
+5508	фурезис	триамтерен фуросемид+triamterene furosemide
 2834	фуросемид	фуросемид+furosemide
-66	фуросемид-виал	фуросемид+furosemide
 3426	фурсемид	фуросемид+furosemide
 4882	фуцидин	фузидовая +fusidic acid
-4913	фуцикорт	бетаметазон+фузидовая +betamethasone+fusidic acid
+4913	фуцикорт	бетаметазон фузидовая +betamethasone fusidic acid
 3434	фуциталмик	фузидовая +fusidic acid
-2189	фэт-х+пиколинат хрома	
-5017	хаврикс	вакцина для профилактики вирусного гепатита а+vaccine hepatitis a
+5017	хаврикс
 1486	хаес-стерил	гидроксиэтилкрахмал+hydroxiethyl starch
 3479	хай-кром	кромоглициевая +cromoglicic acid
 1932	хайлефлокс	левофлоксацин+levofloxacin
-59	хаймикс	аминокислоты для парентерального питания+aminoacids for parenteral nutrition
-4677	хайрабезол	
+59	хаймикс	аминокислоты+aminoacids
 1330	хайрабезол	рабепразол+rabeprazole
-1195	хайрумат	ибупрофен+парацетамол+ibuprofen+paracetamol
+1195	хайрумат	ибупрофен парацетамол+ibuprofen paracetamol
 3998	хайтрин	теразозин+terazosin
 1785	халавен	эрибулин+eribulin
 3695	халиксол	амброксол+ambroxol
 3999	хартил	рамиприл+ramipril
-4000	хартил-д	гидрохлоротиазид+рамиприл+hydrochlorothiazide+ramipril
-4978	хеа форс фитолосьон	
-4931	хеа форс шампунь от перхоти	
-4835	хелидониум-гомаккорд н	
+4835	хелидониум-гомаккорд
 4726	хеликоцин	
 4727	хелитрикс	
 1596	хелицид	омепразол+omeprazole
-2015	хематэ п	фактор свертывания крови viii+coagulation factor viii
+2015	хематэ
 2280	хемомицин	азитромицин+azithromycin
 4836	хеносан	хенодеоксихолевая +chenodeoxycholic acid
 4837	хенофальк	хенодеоксихолевая +chenodeoxycholic acid
@@ -3988,164 +3771,117 @@
 1237	хепель	
 1965	хеферол	железа фумарат+ferrous fumarate
 5139	хивид	залцитабин+zalcitabine
-4613	хиконцил	
 3350	хиконцил	амоксициллин+amoxicillin
 97	хилак	
-742	хилозар-комод увлажняющий офтальмологический	
-741	хило-комод увлажняющий офтальмологический	
-202	хиломакс-комод увлажняющий офтальмологический	
 1481	химколин	
-60	хитозан-эвалар	
-352	хлое	ципротерон+этинилэстрадиол+cyproterone+ethinylestradiol
-3219	хлоракона 250&nbsp;мг	бекламид+beclamide
+60	хитозан
+352	хлое	ципротерон этинилэстрадиол+cyproterone ethinylestradiol
+3219	хлоракона	бекламид+beclamide
 1730	хлорбутина	хлорамбуцил+chlorambucil
 5234	хлоргексидин биглюконат	хлоргексидин+chlorhexidine
-5541	хлоргексидин жифрер	хлоргексидин+chlorhexidine
-232	хлорофиллипт	эвкалипта листьев экстракт+eucalypti foliorum extract
-5348	хлорофиллипта в масле 2%	эвкалипта листьев экстракт+eucalypti foliorum extract
-2789	хлорофиллиптаовой 0,25%	эвкалипта листьев экстракт+eucalypti foliorum extract
-233	хлорофиллиптаовой 1%	эвкалипта листьев экстракт+eucalypti foliorum extract
+232	хлорофиллипт	эвкалипт+eucalypti
+5348	хлорофиллипта	эвкалипт+eucalypti
+233	хлорофиллиптаовой	эвкалипт+eucalypti
 2263	хлорпропамид	хлорпропамид+chlorpropamide
-2966	хлорпротиксен 15 лечива	хлорпротиксен+chlorprothixene
-2967	хлорпротиксен 50 лечива	хлорпротиксен+chlorprothixene
+2966	хлорпротиксен	хлорпротиксен+chlorprothixene
 5324	хлорхинальдин	хлорхинальдол+chlorquinaldol
 1371	холагол	
-2264	холестерин баланс лайф формула	
 2746	холестин	
 2730	холетар	ловастатин+lovastatin
 4614	холисал	
-730	холисал	холина салицилат+цеталкония хлорид+choline salicylate+cetalkonium chloride
+730	холисал	холина салицилат цеталкония хлорид+choline salicylate cetalkonium chloride
 626	холоксан	ифосфамид+ifosfamide
-2646	холосас	шиповника плодов экстракт+rosae pingue fructuum extract
-3081	хон шип пао	
+2646	холосас	шиповник+rosae pingue
 5051	хондрамин	
-5121	хондроитин-акос	хондроитина сульфат+chondroitin sulfate
+5121	хондроитин	хондроитина сульфат+chondroitin sulfate
 5122	хондроксид	хондроитина сульфат+chondroitin sulfate
 5045	хондролон	хондроитина сульфат+chondroitin sulfate
 5010	хонсурид	хондроитина сульфат+chondroitin sulfate
 2346	хорагон	гонадотропин хорионический+chorionic gonadotropin
 5079	хотемин	пироксикам+piroxicam
-4757	хофитол	артишока листьев экстракт+cynarae scomuli foliae extract
-675	хромвитал+	
-2686	худия слим	
+4757	хофитол	артишок+cynarae scomuli
+675	хромвитал
 1872	хумаглобин	иммуноглобулин+immunoglobulin
 2190	хумалог	инсулин лизпро+insulin lispro
-2191	хумалог микс 25	инсулин лизпро двухфазный+insulin lispro biphasic
-2192	хумалог микс 50	инсулин лизпро двухфазный+insulin lispro biphasic
 2388	хуматроп	соматропин+somatropin
 5295	хумегон	менотропины+menotropins
 4968	хумира	адалимумаб+adalimumab
-2193	хумулин л	инсулин двухфазный [человеческий генно-инженерный]+insulin biphasic [human biosynthetic]
-2194	хумулин м2 20/80	инсулин двухфазный [человеческий генно-инженерный]+insulin biphasic [human biosynthetic]
-2195	хумулин м3	инсулин двухфазный [человеческий генно-инженерный]+insulin biphasic [human biosynthetic]
-2196	хумулин нпх	инсулин-изофан [человеческий генно-инженерный]+insulin-isophan [human biosynthetic]
-2197	хумулин регуляр	инсулинимый [человеческий генно-инженерный]+insulin soluble [human biosynthetic]
-203	хьюмер 150 для взрослых спрей назальный	
-204	хьюмер 150 для младенцев и детей спрей назальный	
-2621	царский желудь бальзам	
-2622	царский желудь сироп	
-2623	царский желудь-с в капсулах	
+2193	хумулин	инсулин двухфазный+insulin biphasic
+203	хьюмер
 2877	цебрилизин	
 1880	цедекс	цефтибутен+ceftibuten
 2790	цезолин	цефазолин+cefazolin
 3351	цеклор	цефаклор+cefaclor
-293	целаскон эффервесценс	аскорбиновая +ascorbic acid
+293	целаскон	аскорбиновая +ascorbic acid
 5076	целебрекс	целекоксиб+celecoxib
-4915	целестодерм-в с гарамицином	бетаметазон+гентамицин+betamethasone+gentamycin
-4914	целестодерм-в	бетаметазон+betamethasone
+4914	целестодерм	бетаметазон+betamethasone
 1885	целестон	бетаметазон+betamethasone
 4001	целипрол	целипролол+celiprolol
-1238	целлюлоза микрокристаллическая мкц «анкир-б»	
-3329	цель т	
 676	центрум	поливитамины минералы+multivitamins multimineral
-2613	центрум про	
-677	центрум детский+экстра витамин с	поливитамины минералы+multivitamins multimineral
-678	центрум детский+экстра кальций	поливитамины минералы+multivitamins multimineral
-391	центрум матерна дгк от а до цинка мультивитаминный комплекс	
-392	центрум матерна мультивитаминный комплекс	
-447	центрум мультивитаминный комплекс от a до цинка	
-2614	центрум с лютеином	
-448	центрум сильвер мультивитаминный комплекс от a до цинка	
-2615	центрум сильвер с лютеином	
-679	центрум сильвер	поливитамины минералы+multivitamins multimineral
 4758	цеолат	диметикон+dimeticone
 3751	цепрова	ципрофлоксацин+ciprofloxacin
 2874	цераксон	цитиколин+citicoline
-294	церварикс	вакцина против вируса папилломы человека
+294	церварикс
 1282	церебрамин	
 2863	церебрил	пирацетам+piracetam
-688	церебролизат	мозга крупного рогатого скота гидролизат
+688	церебролизат
 2848	церебролизин	
-1297	церебрум н	
+1297	церебрум
 1976	церезим	имиглюцераза+imiglucerase
 1283	церепро	холина альфосцерат+choline alfoscerate
 1284	церетон	холина альфосцерат+choline alfoscerate
-2527	церневит	поливитамины [парентеральное введение]+multivitamins [parenteral injection]
+2527	церневит	поливитамины+multivitamins
 5288	цернилтон	
-5289	цернилтон	
 1323	церуглан	метоклопрамид+metoclopramide
 3289	церутил	меклофеноксат+meclofenoxate
 3552	цетиринакс	цетиризин+cetirizine
 3553	цетрин	цетиризин+cetirizine
 380	цетротид	цетрореликс+cetrorelix
 1506	цефабол	цефотаксим+cefotaxime
-2792	цефазолин «биохеми»	цефазолин+cefazolin
-2791	цефазолин сандоз	цефазолин+cefazolin
 2393	цефазолин-акос	цефазолин+cefazolin
 3690	цефаклен	цефалексин+cefalexin
-3352	цефаклор штада	цефаклор+cefaclor
+3352	цефаклор	цефаклор+cefaclor
 2318	цефаксон	цефтриаксон+ceftriaxone
-3047	цефалексин	цефалексин+cefalexin
 3048	цефалексин-акос	цефалексин+cefalexin
-5485	цефалис эдас-109	
+5485	цефалис
 1507	цефамабол	цефамандол+cefamandole
 1378	цефамезин	цефазолин+cefazolin
 2319	цефантрал	цефотаксим+cefotaxime
 2394	цефат	цефамандол+cefamandole
 2793	цефатрексил	цефапирин+cefapirin
 1379	цефезол	цефазолин+cefazolin
-1461	цефекон д	парацетамол+paracetamol
-1462	цефекон н	
+1461	цефекон	парацетамол+paracetamol
 2320	цефобид	цефоперазон+cefoperazone
 1508	цефоперабол	цефоперазон+cefoperazone
 2794	цефоприд	цефазолин+cefazolin
 228	цефосин	цефотаксим+cefotaxime
-2321	цефотаксим лек	цефотаксим+cefotaxime
-1837	цефотаксим сандоз	цефотаксим+cefotaxime
+2321	цефотаксим	цефотаксим+cefotaxime
 2795	цефотетан	цефотетан+cefotetan
 2281	цефспан	цефиксим+cefixime
-2796	цефтазидим сандоз	цефтазидим+ceftazidime
 1838	цефтазидим-акос	цефтазидим+ceftazidime
 2322	цефтидин	цефтазидим+ceftazidime
 1509	цефтриабол	цефтриаксон+ceftriaxone
 1839	цефтриаксон-акос	цефтриаксон+ceftriaxone
 1510	цефурабол	цефуроксим+cefuroxime
 3353	цефф	цефалексин+cefalexin
-1474	цианокобаламин+витамин b12	цианокобаламин+cyanocobalamin
-1473	цианокобаламин	цианокобаламин+cyanocobalamin
-1475	цианокобаламина для инъекций	цианокобаламин+cyanocobalamin
+1475	цианокобаламина	цианокобаламин+cyanocobalamin
 4965	цигнодерм	дитранол+dithranol
 28	цикадерма	
 5372	ци-клим	
-4127	цикло 3 форт	
-4154	цикло 3	
 3494	цикловакс	ацикловир+aciclovir
 3495	цикловир	ацикловир+aciclovir
-295	цикловирал седико	ацикловир+aciclovir
-5303	циклодинон	прутняка обыкновенного плодов экстракт+vitex agni casti fructuum extract
-1640	циклодол	тригексифенидил+trihexyphenidyl
+295	цикловирал	ацикловир+aciclovir
+5303	циклодинон	прутняк+vitex agni
 1641	циклодола	тригексифенидил+trihexyphenidyl
 3560	цикломед	циклопентолат+cyclopentolate
-2370	цикло-прогинова	норгестрел+эстрадиол+norgestrel+estradiol
-3587	циклорал-фс	циклоспорин+ciclosporin
+2370	цикло-прогинова	норгестрел эстрадиол+norgestrel estradiol
+3587	циклорал	циклоспорин+ciclosporin
 5248	циклосерин	циклосерин+cycloserine
-3584	циклоспорин гексал	циклоспорин+ciclosporin
 3583	циклоспорин	циклоспорин+ciclosporin
 2072	циклоферон	меглюмина акридонацетат+meglumine acridоnacetate
 627	циклофосфан	циклофосфамид+cyclophosphamide
 3507	цилоксан	ципрофлоксацин+ciprofloxacin
 5235	цималон	
-4654	циметидин ланнахер	циметидин+cimetidine
 4653	циметидин	циметидин+cimetidine
 4759	цинарикс	
 4944	циндол	цинка оксид+zinc oxide
@@ -4165,54 +3901,43 @@
 4615	ципробид	
 2797	ципробид	ципрофлоксацин+ciprofloxacin
 1511	ципробрин	ципрофлоксацин+ciprofloxacin
-1515	ципролет а	тинидазол+ципрофлоксацин+tinidazole+ciprofloxacin
+1515	ципролет	тинидазол ципрофлоксацин+tinidazole ciprofloxacin
 3454	ципромед	ципрофлоксацин+ciprofloxacin
 2798	ципросан	ципрофлоксацин+ciprofloxacin
 4361	ципросол	ципрофлоксацин+ciprofloxacin
-585	ципрофлоксацин буфус	ципрофлоксацин+ciprofloxacin
-4616	ципрофлоксацин	
 1840	ципрофлоксацин	ципрофлоксацин+ciprofloxacin
-2799	ципрофлоксацина гидрохлорид	ципрофлоксацин+ciprofloxacin
-4617	ципрофлоксацина гидрохлорида, покрытые оболочкой, 0,25&nbsp;г	
-2800	ципрофлоксацина гидрохлорида, покрытые оболочкой, 0,25&nbsp;г	ципрофлоксацин+ciprofloxacin
-3435	ципрофлоксацин-акос	ципрофлоксацин+ciprofloxacin
-3312	циркулин драже валерианы	валерианы лекарственной корневищ с корнями экстракт+valerianae officinalis rhizomatum cum radicibus extract
+3312	циркулин	валериана+valerianae
 130	цисагаст	омепразол+omeprazole
 1796	цисанплат	цисплатин+cisplatin
-628	цисплатин-эбеве	цисплатин+cisplatin
+628	цисплатин	цисплатин+cisplatin
 5215	цистенал	
-5216	цистиум солидаго	
+5216	цистиум
 4566	цистон	
 5236	цистрин	оксибутинин+oxybutynin
 1879	цитарабин	цитарабин+cytarabine
 4945	цитеал	хлоргексидин+chlorhexidine
 2801	цитерал	ципрофлоксацин+ciprofloxacin
 3496	цитивир	ацикловир+aciclovir
-4362	цитовир-3	альфа-глутамил-триптофан+аскорбиновая +бендазол+alfa-glutamyl-tryptophan+ascorbic acid+bendazol
+4362	цитовир
 1786	цитоксан	циклофосфамид+cyclophosphamide
 3033	цитол	циталопрам+citalopram
-4079	цито-мак	цитохром c+cytochrome c
-296	цитотект	иммуноглобулин человека антицитомегаловирусный+immunoglobulin cytomegalovirus
-3288	цитофлавин	инозин+никотинамид+рибофлавин+янтарная 
-3597	цитохром c	цитохром c+cytochrome c
-3598	цитохром-c для инъекций	цитохром c+cytochrome c
+4079	цито-мак	цитохром+cytochrome c
+296	цитотект	иммуноглобулин+immunoglobulin
+3288	цитофлавин	инозин никотинамид рибофлавин янтарная 
+3597	цитохром	цитохром+cytochrome c
 3272	цитралгин	
-5157	цитрамон п	ацетилсалициловая +кофеин+парацетамол+acetylsalicylic acid+caffeine+paracetamol
-3268	цитрапак	ацетилсалициловая +кофеин+парацетамол+аскорбиновая +acetylsalicylic acid+caffeine+paracetamol+ascorbic acid
-4643	цитрапар	
-1463	цитрапар	ацетилсалициловая +кофеин+парацетамол+acetylsalicylic acid+caffeine+paracetamol
-2747	цитрат бетаина бофур	бетаин+betaine
-655	цитримакс диет формула	
-3107	цитросепт экстракт семян грейпфрута	
+5157	цитрамон	ацетилсалициловая кофеин парацетамол+acetylsalicylic acid caffeine paracetamol
+3268	цитрапак	ацетилсалициловая кофеин парацетамол аскорбиновая+acetylsalicylic acid caffeine paracetamol ascorbic acid
+1463	цитрапар	ацетилсалициловая кофеин парацетамол+acetylsalicylic acid caffeine paracetamol
+2747	цитрат бетаина	бетаин+betaine
+655	цитримакс	
+3107	цитросепт
 2802	цифлоксинал	ципрофлоксацин+ciprofloxacin
 1512	цифран	ципрофлоксацин+ciprofloxacin
-2827	цифран од	ципрофлоксацин+ciprofloxacin
-1715	цифран ст	тинидазол+ципрофлоксацин+tinidazole+ciprofloxacin
 33	цыгапан	
 2301	цюкли	
 2936	чампикс	варениклин+varenicline
 1298	чернега	
-4363	чест раб	
 3433	чиброксин	норфлоксацин+norfloxacin
 1239	чистовит-вэл	
 4539	шайни	
@@ -4220,90 +3945,63 @@
 2302	шугафри	аспартам+aspartame
 2099	щитовит	
 762	эбрантил	урапидил+urapidil
-574	эвалар	
-4436	эваменол	эвкалипта прутовидного листьев масло+[рацементол]+eucalypti viminalis foliorum oleum+[racementhol]
+4436	эваменол	эвкалипта+eucalypti
 1895	эветрекс	метотрексат+methotrexate
 5196	эвиста	ралоксифен+raloxifene
-4267	эвкабал с	
 4266	эвкабал	
-4464	эвкабал-от кашля	
-4295	эвкалипт-м	
 2073	эгаллохит	
-353	эгестренол	ацетомепрегенол+этинилэстрадиол+acetomepregenol+ethinylestradiol
+353	эгестренол	ацетомепрегенол этинилэстрадиол+acetomepregenol ethinylestradiol
 2111	эгилок	метопролол+metoprolol
-3269	эгилок с	метопролол+metoprolol
 1787	эгистразол	анастрозол+anastrozole
 4088	эгитромб	клопидогрел+clopidogrel
 2866	эглек	сульпирид+sulpiride
 2968	эглонил	сульпирид+sulpiride
 2969	эголанза	оланзапин+olanzapine
-2665	эдас-107	
-5080	эдас-119+«сольвейг-э»	
-1403	эдас-120+«айвенго-э»	
-2918	эдас-121	
-4787	эдас-124	
-4221	эдас-131	
-5291	эдас-132+«простатен-э»	
-5290	эдас-134	
-297	эдас-150	
-1404	эдас-201м	
-1405	эдас-202м	
-4155	эдас-203м	
-4156	эдас-401м	
-3573	эдас-801 масло туи	
 3124	эдекс	алпростадил+alprostadil
 4003	эднит	эналаприл+enalapril
 5179	эдюрант	рилпивирин+rilpivirine
 4883	эзацинон	флуоцинолона ацетонид+fluocinolone acetonide
 2731	эзетрол	эзетимиб+ezetimibe
-5504	эйджлок r2 день	
-176	эйджлок r2 ночь	
-680	эйджлок виталити	
+680	эйджлок
 2748	эйконол	
 2704	эйферол	
 298	эйфитол	
 5174	эйч-эл-пейн	ацетилсалициловая +acetylsalicylic acid
 4878	экалин	эконазол+econazole
-4004	экватор	амлодипин+лизиноприл+amlodipine+lisinopril
 2002	экзацил	транексамовая +tranexamic acid
 5338	экзифин	тербинафин+terbinafine
 5333	экзодерил	нафтифин+naftifine
-4465	экзомюк 200	ацетилцистеин+acetylcysteine
+4465	экзомюк	ацетилцистеин+acetylcysteine
 145	экзорум	оксалиплатин+oxaliplatin
-5401	экзосурф для новорожденных	колфосцерила пальмитат+colfosceril palmitate
-2538	экобаланс хром и кальций	
+5401	экзосурф	колфосцерила пальмитат+colfosceril palmitate
 5319	экодакс	эконазол+econazole
 1979	экозитрин	кларитромицин+clarithromycin
 3600	экорал	циклоспорин+ciclosporin
 29	эксальб	
-4644	экседрин	
-5158	экседрин	ацетилсалициловая +кофеин+парацетамол+acetylsalicylic acid+caffeine+paracetamol
+5158	экседрин	ацетилсалициловая кофеин парацетамол+acetylsalicylic acid caffeine paracetamol
 2849	экселон	ривастигмин+rivastigmin
 5547	эксиджад	деферазирокс+deferasirox
-1560	эксипиал м гидролосьон	
-1561	эксипиал м липолосьон	
+1560	эксипиал
 1240	экспортал	лактитол+lactitol
-3191	экставиа	интерферон бета-1b+interferon beta-1b
+3191	экставиа	интерферон+interferon
 3323	экстенциллин	бензатина бензилпенициллин+benzathine benzylpenicillin
 1788	экстраза	летрозол+letrozole
-4005	эксфорж	амлодипин+валсартан+amlodipine+valsartan
+4005	эксфорж	амлодипин валсартан+amlodipine valsartan
 681	эктиви	
 2702	элапраза	идурсульфаза+idursulfase
 1707	элдезин	виндезин+vindesine
 3172	элдеприл	селегилин+selegiline
-2528	элевит пронаталь	поливитамины минералы+multivitamins multimineral
-4276	элекасола сбора брикет	календулы лекарственной цветки+ромашки аптечной цветки+солодки корни+череды трехраздельной трава+шалфея лекарственного листья+эвкалипта прутовидного листья+calendulae officinalis flores+chamomillae recutitae flores+glycyrrhizae radices+bidentis tripartitae herba+salviae officinalis folia+eucalypti vimina folial
+2528	элевит	поливитамины минералы+multivitamins multimineral
+4276	элекасола
 1313	элениум	хлордиазепоксид+chlordiazepoxide
-2477	элеутерококк п	
+2477	элеутерококк
 2395	элефлокс	левофлоксацин+levofloxacin
 1642	элзепам	бромдигидрохлорфенилбензодиазепин+bromdihydrochlorphenylbenzodiazepine
 1820	элигард	лейпрорелин+leuprorelin
 4916	элидел	пимекролимус+pimecrolimus
 5555	эликвис	апиксабан+apixaban
 3034	элицея	эсциталопрам+escitalopram
-4917	элоком с	мометазон+салициловая +mometasone+salicylic acid
 4918	элоком	мометазон+mometasone
-4919	элоком лосьон	мометазон+mometasone
 146	элоксатин	оксалиплатин+oxaliplatin
 5090	эльбона	глюкозамин+glucosamine
 4540	эльгидиум	
@@ -4314,47 +4012,31 @@
 4277	элюдрил	
 5012	эмеран	гепариноид+heparinoid
 5462	эметрон	ондансетрон+ondansetron
-1722	эмла	лидокаин+прилокаин+lidocaine+prilocaine
+1722	эмла	лидокаин прилокаин+lidocaine prilocaine
 3556	эмоксипин	метилэтилпиридинол+methylethylpiridinol
-3557	эмоксипина для инъекций 1%	метилэтилпиридинол+methylethylpiridinol
 2021	эмосинт	десмопрессин+desmopressin
-4006	эназил 10	эналаприл+enalapril
+4006	эназил	эналаприл+enalapril
 4007	эналакор	эналаприл+enalapril
-4009	эналаприл гексал	эналаприл+enalapril
 4008	эналаприл	эналаприл+enalapril
-4010	эналаприл-акри	эналаприл+enalapril
 4011	энам	эналаприл+enalapril
 4012	энап	эналаприл+enalapril
-4014	энап-hл 20	гидрохлоротиазид+эналаприл+ hydrochlorothiazide+enalapril
-4013	энап-hл	гидрохлоротиазид+эналаприл+ hydrochlorothiazide+enalapril
-4015	энап-н	гидрохлоротиазид+эналаприл+ hydrochlorothiazide+enalapril
 4016	энаренал	эналаприл+enalapril
 4017	энвас	эналаприл+enalapril
 299	энгистол	
-300	энджерикс в	вакцина для профилактики вирусного гепатита в+vaccine hepatitis b
+300	энджерикс
 301	эндобулин	иммуноглобулин+immunoglobulin
 629	эндоксан	циклофосфамид+cyclophosphamide
 2115	эндонорм	
 3615	эндотелон	
 4848	эндофальк	
-5463	эндрюс ансвер	кофеин+парацетамол+caffeine+paracetamol
-4678	эндрюс антацид	
-1320	эндрюс антацид	кальция карбонат+магния карбонат+calcium carbonate+magnesium carbonate
-1321	эндрюс ливер солт	
-4735	эндур-b	
-1241	эндур-b	поливитамины+multivitamins
-2749	эндурацин	никотиновая +nicotinic acid
-302	эндур-вм	поливитамины минералы+multivitamins multimineral
-575	эндур-е 200	витамин е+кальция фосфат+vitamin e+calcium phosphate
-5382	энзапрост-ф	динопрост+dinoprost
-4020	энзикс	индапамид+эналаприл+indapamide+enalapril
-4019	энзикс	индапамид+эналаприл+indapamide+enalapril
-4018	энзикс	индапамид+эналаприл+indapamide+enalapril
-656	энзистал	гемицеллюлаза+желчи компоненты+панкреатин+hemicellulase+bile components+pancreatin
+1241	эндур	поливитамины+multivitamins
+2749	эндурацин
+5382	энзапрост	динопрост+dinoprost
+4020	энзикс	индапамид эналаприл+indapamide enalapril
+656	энзистал	гемицеллюлаза желчь панкреатин+hemicellulase bile pancreatin
 3354	эноксор	эноксацин+enoxacin
 2027	энплейт	ромиплостим+romiplostim
 601	энтегнин	
-600	энтегнин-н	
 4773	энтерол	
 1242	энтеросан	
 181	энтеросгель	полиметилсилоксана полигидрат+polymethylsiloxane polyhydrate
@@ -4362,120 +4044,95 @@
 4795	энтобан	
 2429	энфалак	
 2660	энфамама	
-2430	энфамил га	
-2431	энфамил премиум 1	
-2547	энфамил премиум 2	
-2432	энфамил с железом	
-2546	энфамил соя	
-2433	энфамил юниор	
+2430	энфамил
 689	энцефабол	пиритинол+pyritinol
-4937	эозин жифрер	эозин+eosine
+4937	эозин	эозин+eosine
 3212	эпиал	карбамазепин+carbamazepine
-5140	эпивир тритиси	ламивудин+lamivudine
+5140	эпивир	ламивудин+lamivudine
 1926	эпигаллат	
-3497	эпиген интим	аммония глицирризинат+ammonium glycyrrhizinate
+3497	эпиген	аммония глицирризинат+ammonium glycyrrhizinate
 56	эпирубицин-эбеве	эпирубицин+epirubicin
 205	эпифамин	
 30	эплан	
-1986	эпомакс	эпоэтин омега+epoetin omega
-1984	эпостим	эпоэтин бета+epoetin beta
+1986	эпомакс	эпоэтин+epoetin
+1984	эпостим	эпоэтин+epoetin
 2323	эпоцелин	цефтизоксим+ceftizoxime
 4021	эпситрон	каптоприл+captopril
 463	эральфон	эпоэтин+epoetin alfa
 449	эрбисол	
 1855	эрбитукс	цетуксимаб+cetuximab
-234	эрвевакс	вакцина для профилактики краснухи+vaccine rubella virus live
-2330	эргокальциферол+витамин d2	эргокальциферол+ergocalciferol
-2331	эргокальциферола+витамин d2 в масле 0,0625%	эргокальциферол+ergocalciferol
+234	эрвевакс
+2330	эргокальциферол	эргокальциферол+ergocalciferol
 1927	эргоферон	
 4397	эрдомед	эрдостеин+erdosteine
 1482	эректин	
 2086	эреспал	фенспирид+fenspiride
 4080	эринита	пентаэритритила тетранитрат+pentaerithrityl tetranitrate
-2079	эритромицин	эритромицин+erythromycin
 2080	эритромицина	эритромицин+erythromycin
-212	эритромицина фосфат	эритромицин+erythromycin
-1981	эритростим	эпоэтин бета+epoetin beta
+1981	эритростим	эпоэтин+epoetin beta
 4434	эриус	дезлоратадин+desloratadine
 227	эрмиталь	панкреатин+pancreatin
-4618	эрмицед	
 2081	эрмицед	эритромицин+erythromycin
 3752	эрсефурил	нифуроксазид+nifuroxazide
 2879	эсказин	трифлуоперазин+trifluoperazine
 370	эскапел	левоноргестрел+levonorgestrel
-4157	эскузан	тиамин+эсцин+thiamine+escin
-1406	эскузан 20	эсцин+escin
+4157	эскузан	тиамин эсцин+thiamine escin
 4124	эскулюс	
-4179	эскулюс	
 763	эслидин	
 3399	эспа-липон	тиоктовая +thioctic acid
 3049	эспарокси	рокситромицин+roxithromycin
 2919	эспераль	дисульфирам+disulfiram
 3390	эспол	
 4760	эспумизан	симетикон+simethicone
-4761	эспумизан 40	симетикон+simethicone
-4144	эссавен	эсцин+эссенциальные фосфолипиды+гепарин натрия +heparin sodium+phospholipides+escin
-450	эссенциале н	фосфолипиды+phospholipides
-451	эссенциале н	фосфолипиды+phospholipides
-452	эссливер	поливитамины+фосфолипиды+multivitamins+phospholipides
+4144	эссавен
+450	эссенциале	фосфолипиды+phospholipides
+452	эссливер	поливитамины фосфолипиды+multivitamins phospholipides
 407	эстазолам	эстазолам+estazolam
 1854	эстекор	эсатенолол+esatenolol
-5373	эстера мейнтенанс фаза iii	
-3691	эстифан	эхинацеи пурпурной травы экстракт+echinaceae purpurae herbae extract
+5373	эстера
+3691	эстифан	эхинацея+echinaceae
 2377	эстримакс	эстрадиол+estradiol
 5356	эстровэл	
 2371	эстрожель	эстрадиол+estradiol
 2378	эстрокад	эстриол+estriol
 2372	эстрофем	эстрадиол+estradiol
-3567	этадекс-мэз	гидроксиэтиламиноаденин+hydroxyethylaminoadenine
-3568	этадена глазные 0,5%	гидроксиэтиламиноаденин+hydroxyethylaminoadenine
-4856	этакридина лактата 3%	этакридин+ethacridine
+3567	этадекс	гидроксиэтиламиноаденин+hydroxyethylaminoadenine
+3568	этадена	гидроксиэтиламиноаденин+hydroxyethylaminoadenine
+4856	этакридина	этакридин+ethacridine
 1199	этальфа	альфакальцидол+alfacalcidol
 5426	этамбусин	этамбутол+ethambutol
 5427	этамбутол	этамбутол+ethambutol
 1484	этамзилат	этамзилат+etamsylate
-1626	этимизола 1,5% в ампулах	метиламид этилимидазолдикарбонат+methylamide ethylilamidazolecarbonate
-1627	этимизола 0,1&nbsp;г	метиламид этилимидазолдикарбонат+methylamide ethylilamidazolecarbonate
+1626	этимизола	метиламид этилимидазолдикарбонат+methylamide ethylilamidazolecarbonate
 1789	этинилэстрадиола	этинилэстрадиол+ethinylestradiol
 5546	этиол	амифостин+amifostine
 5428	этионамид	этионамид+ethionamide
-4136	этоксисклерол	лауромакрогол 400+lauromacrogol 400
-4796	этония 0,5%	этоний+ethonium
-1790	этопозид	этопозид+etoposide
+4136	этоксисклерол	лауромакрогол+lauromacrogol
+4796	этония	этоний+ethonium
 72	этопозид-эбеве	этопозид+etoposide
-5015	эувакс в	вакцина для профилактики вирусного гепатита в+vaccine hepatitis b
+5015	эувакс
 2265	эуглюкон	глибенкламид+glibenclamide
 3104	эуноктин	нитразепам+nitrazepam
 1420	эутирокс	левотироксин натрия+levothyroxine sodium
 1628	эуфиллин	аминофиллин+aminophylline
-1629	эуфиллина для инъекций 2,4%	аминофиллин+aminophylline
-1630	эуфиллина для инъекций 24%	аминофиллин+aminophylline
-1631	эуфиллина 0,15&nbsp;г	аминофиллин+aminophylline
-1632	эуфиллина 150&nbsp;мг	аминофиллин+aminophylline
 1633	эуфилонг	теофиллин+theophylline
-4222	эуфорбиум назентропфен с	
+4222	эуфорбиум
 3035	эфевелон	венлафаксин+venlafaxine
 5501	эфилипт	
 3270	эфкамон	
-4081	эфокс 20	изосорбида мононитрат+isosorbide mononitrate
-4082	эфокс лонг	изосорбида мононитрат+isosorbide mononitrate
-5484	эффералган с витамином с	парацетамол+аскорбиновая +paracetamol+ascorbic acid
+4081	эфокс	изосорбида мононитрат+isosorbide mononitrate
 5483	эффералган	парацетамол+paracetamol
-4365	эхинацея гексал	эхинацеи пурпурной травы сок+echinaceae purpurae herbae succus
-2803	эхинацея сн	
-4364	эхинацея	эхинацеи узколистной экстракт+echinaceae angustifolia extract
-303	эхинацин ликвидум	эхинацеи пурпурной травы экстракт+echinaceae purpurae herbae extract
-4194	эховист-200	галактоза+galactose
+4364	эхинацея	эхинацеи+echinaceae
+303	эхинацин	эхинацея+echinaceae
+4194	эховист	галактоза+galactose
 2850	юмекс	селегилин+selegiline
-1529	юнидокс солютаб	доксициклин+doxycycline
-206	юниор+	
-1347	юниспаз	дротаверин+кодеин+парацетамол+drotaverine+codeine+paracetamol
+1529	юнидокс	доксициклин+doxycycline
+1347	юниспаз	дротаверин кодеин парацетамол+drotaverine codeine paracetamol
 5103	юниум	глюкозамин+glucosamine
-453	юниэнзим с мпс	
+453	юниэнзим
 5531	юракс	кротамитон+crotamiton
 1791	ютаксан	паклитаксел+paclitaxel
 3133	ютибид	норфлоксацин+norfloxacin
 576	янтавит	
 2266	янувия	ситаглиптин+sitagliptin
-354	ярина	дроспиренон+этинилэстрадиол+drospirenone+ethinylestradiol
-355	ярина	дроспиренон+этинилэстрадиол+[кальция левомефолинат]
+354	ярина	дроспиренон этинилэстрадиол+drospirenone ethinylestradiol
