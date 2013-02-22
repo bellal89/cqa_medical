@@ -18,7 +18,7 @@ namespace cqa_medical.Statistics
 	public class StatisticsAttribute : Attribute
 	{
 	}
-
+	
 	internal class Statistics : BaseStatistics
 	{
 		public Statistics(QuestionList questionList) : base(questionList){}

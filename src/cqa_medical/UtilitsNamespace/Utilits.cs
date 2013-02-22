@@ -9,7 +9,7 @@ using cqa_medical.DataInput.Stemmers;
 
 namespace cqa_medical.UtilitsNamespace
 {
-	internal static class Utilits
+	public static class Utilits
 	{
 		#region StringModify
 
