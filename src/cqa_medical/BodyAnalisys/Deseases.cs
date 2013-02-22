@@ -47,6 +47,7 @@ namespace cqa_medical.BodyAnalisys
 		{
 			return new Deseases(File.ReadLines("../../Files/DeseasesByHand.txt").Select(stemmer.Stem));
 		}
+
 		public static Deseases GetFullDeseases(IStemmer stemmer)
 		{
 			List<string> desFromInternet;
@@ -141,9 +142,7 @@ namespace cqa_medical.BodyAnalisys
 							words.AddRange(value.InnerText.SplitIntoWords());
 
 					}
-					
 				}
-				
 			}
 
 			return words;
@@ -247,9 +246,9 @@ namespace cqa_medical.BodyAnalisys
 		}
 
 		/// <summary>
-		/// use this for formatted string
-		/// where first line is XPATH to find Container
-		/// second - XPATH to get Elements from Container
+		/// use this for formatted string where 
+		/// first line is XPATH to find Container
+		/// second - XPATH to get Elements from Container.
 		/// Then specific urls
 		/// </summary>
 		/// <param name="s"></param>
@@ -316,6 +315,7 @@ namespace cqa_medical.BodyAnalisys
 			}).ToList();
 
 		}
+
 		[Test]
 		public void GetNewUrls()
 		{		
@@ -372,9 +372,7 @@ namespace cqa_medical.BodyAnalisys
 						lnks.Attributes["href"] != null &&
 						lnks.InnerText.Trim().Length > 0)
 					.ToList();
-				
 			}
-		
 		}
 
 		[Test]
@@ -382,6 +380,7 @@ namespace cqa_medical.BodyAnalisys
 		{
 			var des = Deseases.GetFromInternet(Program.DefaultMyStemmer);
 		}
+
 		[Test]
 		public void TestGetIndexFromHandMade()
 		{

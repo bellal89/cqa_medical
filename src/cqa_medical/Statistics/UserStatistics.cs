@@ -349,5 +349,72 @@ namespace cqa_medical.Statistics
 			                              corrs.OrderByDescending(cor => Math.Abs(cor.Item2)).Take(topCount).Select(
 											cor => cor.Item1 + "\t" + String.Join(", ", topicConverter.GetTopicWords(cor.Item1, 4)) + "\t" + cor.Item2)));
 		}
+
+		[Test]
+		public void GetNoviceOldTimersStats()
+		{
+			var now = DateTime.Now;
+			var userAges = userStatistics.GetUsers().ToDictionary(u => u.Email, u => (int) ((now - u.BirthDate).TotalDays/365));
+			var userActivities =
+				Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor").
+					GetAllQuestions().GroupBy(q => q.AuthorEmail, (key, qs) => Tuple.Create(key, qs.Count()))
+					.ToDictionary(it => it.Item1, it => it.Item2);
+
+			// Distribution for novices
+			File.WriteAllLines("NovicesAgeDistrib.txt",
+			                   userAges.Where(u => userActivities.ContainsKey(u.Key) && userActivities[u.Key] <= 2).Select(
+			                   	u => u.Value).GroupBy(age => age, (key, ages) => Tuple.Create(key, ages.Count())).OrderByDescending(
+			                   		it => it.Item2).Select(it => it.Item1 + "\t" + it.Item2));
+
+			// Distribution for old-timers
+			File.WriteAllLines("oldTimersAgeDistrib.txt",
+							   userAges.Where(u => userActivities.ContainsKey(u.Key) && userActivities[u.Key] > 2).Select(
+								u => u.Value).GroupBy(age => age, (key, ages) => Tuple.Create(key, ages.Count())).OrderByDescending(
+									it => it.Item2).Select(it => it.Item1 + "\t" + it.Item2));
+		}
+
+		[Test]
+		public void GetConsequesntQuestionsDiffs()
+		{
+			var allQuestions = Program.DefaultQuestionList.GetAllQuestions();
+			var diff = GetConsequentQuestionDiffsDistribution(allQuestions);
+			File.WriteAllLines("ConsequentQuestionsDiff.txt", diff.Select(it => it.Key + "\t" + it.Value));
+		}
+
+		[Test]
+		public void GetCosequentQuestionDiffsByMonth()
+		{
+			File.WriteAllLines("ConsequentQuestionsDiffByMonth.txt",
+			                   Program.DefaultQuestionList.GetAllQuestions().GroupBy(q => q.DateAdded.Month,
+			                                                                         (key, qs) => Tuple.Create(key, qs)).OrderBy(it => it.Item1).Select(
+			                                                                         	it =>
+			                                                                         	Tuple.Create(it.Item1,
+			                                                                         	             GetConsequentQuestionDiffsDistribution
+			                                                                         	             	(it.Item2))).Select(
+			                                                                         	             		it =>
+			                                                                         	             		it.Item1 + "\n" +
+			                                                                         	             		String.Join("\n",
+			                                                                         	             		            it.Item2.Select(
+			                                                                         	             		            	kv =>
+			                                                                         	             		            	kv.Key + "\t" +
+			                                                                         	             		            	kv.Value))));
+		}
+
+		private static IOrderedEnumerable<KeyValuePair<int, int>> GetConsequentQuestionDiffsDistribution(IEnumerable<Question> questions)
+		{
+			var qsList = questions.GroupBy(q => q.AuthorEmail, (key, qs) => qs.OrderBy(q => q.DateAdded).ToList());
+			var diff = new Dictionary<int, int>();
+			foreach (var qs in qsList)
+			{
+				for (var i = 1; i < qs.Count; i++)
+				{
+					var daysDiff = (int) (qs[i].DateAdded - qs[i - 1].DateAdded).TotalDays;
+					if (!diff.ContainsKey(daysDiff))
+						diff[daysDiff] = 0;
+					diff[daysDiff]++;
+				}
+			}
+			return diff.OrderByDescending(it => it.Value);
+		}
 	}
 }

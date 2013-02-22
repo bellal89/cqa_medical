@@ -28,7 +28,7 @@ namespace cqa_medical.SpellChecker
 			File.WriteAllLines("TrigramIndex.txt", trigramIndex.Trigrams.OrderByDescending(t => t.Value.Count).Select(t => t.Key + "\t" + String.Join(", ", t.Value.Select(id => trigramIndex.IdToWord[id]))));
 
 			var idWordsList = idTextList.Select(idText => Tuple.Create(idText.Item1,
-			                                                           idText.Item2.SplitInWordsAndStripHTML())).ToList();
+			                                                           idText.Item2.SplitInWordsAndStripHTML().Distinct())).ToList();
 			FillWordFrequencies(idWordsList);
 			stopWords = new HashSet<string>(wordFrequencies.OrderByDescending(kv => kv.Value).Take(130).Select(kv => kv.Key));
 
@@ -65,7 +65,7 @@ namespace cqa_medical.SpellChecker
 			File.WriteAllLines("__Misspellings_To_Words.txt", misspellingsToWords.OrderByDescending(mw => mw.Value.Count).Select(mw => mw.Key.Item1 + "\t" + mw.Key.Item2 + "\t" + mw.Value.Count + "\t" + String.Join(", ", mw.Value)));
 		}
 
-		public List<InvertedIndexUnit> GetIndex()
+		public IEnumerable<InvertedIndexUnit> GetIndex()
 		{
 			return index;
 		}
@@ -74,12 +74,8 @@ namespace cqa_medical.SpellChecker
 		{
 			if (!words.Any() || words.Any(w => !termToIds.ContainsKey(w))) return new HashSet<long>();
 
-			var intersection = termToIds[words.First()];
-			foreach (var word in words.Skip(1).Where(termToIds.ContainsKey))
-			{
-				intersection.IntersectWith(termToIds[word]);
-			}
-			return intersection;
+			IEnumerable<long> intersection = new List<long>(termToIds[words.First()]);
+			return words.Skip(1).Aggregate(intersection, (current, word) => current.Intersect(termToIds[word]));
 		}
 
 		private void FillWordFrequencies(IEnumerable<Tuple<long, IEnumerable<string>>> idTextList)
@@ -139,8 +135,8 @@ namespace cqa_medical.SpellChecker
 			var results = words.SelectMany(w =>
 			{
 				var editDistance = 2;
-				if (w.Length < 10) editDistance = 1;
-				if (w.Length < 5) editDistance = 0;
+				if (w.Length < 12) editDistance = 1;
+				if (w.Length < 6) editDistance = 0;
 				return FindClosestWords(w, editDistance);
 			}).ToList();
 			return results;

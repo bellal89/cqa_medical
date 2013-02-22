@@ -121,7 +121,7 @@ namespace cqa_medical.Statistics
 			return Utilits.DistributionQuotient(numerator, denominator);
 		}
 
-		public SortedDictionary<int, int> MaxThresholdDocsOverTopicsDistribution(double threshold, int[] topicExclusions = null)
+		public SortedDictionary<int, int> MaxThresholdDocsOverTopicsDistribution(double threshold, IEnumerable<int> topicExclusions = null)
 		{
 			Assert.Greater(topics.Length, 0);
 			var docTopics = GetDocTopics(threshold);
@@ -186,21 +186,35 @@ namespace cqa_medical.Statistics
 		}
 
 		[Test]
-		public void GetDocsOverTopicsDistrib()
+		public void GetDocsOverTopicsDistrib(TopicsStatistics statistics, double threshold, int[] topicExclusions, string topicsByWordsFileName, string outputFile)
 		{
-			const double threshold = 0.09;
-			var topicExclusions = new[]
-			                      	{
-			                      		1, 6, 7, 11, 13, 15, 16, 17, 21, 24, 34, 36, 38, 41, 47, 49, 50, 51, 57, 60, 61, 64, 65, 76,
-			                      		77, 78, 83, 87, 89
-			                      	};
-			
-			var distrib = topicsStatistics.MaxThresholdDocsOverTopicsDistribution(threshold, topicExclusions);
-			var converter = new TopicConverter(Program.TopicsWordsFileName);
+			var distrib = statistics.MaxThresholdDocsOverTopicsDistribution(threshold, topicExclusions);
+			var converter = new TopicConverter(topicsByWordsFileName);
 
-			File.WriteAllLines(Program.StatisticsDirectory + "DocsOverTopicsDistrib.txt",
-			                   distrib.OrderByDescending(it => it.Value).Select(
+			File.WriteAllLines(outputFile,
+			                   distrib.Where(it => it.Key >= 0).OrderByDescending(it => it.Value).Select(
 			                   	it => it.Key + "\t" + String.Join(", ", converter.GetTopicWords(it.Key, 5)) + "\t" + it.Value));
+		}
+
+		[Test]
+		public void DefaultTopicsDistrib()
+		{
+			GetDocsOverTopicsDistrib(topicsStatistics, 0.09, new[]
+			                               	{
+			                               		1, 6, 7, 11, 13, 15, 16, 17, 21, 24, 34, 36, 38, 41, 47, 49, 50, 51, 57, 60, 61, 64,
+			                               		65, 76,
+			                               		77, 78, 83, 87, 89
+			                               	}, Program.TopicsWordsFileName,
+			                         Program.StatisticsDirectory + "DocsOverTopicsDistrib.txt");
+		}
+
+		[Test]
+		[TestCase("NoviceDocIdsCat.txt", "NovicesTopics.theta", "NovicesTopics.twords", "NovicesTopicStatistics.txt")]
+		[TestCase("OldDocIdsCat.txt", "OldtimersTopics.theta", "OldtimersTopics.twords", "OldtimersTopicStatistics.txt")]
+		public void GetTopicsDistrib(string docIdsFile, string topicsFile, string topicWordsFile, string outputFile)
+		{
+			var customTopicsStatistics = new TopicsStatistics(Program.DefaultQuestionList, docIdsFile, topicsFile);
+			GetDocsOverTopicsDistrib(customTopicsStatistics, 0.09, new int[0], topicWordsFile, outputFile);
 		}
 
 		[Test]

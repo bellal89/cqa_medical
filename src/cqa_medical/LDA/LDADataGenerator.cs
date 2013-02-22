@@ -27,7 +27,7 @@ namespace cqa_medical.LDA
 			GenerateDocuments(QuestionList.GetAllQuestions().Count());
 		}
 
-		abstract public void GenerateDocuments(int count);
+		public abstract void GenerateDocuments(int count, Func<Question, bool> predicate = null);
 	}
 
 	class InferFormatLDAGenerator : LDADataGenerator
@@ -37,7 +37,7 @@ namespace cqa_medical.LDA
 		{
 		}
 
-		public override void GenerateDocuments(int count)
+		public override void GenerateDocuments(int count, Func<Question, bool> predicate = null)
 		{
 			var allWordCountsByDocuments = new List<Dictionary<int, int>>();
 			var wordToId = new Dictionary<string, int>();
@@ -76,18 +76,16 @@ namespace cqa_medical.LDA
 	public class GibbsFormatLDAGenerator : LDADataGenerator
 	{
 		private readonly string documentIdsFilePath;
-		private readonly string[] categories;
 
-		public GibbsFormatLDAGenerator(QuestionList questionList, string documentIdsFilePath, string documentsFilePath, params string[] categories) : 
+		public GibbsFormatLDAGenerator(QuestionList questionList, string documentIdsFilePath, string documentsFilePath) : 
 			base(questionList, "", documentsFilePath)
 		{
 			this.documentIdsFilePath = documentIdsFilePath;
-			this.categories = categories;
 		}
 
-		public override void GenerateDocuments(int count)
+		public override void GenerateDocuments(int count, Func<Question, bool> predicate = null)
 		{
-			var documents = GetPureQuestionAnswersTexts(count).ToArray();
+			var documents = GetPureQuestionAnswersTexts(count, predicate).ToArray();
 
 			//Storing docIds
 			File.WriteAllText(documentIdsFilePath, String.Join("\n", documents.Select(d => d.Key)));
@@ -99,14 +97,14 @@ namespace cqa_medical.LDA
 								+ String.Join("\n", documents.Select(d => d.Value)));
 		}
 
-		private Dictionary<long, string> GetPureQuestionAnswersTexts(int count)
+		private Dictionary<long, string> GetPureQuestionAnswersTexts(int count, Func<Question, bool> predicate = null)
 		{
 			var statistics = new Statistics.Statistics(QuestionList);
 			var orderedFrequentWords = statistics.WordFrequencyDistribution(new EmptyStemmer()).Where(item => item.Value >= 10).OrderBy(item => item.Value);
 			var frequentWords = orderedFrequentWords.Take(orderedFrequentWords.Count() - 70).ToDictionary(item => item.Key, item => item.Value);
 
 			return QuestionList.GetAllQuestions()
-					.Where(q => (categories.Any() && categories.Contains(q.Category)))
+					.Where(q => predicate == null || predicate(q))
 					.Take(count)
 					.Select(q => Tuple.Create(q, q.WholeText))
 					.Select(item => Tuple.Create(item.Item1, item.Item2 + " " + String.Join(" ", item.Item1.GetAnswers().Select(a => a.Text))))
@@ -135,7 +133,10 @@ namespace cqa_medical.LDA
 		[Test, Explicit]
 		public static void GibbsStemmedLDADataGeneration()
 		{
-			LDADataGenerator generator = new GibbsFormatLDAGenerator(Program.DefaultQuestionList, "GibbsDocIdsCat.txt", "GibbsDocsCat.txt", "illness", "treatment", "kidhealth", "doctor");
+			LDADataGenerator generator =
+				new GibbsFormatLDAGenerator(
+					Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor"),
+					"GibbsDocIdsCat.txt", "GibbsDocsCat.txt");
 			generator.GenerateDocuments();
 		}
 
@@ -153,5 +154,54 @@ namespace cqa_medical.LDA
 			generator.GenerateDocuments();
 		}
 
+		[Test]
+		public static void GetNovicesPercent()
+		{
+			var users = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor").
+				GetAllQuestions().Select(q => q.AuthorEmail).GroupBy(a => a, (a, authors) => Tuple.Create(a, authors.Count())).ToList();
+
+			Console.WriteLine("Only 1 question: " + (double)users.Count(u => u.Item2 <= 1) / users.Count);
+			Console.WriteLine("Up to 2 questions: " + (double)users.Count(u => u.Item2 <= 2) / users.Count);
+			Console.WriteLine("Up to 3 questions: " + (double)users.Count(u => u.Item2 <= 3) / users.Count);
+			Console.WriteLine("Up to 4 questions: " + (double)users.Count(u => u.Item2 <= 4) / users.Count);
+			Console.WriteLine("Up to 5 questions: " + (double)users.Count(u => u.Item2 <= 5) / users.Count);
+			Console.WriteLine("Up to 6 questions: " + (double)users.Count(u => u.Item2 <= 6) / users.Count);
+		}
+
+		[Test]
+		public static void GetQuestionDistribution()
+		{
+			var allQuestions = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor").GetAllQuestions().ToList();
+			var users = allQuestions.Select(q => q.AuthorEmail).GroupBy(a => a, (a, qs) => Tuple.Create(a, qs.Count())).ToList();
+
+			File.WriteAllLines("QuestionsByActivity.txt",
+			                   users.Select(u => u.Item2).Distinct().OrderBy(qn => qn).Select(
+			                   	qn => qn + "\t" + ((double) users.Where(u => u.Item2 <= qn).Sum(u => u.Item2)/allQuestions.Count)));
+		}
+
+		[Test, Explicit("Method generates documents for LDA from questions dividing it into 2 groups: from users asked oncely or twicely and from others")]
+		public static void GenerateNoviceAndOldTimerQuestions()
+		{
+			QuestionList catQuestionList = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor");
+			LDADataGenerator generator =
+				new GibbsFormatLDAGenerator(
+					catQuestionList,
+					"NoviceDocIdsCat.txt", "NoviceDocsCat.txt");
+			generator.GenerateDocuments(catQuestionList.GetAllQuestions().Count(), IsQuestionFromNovice);
+			LDADataGenerator generatorOldTimers =
+				new GibbsFormatLDAGenerator(
+					catQuestionList,
+					"OldDocIdsCat.txt", "OldDocsCat.txt");
+			generatorOldTimers.GenerateDocuments(catQuestionList.GetAllQuestions().Count(), q => !IsQuestionFromNovice(q));
+		}
+
+		private static bool IsQuestionFromNovice(Question question)
+		{
+			var users =
+				Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment", "kidhealth", "doctor").
+					GetAllQuestions().Select(q => q.AuthorEmail).GroupBy(a => a, (a, qs) => Tuple.Create(a, qs.Count())).ToDictionary(
+						it => it.Item1, it => it.Item2);
+			return users[question.AuthorEmail] <= 2;
+		}
 	}
 }

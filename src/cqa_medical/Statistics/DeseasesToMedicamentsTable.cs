@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using cqa_medical.BodyAnalisys;
+using cqa_medical.DataInput.Stemmers;
 using cqa_medical.UtilitsNamespace;
 using cqa_medical.UtilitsNamespace.Parsers;
 
@@ -15,6 +16,7 @@ namespace cqa_medical.Statistics
 		private readonly InvertedIndexUnit[] deseases;
 		private readonly InvertedIndexUnit[] medicaments;
 		private readonly int minAmount;
+		private Dictionary<string, List<long>> deseaseMedicamentQuestions;
 
 		private DeseasesToMedicamentsTable(Dictionary<Tuple<string, string>, int> medicalGuide)
 		{
@@ -24,7 +26,7 @@ namespace cqa_medical.Statistics
 			minAmount = 0;
 		}
 
-		public DeseasesToMedicamentsTable( InvertedIndexUnit[] deseases, InvertedIndexUnit[] medicaments, int minAmount = 50)
+		public DeseasesToMedicamentsTable(InvertedIndexUnit[] deseases, InvertedIndexUnit[] medicaments, int minAmount = 50)
 		{
 			MedicalGuide = new Dictionary<Tuple<string, string>, int>();
 			this.deseases = deseases;
@@ -33,17 +35,53 @@ namespace cqa_medical.Statistics
 			Initialize();
 		}
 
-		public void Initialize()
+		private void Initialize()
 		{
+			var allDesMedQuestions = new Dictionary<string, List<long>>();
+			var oneQuestionList = new List<Tuple<string, string, long>>();
 			foreach (var desease in deseases)
 				foreach (var medicament in medicaments)
-					AddToMedicalGuide(desease.Word, medicament.Word, desease.Ids.Intersect(medicament.Ids).Count());
+				{
+					var desMedQuestions = desease.Ids.Intersect(medicament.Ids).ToList();
+					if(!allDesMedQuestions.ContainsKey(desease.Word))
+						allDesMedQuestions[desease.Word] = new List<long>();
+					allDesMedQuestions[desease.Word].AddRange(desMedQuestions);
+					allDesMedQuestions[desease.Word] = allDesMedQuestions[desease.Word].Distinct().ToList();
+
+					AddToMedicalGuide(desease.Word, medicament.Word, desMedQuestions.Count());
+					if(desMedQuestions.Count() == 1)
+					{
+						oneQuestionList.Add(Tuple.Create(desease.Word, medicament.Word, desMedQuestions.First()));
+					}
+				}
+			deseaseMedicamentQuestions = allDesMedQuestions;
 		}
 
-		public void AddToMedicalGuide(string desease, string medicament, int howMany = 1)
+		private void AddToMedicalGuide(string desease, string medicament, int howMany = 1)
 		{
-			if (howMany < minAmount ) return;
+			if (howMany < minAmount) return;
 			MedicalGuide.Add(Tuple.Create(desease, medicament), howMany);
+		}
+
+		public Dictionary<string, List<long>> GetDeseaseMedicamentQuestions()
+		{
+			return deseaseMedicamentQuestions;
+		}
+
+		public Dictionary<string, List<long>> GetDeseaseNotMedicamentQuestions()
+		{
+			var desToQuestions = new Dictionary<string, List<long>>();
+			var questionToDesCount =
+				deseases.SelectMany(des => des.Ids).GroupBy(id => id, (id, ids) => Tuple.Create(id, ids.Count())).ToDictionary(
+					it => it.Item1, it => it.Item2);
+			var allMedQuestions = medicaments.Aggregate(new HashSet<long>(), (qs, unit) => new HashSet<long>(qs.Union(unit.Ids)));
+			foreach (var desease in deseases)
+			{
+				if (!desToQuestions.ContainsKey(desease.Word))
+					desToQuestions[desease.Word] = new List<long>();
+				desToQuestions[desease.Word].AddRange(desease.Ids.Except(allMedQuestions).Where(id => questionToDesCount[id] <= 2));
+			}
+			return desToQuestions;
 		}
 
 		public string ToStringOneToMany(int howMany)
@@ -163,7 +201,7 @@ namespace cqa_medical.Statistics
 			var parser = new Mkb10PageParser(Program.FilesDirectory + "Mkb10/");
 			var deseases = parser.GetMkb10DeseasesFuzzyIndex().ToArray();
 			var medicaments = parser.GetMkb10MedicamentsFuzzyIndex().ToArray();
-			//				File.WriteAllLines();
+			//  File.WriteAllLines();
 			var table = new DeseasesToMedicamentsTable(deseases, medicaments, 1);
 			File.WriteAllText("Mkb10-deseases-medicaments.txt", table.ToStringOneToMany(30));
 			table.ExportTo("Mkb10-Deseases-Medicaments-Table-Exported.txt", "Mkb10-Deseases-Exported.txt", "Mkb10-Medicaments-Exported.txt");
@@ -191,9 +229,39 @@ namespace cqa_medical.Statistics
 			{
 				var des = desease;
 				qs.AddRange(desease.Ids.Except(medicamentInAnswersQuestionIds).Select(
-					id => string.Format("{0}\n{1}\n{2}\n---\n{3}\n===\n", des.Word, id, Program.DefaultNotStemmedQuestionList.GetQuestion(id).WholeText, String.Join("\n", Program.DefaultNotStemmedQuestionList.GetQuestion(id).GetAnswers().Select(a => a.Text)))));
+					id =>
+					string.Format("{0}\n{1}\n{2}\n---\n{3}\n===\n", des.Word, id,
+					              Program.DefaultNotStemmedQuestionList.GetQuestion(id).WholeText,
+					              String.Join("\n",
+					                          Program.DefaultNotStemmedQuestionList.GetQuestion(id).GetAnswers().Select(a => a.Text)))));
 			}
 			File.WriteAllLines("Deseases_not_medicaments.txt", qs);
+		}
+
+		[Test, Explicit]
+		public void GetMkb10DesMedStatistics()
+		{
+			const string deseasesFileName = Program.FilesDirectory + "Mkb-10-Handy/Mkb10-handy-deseases.txt";
+			const string deseaseNamesFileName = Program.FilesDirectory + "Mkb-10-Handy/Mkb10-handy-deseaseNames.txt";
+			const string medicamentNamesFileName = Program.FilesDirectory + "Mkb-10-Handy/Mkb10-handy-medicamentNames.txt";
+
+			var mkb10Deseases =
+				Mkb10PageParser.GetStemmedDeseases(
+					Mkb10PageParser.GetDeseasesFrom(deseasesFileName, deseaseNamesFileName, medicamentNamesFileName),
+					Program.FilesDirectory + "Mkb10/").ToList();
+
+			var deseases = Mkb10PageParser.GetMkb10DeseasesFuzzyIndex(mkb10Deseases).ToList();
+			var medicaments = Mkb10PageParser.GetMkb10MedicamentsFuzzyIndex(mkb10Deseases, false).ToList();
+
+			File.WriteAllLines("QuestionsDeseasesDistrib.txt", deseases.Select(des => Tuple.Create(des.Word, des.Ids.Count)).OrderByDescending(it => it.Item2).Select(it => it.Item1 + "\t" + it.Item2));
+			File.WriteAllLines("QuestionsMedicamentsDistrib.txt", medicaments.Select(med => Tuple.Create(med.Word, med.Ids.Count)).OrderByDescending(it => it.Item2).Select(it => it.Item1 + "\t" + it.Item2));
+
+			File.WriteAllLines("DeseasesQuestionsDistrib.txt",
+			                   deseases.SelectMany(desease => desease.Ids).GroupBy(id => id,
+			                                                                       (id, ids) => Tuple.Create(id, ids.Count())).
+			                   	OrderByDescending(it => it.Item2).Select(it => it.Item1 + "\t" + it.Item2));
+			Console.WriteLine("Questions with desease mention: " + deseases.SelectMany(des => des.Ids).Distinct().Count());
+			Console.WriteLine("Desease-questions with medicament-answers: " + deseases.SelectMany(des => des.Ids).Distinct().Intersect(medicaments.SelectMany(med => med.Ids).Distinct()).Count());
 		}
 
 		[Test, Explicit]
@@ -248,10 +316,18 @@ namespace cqa_medical.Statistics
 					Program.FilesDirectory + "Mkb10/").ToList();
 
 			var deseases = Mkb10PageParser.GetMkb10DeseasesFuzzyIndex(mkb10Deseases).ToArray();
-			var medicaments = Mkb10PageParser.GetMkb10MedicamentsFuzzyIndex(mkb10Deseases).ToArray();
+			var medicaments = Mkb10PageParser.GetMkb10MedicamentsFuzzyIndex(mkb10Deseases, false).ToArray();
+
 			//				File.WriteAllLines();
 			var table = new DeseasesToMedicamentsTable(deseases, medicaments, 1);
 			File.WriteAllText("Mkb10-deseases-medicaments-from-test-serialized.txt", table.ToStringOneToMany(30));
+		}
+
+		[Test]
+		public static void GenerateFullDeseasesList()
+		{
+			var deseases = Deseases.GetFullDeseases(new EmptyStemmer());
+			File.WriteAllLines("DeseasesFromEveryWhere.txt", deseases.DeseasesList);
 		}
 	}
 }
