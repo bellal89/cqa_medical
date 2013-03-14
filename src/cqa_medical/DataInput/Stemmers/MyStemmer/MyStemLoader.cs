@@ -9,7 +9,7 @@ using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
-	class Vocabulary
+	public class Vocabulary
 	{
 		private readonly Dictionary<string, StemInfo> wordToStemInfo;
 
@@ -49,7 +49,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		}
 	}
 
-	class MyStemLoader
+	public class MyStemLoader
 	{
 		private const string StemmedFileSuffix = ".stemmed.txt";
 		public readonly string[] QAFileNames;

@@ -1,10 +1,19 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using NUnit.Framework;
 
 namespace cqa_medical.DataInput.Stemmers.MyStemmer
 {
-	class MyStemmer : IStemmer
+	public class MyStemmer : IStemmer
 	{
 		private readonly Vocabulary vocabulary;
+		public MyStemmer(string uniqueSampleName, IEnumerable<string> words)
+		{
+			File.WriteAllLines(uniqueSampleName, words, Encoding.GetEncoding(1251));
+			vocabulary = new Vocabulary(uniqueSampleName);
+		}
 
 		public MyStemmer(params string[] fileNames)
 		{
@@ -29,7 +38,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		}
 	}
 
-	internal class AdditionalInfo
+	public class AdditionalInfo
 	{
 		public bool IsStemmed { get; private set; }
 		public string StemmedWord { get; private set; }
@@ -44,7 +53,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 		}
 	}
 
-	internal class StemInfo
+	public class StemInfo
 	{
 		public string Stem { get; set; }
 		public string PartOfSpeach { get; set; }
@@ -57,7 +66,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 	}
 
 	[TestFixture]
-	public class MyStemTest
+	internal class MyStemTest
 	{
 		[Test]
 		public void TestDictionaryLoading()
@@ -65,6 +74,20 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 			var stemmer = new MyStemmer(Program.QuestionsFileName, Program.AnswersFileName);
 			Assert.AreEqual(661255, stemmer.GetVocabulary().GetWordInfos().Count);
 			Assert.AreEqual("сильный", stemmer.Stem("СилЬнЫх"));
+		}
+
+		[Test]
+		public void SomeWordsTest()
+		{
+			var ww = new string[] {"проверка", "прибыла","прибытие", "воплощать"};
+			var stemmer = new MyStemmer("TestSample.txt", ww);
+			foreach (var s1 in ww)
+			{
+				Console.Out.WriteLine(stemmer.Stem(s1)); 
+				
+			}
+			Assert.Fail();
+
 		}
 	}
 }

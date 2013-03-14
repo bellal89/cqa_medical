@@ -14,7 +14,7 @@ namespace cqa_medical.DataInput.Stemmers
 
 
 	[TestFixture]
-	public class StemmersComparisonTest
+	internal class StemmersComparisonTest
 	{
 		[Test, Explicit]
 		public void StemmersComparison()

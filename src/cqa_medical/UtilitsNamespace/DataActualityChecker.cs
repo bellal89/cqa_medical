@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace cqa_medical.UtilitsNamespace
 {
-	class DataActualityChecker
+	public class DataActualityChecker
 	{
 		public static IEnumerable<T> Check<T>(Lazy<T[]> data,Func<T,string> formatStringWrite, Func<string,T> formatStringParse, FileDependencies dependencies)
 		{
@@ -29,7 +29,7 @@ namespace cqa_medical.UtilitsNamespace
 		}
 	}
 
-	internal class FileDependencies
+	public class FileDependencies
 	{
 		public string DestinationFile;
 		public string[] DependencyFiles;
