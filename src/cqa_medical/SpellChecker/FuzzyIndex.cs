@@ -7,7 +7,7 @@ using cqa_medical.UtilitsNamespace;
 
 namespace cqa_medical.SpellChecker
 {
-	internal class FuzzyIndex
+	public class FuzzyIndex
 	{
 		private readonly Dictionary<string, int> wordFrequencies = new Dictionary<string, int>();
 		private readonly HashSet<string> stopWords;
@@ -65,7 +65,7 @@ namespace cqa_medical.SpellChecker
 			File.WriteAllLines("__Misspellings_To_Words.txt", misspellingsToWords.OrderByDescending(mw => mw.Value.Count).Select(mw => mw.Key.Item1 + "\t" + mw.Key.Item2 + "\t" + mw.Value.Count + "\t" + String.Join(", ", mw.Value)));
 		}
 
-		public List<InvertedIndexUnit> GetIndex()
+		public IEnumerable<InvertedIndexUnit> GetIndex()
 		{
 			return index;
 		}

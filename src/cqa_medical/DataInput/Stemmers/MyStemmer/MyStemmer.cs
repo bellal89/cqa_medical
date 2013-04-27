@@ -9,6 +9,7 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 	public class MyStemmer : IStemmer
 	{
 		private readonly Vocabulary vocabulary;
+		
 		public MyStemmer(string uniqueSampleName, IEnumerable<string> words)
 		{
 			File.WriteAllLines(uniqueSampleName, words, Encoding.GetEncoding(1251));

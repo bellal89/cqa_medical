@@ -73,6 +73,9 @@
     <Compile Include="BodyAnalisys\Deseases.cs" />
     <Compile Include="BodyAnalisys\SymptomsFromFeldsher.cs" />
     <Compile Include="DataInput\Answer.cs" />
+    <Compile Include="DataInput\Mkb10.cs" />
+    <Compile Include="DataInput\Mkb10Desease.cs" />
+    <Compile Include="DataInput\Mkb10TradeName.cs" />
     <Compile Include="DataInput\ObjectSerializer.cs" />
     <Compile Include="DataInput\Stemmers\AOTLemmatizer\AOTLemmatizer.cs" />
     <Compile Include="DataInput\Stemmers\EmptyStemmer.cs" />
@@ -88,6 +91,7 @@
     <Compile Include="Statistics\GenderDetector.cs" />
     <Compile Include="Statistics\ExpertUsers.cs" />
     <Compile Include="Statistics\GraphBuilder.cs" />
+    <Compile Include="Statistics\LogUserActivity.cs" />
     <Compile Include="Statistics\StatisticsTest.cs" />
     <Compile Include="Statistics\TopicsStatistics.cs" />
     <Compile Include="Statistics\UserStatistics.cs" />
@@ -126,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

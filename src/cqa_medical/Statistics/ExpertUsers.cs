@@ -31,6 +31,7 @@ namespace cqa_medical.Statistics
 					.Select(u => new UserInfo(u.AuthorEmail, u.AuthorEfficiency, answersAmount[u.AuthorEmail]))
 					.Distinct();
 		}
+
 		public static IEnumerable<UserInfo> GetDefault()
 		{
 			var ql = Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness");

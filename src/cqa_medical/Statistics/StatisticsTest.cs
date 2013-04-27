@@ -1,3 +1,4 @@
+
 using System;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,12 @@ namespace cqa_medical.Statistics
 			statistics = new Statistics(questionList);
 		}
 
+		[Test]
+		public void CountMedicineQuestions()
+		{
+			Console.WriteLine(Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness", "treatment",
+			                                                                                      "kidhealth", "doctor").GetAllQuestions().Count());
+		}
 
 		[Test]
 		public void TestAnswerLengthInWords()

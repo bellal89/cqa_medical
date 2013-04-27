@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using cqa_medical.DataInput;
 
 namespace cqa_medical.UtilitsNamespace.Parsers
 {
@@ -24,6 +25,7 @@ namespace cqa_medical.UtilitsNamespace.Parsers
 				Console.WriteLine("Breadcrumbs not found: " + fileName);
 				return null;
 			}
+
 			var name = breadcrumbs.LastChild.InnerText.Trim().ToLower();
 			if (name.StartsWith("&gt;")) name = name.Remove(0, 4).TrimStart();
 			var content = html.GetElementbyId("content");
@@ -35,6 +37,7 @@ namespace cqa_medical.UtilitsNamespace.Parsers
 				Console.WriteLine("Name: " + name);
 				return null;
 			}
+
 			var tradeNames = new List<Mkb10TradeName>();
 			for (var i = 0; i < tradeNodes.Count - 1; i += 2)
 			{
@@ -48,40 +51,6 @@ namespace cqa_medical.UtilitsNamespace.Parsers
 			return synonymsNode == null
 			       	? new Mkb10Desease(name, tradeNames)
 			       	: new Mkb10Desease(name, tradeNames, synonymsNode.SelectNodes("ul/li").Select(li => li.InnerText.Trim().ToLower()).ToList());
-		}
-	}
-
-	[Serializable]
-	internal class Mkb10Desease
-	{
-		public string Name { get; set; }
-		public readonly List<Mkb10TradeName> TradeNames;
-		public readonly List<string> Synonyms; 
-
-		public Mkb10Desease(string name, List<Mkb10TradeName> tradeNames)
-		{
-			Name = name;
-			TradeNames = tradeNames;
-			Synonyms = new List<string>();
-		}
-
-		public Mkb10Desease(string name, List<Mkb10TradeName> tradeNames, List<string> synonyms)
-		{
-			Name = name;
-			TradeNames = tradeNames;
-			Synonyms = synonyms;
-		}
-	}
-
-	[Serializable]
-	internal class Mkb10TradeName
-	{
-		public string Name { get; set; }
-		public string ActiveSubstance { get; set; }
-		public Mkb10TradeName(string name, string activeSubstance)
-		{
-			Name = name;
-			ActiveSubstance = activeSubstance;
 		}
 	}
 
