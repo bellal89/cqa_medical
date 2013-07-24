@@ -310,11 +310,11 @@ namespace cqa_medical.Statistics
 
 			var dataX = data.Keys.ToArray();
 			var dataY = data.Values.Select(k => (double) k).ToArray();
-			Console.WriteLine(new OctavePlot("4.png", dataX, dataY)
+			Console.WriteLine(new OctavePlot(dataX, dataY)
 			                  	{
 			                  		Style = PlotStyle.LineWithTrendLine(dataX.Select(s => (double) s.Ticks).ToArray(), dataY,4),
 									GridVisible = true
-			                  	}.DrawPlot());
+                                }.DrawPlotTo("4.png"));
 		}
 
 		[Test, Explicit, TestCaseSource("DivideCases")]

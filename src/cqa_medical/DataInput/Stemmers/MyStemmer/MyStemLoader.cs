@@ -72,11 +72,11 @@ namespace cqa_medical.DataInput.Stemmers.MyStemmer
 
 		public Dictionary<string, StemInfo> GetStemInfoVocabulary()
 		{
-			var wordToStemInfo = new Dictionary<string, StemInfo>();
 			if (!stemmedFileNames.Any(name => DataActualityChecker.IsFileActual(name, QAFileNames)))
 				foreach (var name in QAFileNames)
 					InvokeMystem(name, name + StemmedFileSuffix);
 
+			var wordToStemInfo = new Dictionary<string, StemInfo>();
 			foreach (var lines in stemmedFileNames.Select(File.ReadAllLines))
 				foreach (var line in lines)
 				{

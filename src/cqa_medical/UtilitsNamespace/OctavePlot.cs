@@ -7,7 +7,59 @@ using NUnit.Framework;
 
 namespace cqa_medical.UtilitsNamespace
 {
-	public class OctavePlot
+    public class OctaveMultiplePlots
+    {
+        private OctavePlot[] plots;
+
+        public string Title;
+        public string XLabel;
+        public string YLabel;
+        public bool GridVisible;
+
+        private static readonly string someOtherCommands = "";
+
+        private string GenerateAddScript()
+        {
+            return Title.EmptyOrFormat("title '{0}';\n") +
+             XLabel.EmptyOrFormat("xlabel '{0}';\n") +
+             YLabel.EmptyOrFormat("ylabel '{0}';\n") +
+             (GridVisible ? "grid;\n" : "") +
+             someOtherCommands;
+        }
+
+        /// <param name="linesByPoints">Each Tuple is a line represented by X-s and Y-s coordinates of its points and name of line</param>
+        public OctaveMultiplePlots(IEnumerable<Tuple<double[], double[], string>> linesByPoints)
+        {
+            int i = 0;
+            plots = linesByPoints.Select(
+                l => new OctavePlot(l.Item1, l.Item2)
+                         {
+                             Style = PlotStyle.LineWithColor(((i++)%6).ToString()+';'+l.Item3+';')
+                         }).ToArray();
+        }
+
+        public OctaveMultiplePlots(OctavePlot[] plots)
+        {
+            this.plots = plots;
+        }
+
+
+        /// <returns>message from Octave</returns>
+        public string DrawPlotsTo(string fileToSave)
+        {
+            var script = "hold \n";
+            foreach (var octavePlot in plots)
+            {
+                script += octavePlot.GenerateScript();
+            }
+            script += "hold\n";
+            script += GenerateAddScript();
+            script += OctavePlot.GenerateSaveScript(fileToSave);
+            return OctaveController.Execute(script);
+        }
+    }
+
+    public class OctavePlot
 	{
 		public PlotStyle Style = PlotStyle.Line;
 		public string Title;
@@ -15,30 +67,25 @@ namespace cqa_medical.UtilitsNamespace
 		public string YLabel;
 		public bool GridVisible;
 
-
-
 		private readonly CultureInfo cul =  new CultureInfo("ru") { NumberFormat = { NumberDecimalSeparator = "." } };
-		private readonly string fileToSave;
 		private readonly string dataX;
 		private readonly string dataY;
 		private readonly string someOtherCommands = "";
 
-		public OctavePlot(string fileToSave, double[] dataX, double[] dataY)
+		public OctavePlot(double[] dataX, double[] dataY)
 		{
-			this.fileToSave = fileToSave;
 			if (dataX.Count() != dataY.Count())
 				throw new Exception("Data Arrays Count mismatch");
-			this.dataX = String.Join(",", dataX.Select(d => d.ToString(cul)));
-			this.dataY = String.Join(",", dataY.Select(d => d.ToString(cul)));
+			this.dataX = Embrace(String.Join(",", dataX.Select(d => d.ToString(cul))));
+			this.dataY = Embrace(String.Join(",", dataY.Select(d => d.ToString(cul))));
 		}
-		public OctavePlot(string fileToSave, DateTime[] dataX, double[] dataY)
-			: this(fileToSave, dataX.Select(t => (double)t.Ticks).ToArray(), dataY)
+		public OctavePlot( DateTime[] dataX, double[] dataY)
+			: this( dataX.Select(t => (double)t.Ticks).ToArray(), dataY)
 		{
 			someOtherCommands = "datalabels={"+
 				String.Join(",",GenerateDateXTicks(8,dataX).Select(s => "'"+s+"'"))+
 				"};set(gca(),'xticklabel',datalabels);";
 		}
-
 		private static IEnumerable<string> GenerateDateXTicks(int howMany, DateTime[] dates)
 		{
 			var max = dates.Max();
@@ -53,42 +100,60 @@ namespace cqa_medical.UtilitsNamespace
 			return result.Select(s => s.ToString("yyyy-MM-dd")).ToArray();
 		}
 
-		public OctavePlot(string fileToSave, Point[] points)
+		public OctavePlot(Point[] points)
 		{
-			this.fileToSave = fileToSave;
-			dataX = String.Join(",", points.Select(d => d.X.ToString(cul)));
-			dataY = String.Join(",", points.Select(d => d.Y.ToString(cul)));
+			dataX = Embrace(String.Join(",", points.Select(d => d.X.ToString(cul))));
+			dataY = Embrace(String.Join(",", points.Select(d => d.Y.ToString(cul))));
 		}
-		public OctavePlot(string fileToSave, PointF[] points)
+		public OctavePlot(PointF[] points)
 		{
-			this.fileToSave = fileToSave;
-			dataX = String.Join(",", points.Select(d => d.X.ToString(cul)));
-			dataY = String.Join(",", points.Select(d => d.Y.ToString(cul)));
+			dataX = Embrace(String.Join(",", points.Select(d => d.X.ToString(cul))));
+			dataY = Embrace(String.Join(",", points.Select(d => d.Y.ToString(cul))));
 		}
-		
-		public string DrawPlot()
+		public string GenerateScript()
 		{
-			string script =
-				String.Format("{2}([{0}],[{1}]{3});\n",dataX,dataY, Style.PlotType, Style.Style) +
-				Title.EmptyOrFormat("title '{0}';\n") +
-				XLabel.EmptyOrFormat("xlabel '{0}';\n") +
-				YLabel.EmptyOrFormat("ylabel '{0}';\n") +
-				(GridVisible? "grid;\n":"") +
-				someOtherCommands +
-				String.Format("print -d{0} {1};\n", fileToSave.Substring(fileToSave.LastIndexOf('.') + 1), fileToSave);
+		    return String.Format("{2}({0},{1}{3});\n", dataX, dataY, Style.PlotType, Style.Style) +
+		           Title.EmptyOrFormat("title '{0}';\n") +
+		           XLabel.EmptyOrFormat("xlabel '{0}';\n") +
+		           YLabel.EmptyOrFormat("ylabel '{0}';\n") +
+		           (GridVisible ? "grid;\n" : "") +
+		           someOtherCommands;
+		}
+        public static string GenerateSaveScript(string fileToSave)
+        {
+            return String.Format("print -d{0} {1};\n", fileToSave.Substring(fileToSave.LastIndexOf('.') + 1), fileToSave);
+        }
 
-//			Console.WriteLine(script);
+        /// <returns>message from Octave</returns>
+        public string DrawPlotTo(string fileToSave)
+        {
+            var script = GenerateScript() + "\n" + GenerateSaveScript(fileToSave);
 			return OctaveController.Execute(script);
 		}
+
+        private string Embrace(string s)
+        {
+            return "["+s+"]";
+        }
 	}
-	
+
+   
 	public class PlotStyle
 	{
 		public static PlotStyle Line = new PlotStyle("plot", "'-'",  "'linewidth', 3");
 		public static PlotStyle Dot = new PlotStyle("plot", "'o'",  "'markersize', 5");
 		public static PlotStyle Bar = new PlotStyle("bar");
 		public static PlotStyle Stairs = new PlotStyle("stairs");
-		public static PlotStyle LineWithTrendLine(double[] dataX, double[] dataY, int count = 1)
+
+
+        
+        /// <param name="color">one of "k" (black), "r" (red), "g" (green), "b" (blue), "m" (magenta), "c" (cyan), or "w" (white)</param>
+	    public static PlotStyle LineWithColor(string color)
+	    {
+	        return new PlotStyle("plot", "'-" + color + "'", "'linewidth', 3");
+	    }
+
+	    public static PlotStyle LineWithTrendLine(double[] dataX, double[] dataY, int count = 1)
 		{
 			Assert.AreEqual(dataX.Count(), dataY.Count());
 			var countX2 = count * 2;
@@ -153,27 +218,49 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			var dataX = new[] {1, 2, 3.3, 4.9, 5};
 			var dataY = new[] {5.0, 7, 8, 3, 2};
-			var q = new OctavePlot("1.png", dataX, dataY)
+			var q = new OctavePlot( dataX, dataY)
 			        	{
 							Style = PlotStyle.LineWithTrendLine(dataX, dataY), 
 							XLabel = "линия снизу",
 							YLabel = "Линия сбоку",
 							Title = "trolo",
 							GridVisible = true
-			        	}.DrawPlot() ;
+			        	}.DrawPlotTo("1.png") ;
 
 			Console.WriteLine(q);
 		}
-		[Test]
+        [Test]
+        public void PlotTest2()
+        {
+            var dataX = new[] {1, 2, 3.3, 4.9, 5};
+            var dataY = new[] {5.0, 7, 8, 3, 2};
+            var dataX2 = new[] {1, 2, 3.3, 4.9, 5};
+            var dataY2 = new[] {4.0, 6, 10, 1, 8};
+            var q = new OctaveMultiplePlots(new[]
+                                                {
+                                                    Tuple.Create(dataX, dataY, "first"),
+                                                    Tuple.Create(dataX2, dataY2, "second")
+                                                })
+                        {
+                            XLabel = "линия снизу",
+                            YLabel = "Линия сбоку",
+                            Title = "Название",
+                            GridVisible = true
+                        }
+                .DrawPlotsTo("3m.png");
+            Console.WriteLine(q);
+        }
+
+	    [Test]
 		public void DatePlotTest()
 		{
-			var q = new OctavePlot("2.png", new[] {new DateTime(1,1,1), new DateTime(1,1,7) }, new[] {5.0, 7})
+			var q = new OctavePlot(new[] {new DateTime(1,1,1), new DateTime(1,1,7) }, new[] {5.0, 7})
 			        	{
 							Style = PlotStyle.Bar, 
 							XLabel = "линия снизу",
 							YLabel = "Линия сбоку",
 							Title = "trolo"
-			        	}.DrawPlot() ;
+                        }.DrawPlotTo("2.png");
 
 			Console.WriteLine(q);
 		}

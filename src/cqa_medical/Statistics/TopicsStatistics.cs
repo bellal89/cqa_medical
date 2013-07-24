@@ -227,10 +227,10 @@ namespace cqa_medical.Statistics
 				new SortedDictionary<DateTime, double>(fluTopicDistrib.ToDictionary(f => DateTime.Parse(f.Key), f => f.Value));
 			var sortedDistrib = sortedDistrib1.SumUpToWeeks();
 
-			new OctavePlot(fileToSave + ".png", sortedDistrib.Keys.ToArray(), sortedDistrib.Values.ToArray())
+			new OctavePlot(sortedDistrib.Keys.ToArray(), sortedDistrib.Values.ToArray())
 			{
 				Title = "Распределение топика " + topicNumber + " по дням"
-			}.DrawPlot();
+            }.DrawPlotTo(fileToSave + ".png");
 		}
 
 		[Test, Explicit]

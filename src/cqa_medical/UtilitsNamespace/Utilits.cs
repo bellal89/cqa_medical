@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
+using cqa_medical.SpellChecker;
 
 namespace cqa_medical.UtilitsNamespace
 {
@@ -170,7 +171,8 @@ namespace cqa_medical.UtilitsNamespace
 
 		public static void DetectTime(this Action a, string message)
 		{
-			var start = DateTime.Now;
+            Console.Out.WriteLine("Started in " + DateTime.Now.ToLocalTime());
+            var start = DateTime.Now;
 			var begin = Process.GetCurrentProcess().TotalProcessorTime;
 			a.Invoke();
 			var cpuResult = (Process.GetCurrentProcess().TotalProcessorTime - begin).TotalSeconds;
@@ -180,12 +182,35 @@ namespace cqa_medical.UtilitsNamespace
 
 		public static T DetectTime<T>(this Func<T> f, string message)
 		{
-			var start = DateTime.Now;
+            Console.Out.WriteLine("Started in " + DateTime.Now.ToLocalTime());
+            var start = DateTime.Now;
 			var begin = Process.GetCurrentProcess().TotalProcessorTime;
 			var result = f.Invoke();
 			var cpuResult = (Process.GetCurrentProcess().TotalProcessorTime - begin).TotalSeconds;
 			var datetimeResult = (DateTime.Now - start).TotalSeconds;
 			Console.WriteLine("{0} in {1} seconds. CPU Time - {2} seconds", message, datetimeResult, cpuResult);
+			return result;
+		}
+		public static void DetectTimeInMinutes(this Action a, string message)
+		{
+            Console.Out.WriteLine("Started in " + DateTime.Now.ToLocalTime());
+            var start = DateTime.Now;
+			var begin = Process.GetCurrentProcess().TotalProcessorTime;
+			a.Invoke();
+            var cpuResult = (Process.GetCurrentProcess().TotalProcessorTime - begin).TotalMinutes;
+            var datetimeResult = (DateTime.Now - start).TotalMinutes;
+			Console.WriteLine("{0} in {1} minutes. CPU Time - {2} minutes", message, datetimeResult, cpuResult);
+		}
+
+		public static T DetectTimeInMinutes<T>(this Func<T> f, string message)
+		{
+            Console.Out.WriteLine("Started in " + DateTime.Now.ToLocalTime());
+            var start = DateTime.Now;
+			var begin = Process.GetCurrentProcess().TotalProcessorTime;
+			var result = f.Invoke();
+			var cpuResult = (Process.GetCurrentProcess().TotalProcessorTime - begin).TotalMinutes;
+			var datetimeResult = (DateTime.Now - start).TotalMinutes;
+			Console.WriteLine("{0} in {1} minutes. CPU Time - {2} minutes", message, datetimeResult, cpuResult);
 			return result;
 		}
 
@@ -274,6 +299,11 @@ namespace cqa_medical.UtilitsNamespace
 		}
 
 		#endregion
+        public static int LevensteinDistance(this string dictionaryWord, string word )
+        {
+            var levensteinInfo = new LevensteinInfo(dictionaryWord, word);
+            return levensteinInfo.GetDistance();
+        }
 	}
 	[TestFixture]
 	internal class DetectTimeTest
@@ -291,7 +321,7 @@ namespace cqa_medical.UtilitsNamespace
 					}
 					return q;
 				}
-				).DetectTime("trolo"));
+				).DetectTimeInMinutes("trolo"));
 		}
 
 		[Test]
