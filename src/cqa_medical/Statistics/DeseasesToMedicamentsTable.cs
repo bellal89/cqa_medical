@@ -69,6 +69,7 @@ namespace cqa_medical.Statistics
 			                   		k.Key + "\t" +
 			                   		String.Join(", ", k.Value.OrderByDescending(t => t.Item2).Select(t => String.Format("{0}({1})", t.Item1, t.Item2)))));
 		}
+
 		public string CapitulatoryStringByFirst()
 		{
 			var q = new Dictionary<string, HashSet<Tuple<string, int>>>();
@@ -98,12 +99,13 @@ namespace cqa_medical.Statistics
 			{
 				const int minAmount = 30;
 				//var deseases = Deseases.GetDefaultIndex().ToArray();
-				var deseases = Deseases.GetFuzzyIndex().ToArray();
+			    var deseases = Deseases.GetFullList(Program.DefaultMyStemmer);
+				var deseaseIndex = deseases.GetFuzzyIndex().ToArray();
 				//var medicaments = Medicaments.GetDefaultIndex().ToArray();
 				var medicaments = Medicaments.GetFuzzyIndex().ToArray();
 				var deseasesFromAnswers = Deseases.GetIndexFromAnswers().ToArray();
 				var symptoms = Symptoms.GetDefaultIndex().Where(a => a.Ids.Count > minAmount).ToArray();
-				var q = new DeseasesToMedicamentsTable(deseases, medicaments, 1);
+				var q = new DeseasesToMedicamentsTable(deseaseIndex, medicaments, 1);
 
 				File.WriteAllText(Program.FilesDirectory + "deseases-medicaments.txt", q.ToStringOneToMany(10));
 				var w = new DeseasesToMedicamentsTable(symptoms, medicaments,10);
@@ -118,9 +120,10 @@ namespace cqa_medical.Statistics
 				var deseaseMedicamentQuestions = new List<long>();
 
 				var medicaments = Medicaments.GetFuzzyIndex().ToArray();
-				var deseases = Deseases.GetFuzzyIndex().ToArray();
+			    var deseases = Deseases.GetFullList(Program.DefaultMyStemmer);
+                var deseaseIndex = deseases.GetFuzzyIndex().ToArray();
 
-				foreach (var desMedQuests in from desease in deseases from medicament in medicaments select desease.Ids.Intersect(medicament.Ids).ToList())
+				foreach (var desMedQuests in from desease in deseaseIndex from medicament in medicaments select desease.Ids.Intersect(medicament.Ids).ToList())
 					deseaseMedicamentQuestions.AddRange(desMedQuests);
 				Console.WriteLine("Desease - medicament question pairs: " + deseaseMedicamentQuestions.Distinct().Count());
 			}
@@ -130,7 +133,7 @@ namespace cqa_medical.Statistics
 			{
 				var medicamentInAnswersQuestionIds = new HashSet<long>(Medicaments.GetFuzzyIndex().SelectMany(med => med.Ids));
 				var qs = new List<string>();
-				foreach (var desease in Deseases.GetFuzzyIndex())
+				foreach (var desease in Deseases.GetFullList(Program.DefaultMyStemmer).GetFuzzyIndex())
 				{
 					var des = desease;
 					qs.AddRange(desease.Ids.Except(medicamentInAnswersQuestionIds).Select(

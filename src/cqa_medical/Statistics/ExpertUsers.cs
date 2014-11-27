@@ -243,12 +243,13 @@ namespace cqa_medical.Statistics
 			var rand = new Random(1);
 			var experts = ExpertUsers.GetDefault().Take(800).Reverse().Take(696).ToList();
 			
+            File.WriteAllLines("UsersMailSentTo.txt", experts.Select(e => e.Email.ToLower() + "\t" + e.Rating + "\t" + e.AnswersAmount));
 			for (var j = 0; j < 696; j += 8)
 			{
 				for (var i = 0; i < 8; i++)
 				{
 					var u = experts[j + i];
-					mailSenders[i].SendALotOfMails(new List<MainMailInfo> { new MainMailInfo(u.Email, mailSubject, String.Format(mailBodyVariants[i], formUrls[i])) });
+					//mailSenders[i].SendALotOfMails(new List<MainMailInfo> { new MainMailInfo(u.Email, mailSubject, String.Format(mailBodyVariants[i], formUrls[i])) });
 				}
 				System.Threading.Thread.Sleep(rand.Next(70000, 80000));
 			}

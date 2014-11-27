@@ -12,8 +12,8 @@ namespace cqa_medical.Mkb10
 	{
 		private readonly Mkb10 mkb = new Mkb10();
 		private readonly HashSet<Tuple<int, string>> correctSet;
-		private readonly List<Tuple<int, string, int>> extracted;
-		private readonly List<Tuple<int, string, int>> correctExtracted;
+		private readonly List<Tuple<int, string, List<long>>> extracted;
+		private readonly List<Tuple<int, string, List<long>>> correctExtracted;
 
 		public PairsAnalysis()
 		{
@@ -27,12 +27,12 @@ namespace cqa_medical.Mkb10
 			return correctSet;
 		}
 
-		public List<Tuple<int, string, int>> GetExtraced()
+		public List<Tuple<int, string, List<long>>> GetExtraced()
 		{
 			return extracted;
 		}
 
-		public List<Tuple<int, string, int>> GetCorrectExtracted()
+		public List<Tuple<int, string, List<long>>> GetCorrectExtracted()
 		{
 			return correctExtracted;
 		}
@@ -42,7 +42,7 @@ namespace cqa_medical.Mkb10
 			return mkb;
 		}
 
-		public IEnumerable<Tuple<int, string, int, Question>> GetIncorrectPairQuestions (int minFrequency)
+		public IEnumerable<Tuple<int, string, List<long>, Question>> GetIncorrectPairQuestions (int minFrequency)
 		{
 			var nonCorrect = GetNonCorrectPairs(minFrequency).OrderByDescending(it => it.Item3);
 
@@ -57,11 +57,11 @@ namespace cqa_medical.Mkb10
 					it => it.Item4.Select(id => Tuple.Create(it.Item1, it.Item2, it.Item3, questions.GetQuestion(id))));
 		}
 
-		public IEnumerable<Tuple<int, string, int>> GetNonCorrectPairs(int minFrequency)
+		public IEnumerable<Tuple<int, string, List<long>>> GetNonCorrectPairs(int minFrequency)
 		{
 			var nonCorrect =
 				extracted.Where(pair => !correctSet.Contains(Tuple.Create(pair.Item1, pair.Item2))).Where(
-					pair => pair.Item3 >= minFrequency);
+					pair => pair.Item3.Count >= minFrequency);
 			return nonCorrect;
 		}
 
@@ -89,12 +89,12 @@ namespace cqa_medical.Mkb10
 		public void TestNonCorrectPairsFactCorrectness()
 		{
 			var analysis = new PairsAnalysis();
-			var noncorrectSum = analysis.GetNonCorrectPairs(150).Sum(it => it.Item3);
-			var correctExtractedSum = (double)(analysis.GetCorrectExtracted().Sum(it => it.Item3) + noncorrectSum);
+			var noncorrectSum = analysis.GetNonCorrectPairs(150).Sum(it => it.Item3.Count);
+			var correctExtractedSum = (double)(analysis.GetCorrectExtracted().Sum(it => it.Item3.Count) + noncorrectSum);
 			var correctExtractedCount = (double) (analysis.GetCorrectExtracted().Count + analysis.GetNonCorrectPairs(150).Count());
 			
 			Console.WriteLine("Correct extracted with handy tuning:" + correctExtractedCount/analysis.GetExtraced().Count);
-			Console.WriteLine("Correct extracted sum:" + correctExtractedSum / analysis.GetExtraced().Sum(it => it.Item3));
+			Console.WriteLine("Correct extracted sum:" + correctExtractedSum / analysis.GetExtraced().Sum(it => it.Item3.Count));
 		}
 	}
 }

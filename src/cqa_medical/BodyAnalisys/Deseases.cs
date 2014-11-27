@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
-using LinqLib.Sequence;
 using MicrosoftResearch.Infer.Collections;
 using NUnit.Framework;
 using cqa_medical.DataInput.Stemmers;
-using cqa_medical.DataInput.Stemmers.MyStemmer;
 using cqa_medical.SpellChecker;
 using cqa_medical.UtilitsNamespace;
 
@@ -26,7 +23,7 @@ namespace cqa_medical.BodyAnalisys
 		{
 			DeseasesList = new HashSet<string>(CleanDeseases(stemmer, deseases));
 		}
-		private Deseases(IEnumerable<string> deseases)
+		public Deseases(IEnumerable<string> deseases)
 		{
 			DeseasesList = new HashSet<string>(deseases);
 		}
@@ -47,7 +44,7 @@ namespace cqa_medical.BodyAnalisys
 		{
 			return new Deseases(File.ReadLines("../../Files/DeseasesByHand.txt").Select(stemmer.Stem));
 		}
-		public static Deseases GetFullDeseases(IStemmer stemmer)
+		public static Deseases GetFullList(IStemmer stemmer)
 		{
 			List<string> desFromInternet;
 			try
@@ -84,7 +81,6 @@ namespace cqa_medical.BodyAnalisys
 			return deseases.Distinct();
 		}
 
-
 		// очень завязан на файл Deseases.txt
 		private static IEnumerable<string> GetCandidatesFromDeseasesTxtFile()
 		{
@@ -111,6 +107,7 @@ namespace cqa_medical.BodyAnalisys
 				yield return deseaseString;
 			}
 		}
+
 		private static IEnumerable<string> GetIndexFromInternetMedicalDictionary(IStemmer stemmer)
 		{
 			const string neededUrlsFileName = @"..\..\BodyAnalisys\DeseasesUrls.txt";
@@ -139,13 +136,9 @@ namespace cqa_medical.BodyAnalisys
 						HtmlNode value;
 						while ((value = tableNode.SelectSingleNode(String.Format(w.ElementsXPATH, i++))) != null)
 							words.AddRange(value.InnerText.SplitIntoWords());
-
 					}
-					
 				}
-				
 			}
-
 			return words;
 		}
 
@@ -172,7 +165,7 @@ namespace cqa_medical.BodyAnalisys
 					() =>
 						{
 							var ql = Program.DefaultQuestionList;
-							var des = GetFullDeseases(Program.DefaultMyStemmer);
+							var des = GetFullList(Program.DefaultMyStemmer);
 							return des.GetIndex(ql
 							                    	.GetAllQuestions()
 							                    	.Select(t => Tuple.Create(t.Id, t.WholeText))
@@ -187,17 +180,16 @@ namespace cqa_medical.BodyAnalisys
 					Program.DeseasesFileName));
 		}
 
-		public static IEnumerable<InvertedIndexUnit> GetFuzzyIndex()
+		public IEnumerable<InvertedIndexUnit> GetFuzzyIndex()
 		{
 			return DataActualityChecker.Check(
 				new Lazy<InvertedIndexUnit[]>(
 					() =>
 					{
 						var ql = Program.DefaultQuestionList;
-						var deseases = GetFullDeseases(Program.DefaultMyStemmer);
 						var idQuestionText = ql.GetAllQuestions().Select(t => Tuple.Create(t.Id, t.WholeText));
 
-						var fuzzyIndex = new FuzzyIndex(idQuestionText, deseases.DeseasesList);
+						var fuzzyIndex = new FuzzyIndex(idQuestionText, DeseasesList);
 						return fuzzyIndex.GetIndex().OrderByDescending(k => k.Ids.Count).ToArray();
 					}),
 				InvertedIndexUnit.FormatStringWrite,
@@ -214,7 +206,7 @@ namespace cqa_medical.BodyAnalisys
 					() =>
 						{
 							var ql = Program.DefaultQuestionList;
-							var des = GetFullDeseases(Program.DefaultMyStemmer);
+							var des = GetFullList(Program.DefaultMyStemmer);
 							return des.GetIndex(ql
 							                    	.GetAllAnswers()
 							                    	.Select(t => Tuple.Create(t.QuestionId, t.Text))
@@ -269,7 +261,7 @@ namespace cqa_medical.BodyAnalisys
 		[Test, Explicit]
 		public void GetDeseases()
 		{
-			var q  = Deseases.GetFullDeseases(Program.DefaultMyStemmer).DeseasesList.OrderBy(s => s);
+			var q  = Deseases.GetFullList(Program.DefaultMyStemmer).DeseasesList.OrderBy(s => s);
 			File.WriteAllLines("deseases.txt", q);
 		}
 
@@ -389,7 +381,7 @@ namespace cqa_medical.BodyAnalisys
 		public void GetIndex()
 		{
 			var ql = Program.DefaultQuestionList;
-			var des = Deseases.GetFullDeseases(Program.DefaultMyStemmer);
+			var des = Deseases.GetFullList(Program.DefaultMyStemmer);
 			var desIndex =  des.GetIndex(ql
 									.GetAllQuestions()
 									.Select(t => Tuple.Create(t.Id, t.WholeText))
@@ -402,8 +394,18 @@ namespace cqa_medical.BodyAnalisys
 		[Test]
 		public void GetFuzzyIndex()
 		{
-			var desIndex = Deseases.GetFuzzyIndex();
+		    var deseases = Deseases.GetFullList(Program.DefaultMyStemmer);
+			var desIndex = deseases.GetFuzzyIndex();
 			Console.WriteLine(desIndex.Count());
 		}
+
+        [Test]
+        public void GetFuzzyIndexByCustomDesList()
+        {
+            var desListFileName = "";
+            var customList = File.ReadAllLines(desListFileName);
+            var deseases = new Deseases(customList);
+
+        }
 	}
 }

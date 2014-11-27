@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace cqa_medical.Statistics
 	class UserStatistics : BaseStatistics
 	{
 		private readonly List<MailUser> users;
-		private readonly TopicsStatistics topicStatistics;
+		public readonly TopicsStatistics TopicStatistics;
 
 		public UserStatistics(QuestionList questionList)
 			: base(questionList)
@@ -28,7 +29,7 @@ namespace cqa_medical.Statistics
 
 			users = parser.GetObjects().Where(u => questionListUsers.Contains(u.Email)).ToList();
 
-			topicStatistics = new TopicsStatistics(questionList);
+			TopicStatistics = new TopicsStatistics(questionList);
 		}
 
 		public List<MailUser> GetUsers()
@@ -71,7 +72,7 @@ namespace cqa_medical.Statistics
 			var regionEmails = GetRegionEmails(region);
 
 			var regionTopicQuestions =
-				topicStatistics.GetQuestionsByTopic(topicNumber, threshold).Where(q => regionEmails.Contains(q.AuthorEmail));
+				TopicStatistics.GetQuestionsByTopic(topicNumber, threshold).Where(q => regionEmails.Contains(q.AuthorEmail));
 			return regionTopicQuestions;
 		}
 
@@ -90,13 +91,13 @@ namespace cqa_medical.Statistics
 			return
 				GetDistribution(
 					QuestionList.GetAllQuestions().Where(q => regionEmails.Contains(q.AuthorEmail)).Select(
-						q => topicStatistics.GetTopicByQuestionId(q.Id, threshold)).Where(t => t != null).Select(t => t.Item1));
+						q => TopicStatistics.GetTopicByQuestionId(q.Id, threshold)).Where(t => t != null).Select(t => t.Item1));
 		}
 
 		public Dictionary<DateTime, double> GetTopicByUserRegionProbabilitiesDistribution(string region, params int[] topics)
 		{
 			var regionEmails = GetRegionEmails(region);
-			var topicsProbabilitySums = topicStatistics.GetQuestionTopicsProbabilitySums(topics);
+			var topicsProbabilitySums = TopicStatistics.GetQuestionTopicsProbabilitySums(topics);
 
 			return QuestionList.GetAllQuestions()
 				.Where(q => regionEmails.Contains(q.AuthorEmail) && topicsProbabilitySums.ContainsKey(q.Id))
@@ -157,10 +158,21 @@ namespace cqa_medical.Statistics
 	[TestFixture]
 	public class UserStatisticsTest
 	{
-		private readonly UserStatistics userStatistics = new UserStatistics(Program.DefaultNotStemmedQuestionList.NewQuestionListFilteredByCategories("illness"));
-		const string Region = "московская область";
+	    private readonly QuestionList medicalQuestions =
+	        Program.DefaultQuestionList.NewQuestionListFilteredByCategories("illness",
+	                                                                        "treatment",
+	                                                                        "kidhealth",
+	                                                                        "doctor");
+        private UserStatistics userStatistics;
+        const string Region = "московская область";
+        
+        [SetUp]
+        public void Init()
+        {
+            userStatistics = new UserStatistics(medicalQuestions);
+        }
 
-		[Test]
+	    [Test]
 		public void TestUserNames()
 		{
 			var userNames = userStatistics.GetUserNames().OrderByDescending(u => u.Value);
@@ -349,5 +361,37 @@ namespace cqa_medical.Statistics
 			                              corrs.OrderByDescending(cor => Math.Abs(cor.Item2)).Take(topCount).Select(
 											cor => cor.Item1 + "\t" + String.Join(", ", topicConverter.GetTopicWords(cor.Item1, 4)) + "\t" + cor.Item2)));
 		}
+
+        [Test, Explicit("SaveAllStatistics")]
+        public void SaveAllStatistics()
+        {
+            var genderDetector = new GenderDetector();
+            var users = userStatistics.GetUsers().ToDictionary(u => u.Email, u => u);
+            File.WriteAllLines("FullQuestionStatistics.txt",
+                               medicalQuestions.GetAllQuestions().Select(
+                                   a =>
+                                       {
+                                           var topic = userStatistics.TopicStatistics.GetTopicByQuestionId(a.Id, 0.1) ??
+                                                       Tuple.Create(-1, 0.0);
+                                           return a.Id + "\t" + 0 + "\t" +
+                                                  a.Category + "\t" + a.Rating +
+                                                  "\t" +
+                                                  a.DateAdded + "\t" +
+                                                  topic.Item1 + "\t" + topic.Item2.ToString(CultureInfo.InvariantCulture) + "\t" +
+                                                  a.WholeText +
+                                                  "\t" +
+                                                  a.AuthorEmail + "\t" + a.AuthorRating + "\t" + a.AuthorEfficiency.ToString(CultureInfo.InvariantCulture) +
+                                                  "\t" +
+                                                  (users.ContainsKey(a.AuthorEmail)
+                                                       ? (users[a.AuthorEmail].BirthDate + "\t" +
+                                                          users[a.AuthorEmail].Geo +
+                                                          "\t" +
+                                                          (String.IsNullOrEmpty(users[a.AuthorEmail].Name)
+                                                               ? "Unknown"
+                                                               : genderDetector.Detect(users[a.AuthorEmail].Name).
+                                                                     ToString()))
+                                                       : "\t\t");
+                                       }));
+        }
 	}
 }

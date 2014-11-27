@@ -16,6 +16,5 @@ namespace cqa_medical.UtilitsNamespace
 		{
 			Email = email;
 		}
-
 	}
 }

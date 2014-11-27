@@ -14,7 +14,7 @@ namespace cqa_medical.Mkb10
 	public class Mkb10
 	{
 		const string SerializedMappingFileName = Program.FilesDirectory + "Mkb-10-Handy/Mkb10-handy-deseases.txt";
-		const string DeseaseNamesFileName = Program.FilesDirectory + "Mkb-10-Handy/Mkb10-handy-deseaseNames.txt";
+		const string DeseaseNamesFileName = Program.FilesDirectory + "Mkb-10-Handy/Mkb10-handy-deseaseNames-10.txt";
 		const string MedicamentNamesFileName = Program.FilesDirectory + "Mkb-10-Handy/Mkb10-handy-medicamentNames.txt";
 
 		private static readonly HashSet<string> BadDeseaseWords =
@@ -158,7 +158,7 @@ namespace cqa_medical.Mkb10
 			        select Tuple.Create(medId, new InvertedIndexUnit(idToTradeName[medId].Name, medIds))).ToList();
 		}
 
-		public List<Tuple<int, string, int>> GetDesMedPairs()
+		public List<Tuple<int, string, List<long>>> GetDesMedPairs()
 		{
 			var desIndex = GetDeseasesFuzzyIndex();
 			var activeSubIndex = GetDesActiveSubIndex();
@@ -167,13 +167,13 @@ namespace cqa_medical.Mkb10
 			        from des in desIndex
 			        let intersection = des.Item2.Ids.Intersect(med.Item2.Ids).ToList()
 			        where intersection.Any()
-			        select Tuple.Create(des.Item1, med.Item1, intersection.Count)).ToList();
+			        select Tuple.Create(des.Item1, med.Item1, intersection)).ToList();
 		}
 
 		public IEnumerable<Tuple<string, InvertedIndexUnit>> GetDesActiveSubIndex()
 		{
 			var medIndex = GetMedicamentsFuzzyIndex();
-			return medIndex.GroupBy(it => idToTradeName[it.Item1].ActiveSubstance,
+			return medIndex.GroupBy(it => idToTradeName[it.Item1].ActiveSubstance != "" ? idToTradeName[it.Item1].ActiveSubstance : idToTradeName[it.Item1].Name,
 							 (key, items) =>
 							 Tuple.Create(key, new InvertedIndexUnit(key, items.SelectMany(it => it.Item2.Ids).Distinct())));
 		}
@@ -200,8 +200,12 @@ namespace cqa_medical.Mkb10
 			var mkb = new Mkb10();
 
 			var correctPairs = new HashSet<Tuple<int, string>>(mkb.GetCorrectDesSubstancePairs());
+			
 			var extracted = mkb.GetDesMedPairs();
+			Console.WriteLine("Questions at all: " + extracted.SelectMany(it => it.Item3).Distinct().Count());
+			
 			var correctExtracted = extracted.Where(pair => correctPairs.Contains(Tuple.Create(pair.Item1, pair.Item2))).ToList();
+			Console.WriteLine("Questions including correct des-med: " + correctExtracted.SelectMany(it => it.Item3).Distinct().Count());
 
 			var res = new List<string>
 			          	{
@@ -210,31 +214,21 @@ namespace cqa_medical.Mkb10
 			          		"Correct extracted count: " + correctExtracted.Count,
 			          		"",
 			          		"Fraction of correct in extracted: " + (double) correctExtracted.Count/extracted.Count,
-			          		"Sum fraction: " + (double) correctExtracted.Sum(it => it.Item3)/extracted.Sum(it => it.Item3),
+			          		"Sum fraction: " + (double) correctExtracted.Sum(it => it.Item3.Count)/extracted.Sum(it => it.Item3.Count),
 			          		"Fraction of >1: " +
-			          		(double) correctExtracted.Count(it => it.Item3 > 1)/extracted.Count(it => it.Item3 > 1),
+			          		(double) correctExtracted.Count(it => it.Item3.Count > 1)/extracted.Count(it => it.Item3.Count > 1),
 			          		"Fraction of >2: " +
-			          		(double) correctExtracted.Count(it => it.Item3 > 2)/extracted.Count(it => it.Item3 > 2),
+			          		(double) correctExtracted.Count(it => it.Item3.Count > 2)/extracted.Count(it => it.Item3.Count > 2),
 			          		"Fraction of >10: " +
-			          		(double) correctExtracted.Count(it => it.Item3 > 10)/extracted.Count(it => it.Item3 > 10),
-			          		">10 count: " + extracted.Count(it => it.Item3 > 10),
+			          		(double) correctExtracted.Count(it => it.Item3.Count > 10)/extracted.Count(it => it.Item3.Count > 10),
+			          		">10 count: " + extracted.Count(it => it.Item3.Count > 10),
 			          		"Fraction of >50: " +
-			          		(double) correctExtracted.Count(it => it.Item3 > 50)/extracted.Count(it => it.Item3 > 50),
-			          		">50 count: " + extracted.Count(it => it.Item3 > 50)
+			          		(double) correctExtracted.Count(it => it.Item3.Count > 50)/extracted.Count(it => it.Item3.Count > 50),
+			          		">50 count: " + extracted.Count(it => it.Item3.Count > 50)
 			          	};
 
 			Console.WriteLine(String.Join("\n", res));
-			File.WriteAllLines("PairsDesToActiveSubstance.txt", res);
-
-			File.WriteAllLines("PairsDesToActiveSubstanceFractionsBy25.txt",
-			                   extracted.GroupBy(pair => pair.Item3/25,
-			                                     (key, vals) =>
-			                                     Tuple.Create(key, vals.Count(),
-			                                                  vals.Count(
-			                                                  	val => correctPairs.Contains(Tuple.Create(val.Item1, val.Item2)))))
-			                   	.OrderBy(it => it.Item1)
-			                   	.Select(
-									it => (it.Item1 * 25 + 1) + " to " + (it.Item1 * 25 + 25) + "\t" + it.Item3 + "\t" + (it.Item2 - it.Item3)));
+			//File.WriteAllLines("PairsDesToActiveSubstance.txt", res);
 		}
 	}
 }
